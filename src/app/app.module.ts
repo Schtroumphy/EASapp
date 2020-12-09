@@ -23,6 +23,10 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 
+//Services
+import { DriverService } from '../app/core/services/app/driver.service'
+import { ElectronService } from 'ngx-electron';
+
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -53,7 +57,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     MatIconModule,
     MatListModule
   ],
-  providers: [],
+  providers: [DriverService, ElectronService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

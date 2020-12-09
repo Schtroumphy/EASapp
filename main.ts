@@ -1,12 +1,25 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import { createConnection } from 'typeorm';
+import { Item } from './../EASapp/src/app/core/models/item.schema';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
-function createWindow(): BrowserWindow {
+async function createWindow(): Promise<BrowserWindow> {
+
+  const connection = await createConnection({
+    type: 'sqlite',
+    synchronize: true,
+    logging: true,
+    logger: 'simple-console',
+    database: './src/assets/data/database.sqlite',
+    entities: [ Item ],
+  });
+
+  const itemRepo = connection.getRepository(Item);
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -41,6 +54,34 @@ function createWindow(): BrowserWindow {
       slashes: true
     }));
   }
+
+  ipcMain.on('get-items', async (event: any, ...args: any[]) => {
+    try {
+      event.returnValue = await itemRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('add-item', async (event: any, _item: Item) => {
+    try {
+      const item = await itemRepo.create(_item);
+      await itemRepo.save(item);
+      event.returnValue = await itemRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('delete-item', async (event: any, _item: Item) => {
+    try {
+      const item = await itemRepo.create(_item);
+      await itemRepo.remove(item);
+      event.returnValue = await itemRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
 
   // Emitted when the window is closed.
   win.on('closed', () => {
