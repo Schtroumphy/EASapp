@@ -15,6 +15,13 @@ import { HomeModule } from './home/home.module';
 import { DetailModule } from './detail/detail.module';
 
 import { AppComponent } from './app.component';
+import { NavigationComponent } from './navigation/navigation/navigation.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -22,7 +29,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, NavigationComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -38,7 +45,13 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]
