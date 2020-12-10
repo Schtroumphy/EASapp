@@ -40,13 +40,13 @@ export class DriversComponent implements OnInit {
     { id: 12, firstname: 'Lila', lastname: "CROLI", phoneNumber: '2871543980', email: 'lila.croli@hotmail.com' },
   ];
 
-  displayedColumns = ['id', 'firstname', 'lastname', 'phoneNumber', 'email', 'actions'];
+  displayedColumns = ['id', 'firstname', 'lastname', 'phoneNumber', 'email', 'actions', 'planning'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
   dataSource = this.ELEMENT_DATA;
-  displayDriverForm = false;
-
+  
   //Form
   driverForm: FormGroup;
+  displayDriverForm = true;
 
   constructor() { }
 
@@ -54,10 +54,11 @@ export class DriversComponent implements OnInit {
     this.initForm();
   }
 
+  //Forms
   initForm() {
     this.driverForm = new FormGroup({
-      'firstname': new FormControl(null, Validators.required),
-      'lastname': new FormControl(null, Validators.required),
+      firstname: new FormControl(null, Validators.required),
+      lastname: new FormControl(null, Validators.required),
     })
   }
 
@@ -66,6 +67,25 @@ export class DriversComponent implements OnInit {
   }
 
   onClear() {	this.driverForm.reset();}
+
+  //Ajouter un conducteur
+  addDriver(){
+    this.displayDriverForm = !this.displayDriverForm;
+  }
+
+  //Actions on driver
+  edit(element){
+    console.log("Editer : " + JSON.stringify(element))
+  }
+
+  delete(){
+    console.log("Delete")
+  }
+
+  planning(){
+    console.log("PLanning")
+  }
+  
 
   addColumn() {
     console.log("Add column")

@@ -30,6 +30,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ReactiveFormsModule } from '@angular/forms'
 
 //Services
 import { DriverService } from '../app/core/services/app/driver.service'
@@ -64,7 +65,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    MatTableModule, MatInputModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule
+    MatTableModule, MatInputModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule,
+    ReactiveFormsModule
   ],
   providers: [DriverService, ElectronService],
   bootstrap: [AppComponent]
