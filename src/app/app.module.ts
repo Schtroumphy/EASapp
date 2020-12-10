@@ -16,12 +16,20 @@ import { DetailModule } from './detail/detail.module';
 
 import { AppComponent } from './app.component';
 import { NavigationComponent } from './navigation/navigation/navigation.component';
+import { DriversComponent } from './drivers/drivers.component';
+
+
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 //Services
 import { DriverService } from '../app/core/services/app/driver.service'
@@ -33,7 +41,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-  declarations: [AppComponent, NavigationComponent],
+  declarations: [AppComponent, NavigationComponent, DriversComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -55,7 +63,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     MatButtonModule,
     MatSidenavModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    MatTableModule, MatInputModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule
   ],
   providers: [DriverService, ElectronService],
   bootstrap: [AppComponent]

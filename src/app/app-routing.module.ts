@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeRoutingModule } from './home/home-routing.module';
 import { NavigationRoutingModule } from './navigation/navigation/navigation-routing.module';
 import { DetailRoutingModule } from './detail/detail-routing.module';
+import { DriversRoutingModule } from './drivers/drivers-routing.module';
 
 const routes: Routes = [
   {
@@ -25,7 +26,8 @@ const routes: Routes = [
     RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
     HomeRoutingModule,
     DetailRoutingModule,
-    NavigationRoutingModule
+    NavigationRoutingModule,
+    DriversRoutingModule
   ],
   exports: [RouterModule]
 })

@@ -45,6 +45,8 @@
     "@angular/cdk": "11.0.2",
     "@angular/forms": "^11.0.0 || ^12.0.0-0",
     "@angular/material": "11.0.2",
+    "bootstrap": "4.5.3",
+    "jquery": "3.5.1",
     "ngx-electron": "2.2.0",
     "sqlite3": "5.0.0",
     "typeorm": "0.2.29"
