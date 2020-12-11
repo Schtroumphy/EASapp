@@ -33,10 +33,21 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule } from '@angular/forms'
 
+//Full calendar
+import { FullCalendarModule } from '@fullcalendar/angular'; // the main connector. must go first
+import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin
+import interactionPlugin from '@fullcalendar/interaction'; // a plugin
+
+FullCalendarModule.registerPlugins([ // register FullCalendar plugins
+  dayGridPlugin,
+  interactionPlugin
+]);
+
 //Services
 import { DriverService } from '../app/core/services/app/driver.service'
 import { PatientService } from '../app/core/services/app/patient.service'
 import { ElectronService } from 'ngx-electron';
+import { PlanningComponent } from './planning/planning.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -44,7 +55,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent],
+  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, PlanningComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -68,7 +79,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     MatIconModule,
     MatListModule,
     MatTableModule, MatInputModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FullCalendarModule
   ],
   providers: [DriverService, ElectronService, PatientService],
   bootstrap: [AppComponent]
