@@ -37,7 +37,9 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { FullCalendarModule } from '@fullcalendar/angular'; // the main connector. must go first
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin
 import interactionPlugin from '@fullcalendar/interaction'; // a plugin
-
+import bootstrapPlugin from '@fullcalendar/bootstrap';
+import listPlugin from '@fullcalendar/list';
+import timeGridPlugin from '@fullcalendar/timegrid';
 FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   dayGridPlugin,
   interactionPlugin
@@ -48,14 +50,19 @@ import { DriverService } from '../app/core/services/app/driver.service'
 import { PatientService } from '../app/core/services/app/patient.service'
 import { ElectronService } from 'ngx-electron';
 import { PlanningComponent } from './planning/planning.component';
+import { CalendarComponent } from './calendar/calendar.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
+FullCalendarModule.registerPlugins([ // register FullCalendar plugins
+  dayGridPlugin, bootstrapPlugin, listPlugin,timeGridPlugin,interactionPlugin
+]);
+
 @NgModule({
-  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, PlanningComponent],
+  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, PlanningComponent, CalendarComponent],
   imports: [
     BrowserModule,
     FormsModule,

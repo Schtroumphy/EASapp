@@ -1,0 +1,7 @@
+<p>calendar works!</p>
+<button type="button" class="btn btn-primary" (click)="addEvent()"> Ajouter un event</button>
+<button type="button" class="btn btn-primary" (click)="onPrint()">Print</button>
+
+<div class="printMe">
+    <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+</div>
