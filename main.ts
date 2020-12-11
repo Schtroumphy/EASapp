@@ -3,6 +3,8 @@ import * as path from 'path';
 import * as url from 'url';
 import { createConnection } from 'typeorm';
 import { Item } from './../EASapp/src/app/core/models/item.schema';
+import { Driver } from './../EASapp/src/app/core/models/driver.schema';
+import { Patient } from './../EASapp/src/app/core/models/patient.schema';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
@@ -16,10 +18,12 @@ async function createWindow(): Promise<BrowserWindow> {
     logging: true,
     logger: 'simple-console',
     database: './src/assets/data/database.sqlite',
-    entities: [ Item ],
+    entities: [ Item, Driver, Patient],
   });
 
   const itemRepo = connection.getRepository(Item);
+  const driverRepo = connection.getRepository(Driver);
+  const patientRepo = connection.getRepository(Patient);
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -56,6 +60,22 @@ async function createWindow(): Promise<BrowserWindow> {
     }));
   }
 
+  ipcMain.on('get-drivers', async (event: any, ...args: any[]) => {
+    try {
+      event.returnValue = await driverRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('get-patients', async (event: any, ...args: any[]) => {
+    try {
+      event.returnValue = await patientRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
   ipcMain.on('get-items', async (event: any, ...args: any[]) => {
     try {
       event.returnValue = await itemRepo.find();
@@ -74,11 +94,82 @@ async function createWindow(): Promise<BrowserWindow> {
     }
   });
 
+  ipcMain.on('add-driver', async (event: any, _driver: Driver) => {
+    try {
+      const item = await driverRepo.create(_driver);
+      await driverRepo.save(item);
+      event.returnValue = await driverRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('add-patient', async (event: any, _patient: Patient) => {
+    try {
+      const item = await patientRepo.create(_patient);
+      await patientRepo.save(item);
+      event.returnValue = await patientRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
   ipcMain.on('delete-item', async (event: any, _item: Item) => {
     try {
       const item = await itemRepo.create(_item);
       await itemRepo.remove(item);
       event.returnValue = await itemRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('delete-driver', async (event: any, _driver: Driver) => {
+    try {
+      const item = await driverRepo.create(_driver);
+      await driverRepo.remove(item);
+      event.returnValue = await driverRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('delete-patient', async (event: any, _patient: Patient) => {
+    try {
+      const item = await patientRepo.create(_patient);
+      await patientRepo.remove(item);
+      event.returnValue = await patientRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('update-driver', async (event: any, _driver: Driver) => {
+    
+    try {
+      let driverToUpdate = await driverRepo.findOne(_driver.id);
+      driverToUpdate.firstname = _driver.firstname;
+      driverToUpdate.lastname = _driver.lastname;
+      driverToUpdate.email = _driver.email;
+      driverToUpdate.phoneNumber = _driver.phoneNumber;
+      await driverRepo.save(driverToUpdate);
+      event.returnValue = await driverRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('update-patient', async (event: any, _patient: Patient) => {
+    
+    try {
+      let patientToUpdate = await patientRepo.findOne(_patient.id);
+      patientToUpdate.firstname = _patient.firstname;
+      patientToUpdate.lastname = _patient.lastname;
+      patientToUpdate.email = _patient.email;
+      patientToUpdate.phoneNumber = _patient.phoneNumber;
+      patientToUpdate.address = _patient.address;
+      await patientRepo.save(patientToUpdate);
+      event.returnValue = await patientRepo.find();
     } catch (err) {
       throw err;
     }

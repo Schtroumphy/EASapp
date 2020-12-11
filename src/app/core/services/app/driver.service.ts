@@ -5,6 +5,7 @@ import { Item } from '../../models/item.schema';
 import { ElectronService } from 'ngx-electron';
 import { Observable, of, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Driver } from '../../models/driver.schema';
 
 @Injectable()
 export class DriverService {
@@ -16,6 +17,19 @@ export class DriverService {
     );
   }
 
+  getDrivers(): Observable<Driver[]> {
+    return of(this._electronService.ipcRenderer.sendSync('get-drivers')).pipe(
+      catchError((error: any) => throwError(error.json))
+    );
+  }
+
+
+  addDriver(driver: Driver): Observable<Driver[]> {
+    return of(
+      this._electronService.ipcRenderer.sendSync('add-driver', driver)
+    ).pipe(catchError((error: any) => throwError(error.json)));
+  }
+
   addItem(item: Item): Observable<Item[]> {
     return of(
       this._electronService.ipcRenderer.sendSync('add-item', item)
@@ -25,6 +39,18 @@ export class DriverService {
   deleteItem(item: Item): Observable<Item[]> {
     return of(
       this._electronService.ipcRenderer.sendSync('delete-item', item)
+    ).pipe(catchError((error: any) => throwError(error.json)));
+  }
+
+  deleteDriver(driver: Driver): Observable<Driver[]> {
+    return of(
+      this._electronService.ipcRenderer.sendSync('delete-driver', driver)
+    ).pipe(catchError((error: any) => throwError(error.json)));
+  }
+
+  updateDriver(driver: Driver): Observable<Driver[]> {
+    return of(
+      this._electronService.ipcRenderer.sendSync('update-driver', driver)
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 }

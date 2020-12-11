@@ -49,6 +49,7 @@
     "jquery": "3.5.1",
     "ngx-electron": "2.2.0",
     "sqlite3": "5.0.0",
+    "sweetalert2": "10.12.4",
     "typeorm": "0.2.29"
   },
   "devDependencies": {

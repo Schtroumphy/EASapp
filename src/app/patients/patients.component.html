@@ -1,17 +1,17 @@
-<h1>Liste des conducteurs</h1>
+<h1>Liste des patients</h1>
 
 <button mat-raised-button (click)="removeColumn()"> Supprimer colonne </button>
 <button mat-raised-button (click)="shuffle()"> Mixer les colonnes </button>
-<button mat-raised-button (click)="displayDriverForm(true)"> Ajouter un conducteur </button>
+<button mat-raised-button (click)="displayPatientForm(true)"> Ajouter un patient </button>
 
-<form [formGroup]="driverForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
+<form [formGroup]="patientForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
   <div class="row">
     <div class="col-10">
-      <h2 *ngIf="newDriver">Ajouter un conducteur</h2>
-      <h2 *ngIf="updatingDriver">Modifier un conducteur</h2>
+      <h2 *ngIf="newPatient">Ajouter un patient</h2>
+      <h2 *ngIf="updatingPatient">Modifier un patient</h2>
     </div>
     <div class="col-2">
-      <button type="button" class="btn btn-link" (click)="clearDriverForm()">Fermer</button>
+      <button type="button" class="btn btn-link" (click)="clearPatientForm()">Fermer</button>
     </div>
   </div>
  
@@ -28,19 +28,23 @@
   <br>
   <div class="row">
     <div class="col-sm">
-      <label for="firstname">Téléphone : </label>
+      <label for="phoneNumber">Téléphone : </label>
       <input type="text" id="email" class="form-control" formControlName="phoneNumber">
     </div>
     <div class="col-sm">
-      <label for="lastname">Email : </label>
+      <label for="email">Email : </label>
       <input type="text" id="email" class="form-control" formControlName="email">
     </div>
   </div>
+  <div class="col-sm">
+    <label for="address">Adresse : </label>
+    <input type="text" id="address" class="form-control" formControlName="address">
+  </div>
 
-  <div style="color:red" *ngIf="!driverForm.valid && driverForm.touched">
+  <div style="color:red" *ngIf="!patientForm.valid && patientForm.touched">
     Veuillez rentrer des valeurs valides.
   </div>
-  <button type="submit" class="btn btn-info" [disabled]="!driverForm.valid">Valider</button>
+  <button type="submit" class="btn btn-info" [disabled]="!patientForm.valid">Valider</button>
 
 </form>
 
@@ -60,10 +64,16 @@
       <td mat-cell *matCellDef="let element"> {{element.firstname}} </td>
     </ng-container>
 
-    <!-- Weight Column -->
+    <!-- Lastname Column -->
     <ng-container matColumnDef="lastname">
       <th mat-header-cell *matHeaderCellDef> Nom </th>
       <td mat-cell *matCellDef="let element"> {{element.lastname}} </td>
+    </ng-container>
+
+    <!-- Address Column -->
+    <ng-container matColumnDef="address">
+      <th mat-header-cell *matHeaderCellDef> Adresse </th>
+      <td mat-cell *matCellDef="let element"> {{element.address}} </td>
     </ng-container>
 
     <!-- Phone number Column -->
@@ -78,22 +88,12 @@
       <td mat-cell *matCellDef="let element"> {{element.email}} </td>
     </ng-container>
 
-
-    <!-- Planning Column -->
-    <ng-container matColumnDef="planning">
-      <th mat-header-cell *matHeaderCellDef> Plannings </th>
-      <td mat-cell *matCellDef="let element">
-        <button type="button" class="btn btn-info" (click)="planning()"><mat-icon aria-hidden="false" aria-label="Example home icon">date_range</mat-icon></button>
-      </td>
-    </ng-container>
-
-
     <!-- Actions Column -->
     <ng-container matColumnDef="actions" style="min-width: 60px;">
       <th mat-header-cell *matHeaderCellDef> Actions </th>
       <td mat-cell *matCellDef="let element">
-        <button type="button" class="btn btn-primary" (click)="editDriver(element)"> <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon></button>
-        <button type="button" class="btn btn-danger" (click)="deleteDriver(element)" data-toggle="modal"
+        <button type="button" class="btn btn-primary" (click)="editPatient(element)"> <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon></button>
+        <button type="button" class="btn btn-danger" (click)="deletePatient(element)" data-toggle="modal"
           data-target="#deleteModal"><mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon></button>
       </td>
     </ng-container>
@@ -112,13 +112,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel">Supprimer un conducteur</h5>
+        <h5 class="modal-title" id="deleteModalLabel">Supprimer un patient</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        Etes-vous sûr de vouloir supprimer le conducteur ?
+        Etes-vous sûr de vouloir supprimer le patient ?
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-prim" data-dismiss="modal">Fermer</button>

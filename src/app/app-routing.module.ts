@@ -7,12 +7,17 @@ import { HomeRoutingModule } from './home/home-routing.module';
 import { NavigationRoutingModule } from './navigation/navigation/navigation-routing.module';
 import { DetailRoutingModule } from './detail/detail-routing.module';
 import { DriversRoutingModule } from './drivers/drivers-routing.module';
+import { PatientsComponent } from './patients/patients.component';
 
 const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
+  },
+  {
+    path: 'patients',
+    component: PatientsComponent
   },
   {
     path: '**',

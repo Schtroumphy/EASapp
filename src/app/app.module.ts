@@ -17,6 +17,7 @@ import { DetailModule } from './detail/detail.module';
 import { AppComponent } from './app.component';
 import { NavigationComponent } from './navigation/navigation/navigation.component';
 import { DriversComponent } from './drivers/drivers.component';
+import { PatientsComponent } from './patients/patients.component';
 
 
 import { LayoutModule } from '@angular/cdk/layout';
@@ -34,6 +35,7 @@ import { ReactiveFormsModule } from '@angular/forms'
 
 //Services
 import { DriverService } from '../app/core/services/app/driver.service'
+import { PatientService } from '../app/core/services/app/patient.service'
 import { ElectronService } from 'ngx-electron';
 
 // AoT requires an exported function for factories
@@ -42,7 +44,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-  declarations: [AppComponent, NavigationComponent, DriversComponent],
+  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -68,7 +70,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     MatTableModule, MatInputModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule,
     ReactiveFormsModule
   ],
-  providers: [DriverService, ElectronService],
+  providers: [DriverService, ElectronService, PatientService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
