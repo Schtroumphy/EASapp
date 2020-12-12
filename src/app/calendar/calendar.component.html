@@ -1,6 +1,118 @@
-<p>calendar works!</p>
-<button type="button" class="btn btn-primary" (click)="addEvent()"> Ajouter un event</button>
-<button type="button" class="btn btn-primary" (click)="onPrint()">Print</button>
+<h1> Planning </h1>
+
+<p>Evenements en BDD: {{selectedDriverId}} {{selectedPatientId}}</p>
+
+<!-- <button (click)="addEventMock()"> EventMock</button> -->
+
+<div class="row">
+    <div class="col">
+        Liste des events
+        <ul style="list-style: none">
+            <li *ngFor="let item of eventList">
+                {{ item | json }}
+            </li>
+        </ul>
+    </div>
+
+    <!-- <div class="col">
+        Liste des conducteurs
+        <ul style="list-style: none">
+            <li *ngFor="let item of driverList">
+                {{ item | json }}
+            </li>
+        </ul>
+    </div> -->
+</div>
+
+
+<div class="row" style="margin-bottom: 2%;">
+    <div class="col">
+        <button type="button" class="btn btn-primary" (click)="displayEventForm()"> Ajouter un event</button>
+    </div>
+    <div class="col-2">
+        <button type="button" class="btn btn-info" (click)="onPrint()">Imprimer</button>
+    </div>
+</div>
+
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
+    <div class="row">
+        <div class="col-10">
+            <h3>Ajouter un évènement</h3>
+        </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-link" (click)="clearDriverForm()">Fermer</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            <label for="driver">Conducteur : </label>
+            <select formControlName="driver" id="driver" [(ngModel)]="selectedDriverId">
+                <option *ngFor="let driver of driverList" [value]="driver.id">
+                    {{driver.firstname | lowercase }} {{driver.lastname | uppercase }}
+                </option>
+            </select>
+        </div>
+        <div class="col-3">
+            <label for="patient">Patient : </label>
+            <select formControlName="patient" id="patient" [(ngModel)]="selectedPatientId">
+                <option *ngFor="let patient of patientList" [value]="patient.id">
+                    {{patient.firstname | lowercase }} {{patient.lastname | uppercase }}
+                </option>
+            </select>
+        </div>
+        <div class="col">
+            <label for="journey"> Trajet : </label>
+            <div class="row">
+                De :
+                <div class="col">
+                    <select formControlName="startPoint" id="journey">
+                        <option *ngFor="let journey of journeyMock" [value]="journey.departure">
+                            {{journey.departure | uppercase }} - {{journey.arrival | uppercase }}
+                        </option>
+                    </select>
+                </div>
+                Vers :
+                <div class="col">
+                    <select formControlName="endPoint" id="journey">
+                        <option *ngFor="let journey of journeyMock" [value]="journey.departure">
+                            {{journey.departure | uppercase }} - {{journey.arrival | uppercase }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <label for="date">Date : </label>
+            <div class="input-group">
+                <input class="form-control" id="date" placeholder="jj/mm/aaaa" name="date" formControlName="date"
+                    ngbDatepicker #d="ngbDatepicker">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary far fa-calendar" (click)="d.toggle()"
+                        type="button"></button>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <label for="startHour">Départ : </label>
+            <input type="time" id="startHour" class="form-control" formControlName="startHour">
+        </div>
+        <div class="col-2">
+            <label for="endHour">Retour : </label>
+            <input type="time" id="endHour" class="form-control" formControlName="endHour">
+        </div>
+
+    </div>
+
+    <div style="color:red" *ngIf="!eventForm.valid && eventForm.touched">
+        Veuillez rentrer des valeurs valides.
+    </div>
+    <button type="submit" class="btn btn-info" [disabled]="!eventForm.valid">Valider</button>
+
+</form>
+
 
 <div class="printMe">
     <full-calendar #calendar [options]="calendarOptions"></full-calendar>

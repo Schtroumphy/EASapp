@@ -23,6 +23,12 @@ export class DriverService {
     );
   }
 
+  getDriverById(driverId : number): Observable<Driver> {
+    return of(this._electronService.ipcRenderer.sendSync('get-driver-by-id', driverId)).pipe(
+      catchError((error: any) => throwError(error.json))
+    );
+  }
+
 
   addDriver(driver: Driver): Observable<Driver[]> {
     return of(

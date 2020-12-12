@@ -32,6 +32,10 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule } from '@angular/forms'
+import {MatDatepickerModule} from '@angular/material/datepicker';
+
+//Ng Bootstrap modules
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 //Full calendar
 import { FullCalendarModule } from '@fullcalendar/angular'; // the main connector. must go first
@@ -51,6 +55,7 @@ import { PatientService } from '../app/core/services/app/patient.service'
 import { ElectronService } from 'ngx-electron';
 import { PlanningComponent } from './planning/planning.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { EventService } from './core/services/app/event.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -87,9 +92,11 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     MatListModule,
     MatTableModule, MatInputModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule,
     ReactiveFormsModule,
-    FullCalendarModule
+    FullCalendarModule,
+    MatDatepickerModule,
+    NgbModule
   ],
-  providers: [DriverService, ElectronService, PatientService],
+  providers: [DriverService, ElectronService, PatientService, EventService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -17,6 +17,12 @@ export class PatientService {
     );
   }
 
+  getPatientById(patientId : number): Observable<Patient> {
+    return of(this._electronService.ipcRenderer.sendSync('get-patient-by-id', patientId)).pipe(
+      catchError((error: any) => throwError(error.json))
+    );
+  }
+
   addPatient(patient: Patient): Observable<Patient[]> {
     return of(
       this._electronService.ipcRenderer.sendSync('add-patient', patient)

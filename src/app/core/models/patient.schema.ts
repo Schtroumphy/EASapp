@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Evenement } from './evenement.schema';
 @Entity()
 export class Patient{
     @PrimaryGeneratedColumn()
@@ -20,5 +20,7 @@ export class Patient{
     @Column()
     address: string;
 
+    @OneToMany(type => Evenement, event => event.patient)
+    evenements: Evenement[];
 
 }

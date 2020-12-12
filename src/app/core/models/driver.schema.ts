@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { last } from 'rxjs/operators';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Evenement } from './evenement.schema';
 
 @Entity()
 export class Driver{
@@ -16,4 +18,7 @@ export class Driver{
 
     @Column()
     email: string;
+
+    @OneToMany(type => Evenement, event => event.driver)
+    evenements: Evenement[];
 }

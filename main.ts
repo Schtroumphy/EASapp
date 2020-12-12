@@ -1,10 +1,11 @@
 import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { createConnection } from 'typeorm';
+import { createConnection, getConnection } from 'typeorm';
 import { Item } from './../EASapp/src/app/core/models/item.schema';
 import { Driver } from './../EASapp/src/app/core/models/driver.schema';
 import { Patient } from './../EASapp/src/app/core/models/patient.schema';
+import { Evenement } from './src/app/core/models/evenement.schema';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
@@ -18,12 +19,13 @@ async function createWindow(): Promise<BrowserWindow> {
     logging: true,
     logger: 'simple-console',
     database: './src/assets/data/database.sqlite',
-    entities: [ Item, Driver, Patient],
+    entities: [ Item, Driver, Patient, Evenement],
   });
 
   const itemRepo = connection.getRepository(Item);
   const driverRepo = connection.getRepository(Driver);
   const patientRepo = connection.getRepository(Patient);
+  const eventRepo = connection.getRepository(Evenement);
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -60,9 +62,25 @@ async function createWindow(): Promise<BrowserWindow> {
     }));
   }
 
+
+
   ipcMain.on('get-drivers', async (event: any, ...args: any[]) => {
     try {
       event.returnValue = await driverRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('get-driver-by-id', async (event: any, _driverId : number) => {
+    try {
+      const user = await getConnection()
+        .createQueryBuilder()
+        .select("driver")
+        .from(Driver, "driver")
+        .where("driver.id = :id", { id: _driverId })
+        .getOne();
+      event.returnValue = user;
     } catch (err) {
       throw err;
     }
@@ -76,9 +94,31 @@ async function createWindow(): Promise<BrowserWindow> {
     }
   });
 
+  ipcMain.on('get-patient-by-id', async (event: any, _patientId : number) => {
+    try {
+      const user = await getConnection()
+        .createQueryBuilder()
+        .select("patient")
+        .from(Patient, "patient")
+        .where("patient.id = :id", { id: _patientId })
+        .getOne();
+      event.returnValue = user;
+    } catch (err) {
+      throw err;
+    }
+  });
+
   ipcMain.on('get-items', async (event: any, ...args: any[]) => {
     try {
       event.returnValue = await itemRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('get-events', async (event: any, ...args: any[]) => {
+    try {
+      event.returnValue = await eventRepo.find();
     } catch (err) {
       throw err;
     }
@@ -99,6 +139,16 @@ async function createWindow(): Promise<BrowserWindow> {
       const item = await driverRepo.create(_driver);
       await driverRepo.save(item);
       event.returnValue = await driverRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('add-event', async (event: any, _evenement: Evenement) => {
+    try {
+      const item = await eventRepo.create(_evenement);
+      await eventRepo.save(item);
+      event.returnValue = await eventRepo.find();
     } catch (err) {
       throw err;
     }
@@ -129,6 +179,16 @@ async function createWindow(): Promise<BrowserWindow> {
       const item = await driverRepo.create(_driver);
       await driverRepo.remove(item);
       event.returnValue = await driverRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('delete-event', async (event: any, _evenement: Evenement) => {
+    try {
+      const item = await eventRepo.create(_evenement);
+      await eventRepo.remove(item);
+      event.returnValue = await eventRepo.find();
     } catch (err) {
       throw err;
     }
