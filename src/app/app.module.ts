@@ -52,10 +52,12 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 //Services
 import { DriverService } from '../app/core/services/app/driver.service'
 import { PatientService } from '../app/core/services/app/patient.service'
+import { PlaceService } from '../app/core/services/app/place.service'
 import { ElectronService } from 'ngx-electron';
-import { PlanningComponent } from './planning/planning.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { EventService } from './core/services/app/event.service';
+import { PlacesComponent } from './places/places.component';
+import { EventComponent } from './event/event.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -67,7 +69,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 ]);
 
 @NgModule({
-  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, PlanningComponent, CalendarComponent],
+  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -94,9 +96,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     ReactiveFormsModule,
     FullCalendarModule,
     MatDatepickerModule,
-    NgbModule
+    NgbModule,
   ],
-  providers: [DriverService, ElectronService, PatientService, EventService],
+  providers: [DriverService, ElectronService, PatientService, EventService, PlaceService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

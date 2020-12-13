@@ -1,0 +1,105 @@
+<h1>Liste des lieux</h1>
+
+<button mat-raised-button (click)="displayPlaceForm(true)"> Ajouter un lieu </button>
+
+<form [formGroup]="placeForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
+  <div class="row">
+    <div class="col-10">
+      <h2 *ngIf="newPlace">Ajouter un lieu</h2>
+      <h2 *ngIf="updatingPlace">Modifier un lieu</h2>
+    </div>
+    <div class="col-2">
+      <button type="button" class="btn btn-link" (click)="clearPlaceForm()">Fermer</button>
+    </div>
+  </div>
+ 
+  <div class="row">
+    <div class="col-sm">
+      <label for="label">Label : </label>
+      <input type="text" id="label" class="form-control" formControlName="label">
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm">
+      <label for="postCode">Code postal : </label>
+      <input type="number" id="postCode" class="form-control" formControlName="postCode">
+    </div>
+    <div class="col-sm">
+      <label for="country">Ville : </label>
+      <input type="text" id="country" class="form-control" formControlName="country">
+    </div>
+  </div>
+
+  <div style="color:red" *ngIf="!placeForm.valid && placeForm.touched">
+    Veuillez rentrer des valeurs valides.
+  </div>
+  <button type="submit" class="btn btn-info" [disabled]="!placeForm.valid">Valider</button>
+
+</form>
+
+<div class="example-container mat-elevation-z8">
+
+  <table mat-table [dataSource]="dataSource" class="lessons-table mat-elevation-z8">
+
+    <!-- Id Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> No. </th>
+      <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="label">
+      <th mat-header-cell *matHeaderCellDef> Libellé </th>
+      <td mat-cell *matCellDef="let element"> {{element.label}} </td>
+    </ng-container>
+
+    <!-- Lastname Column -->
+    <ng-container matColumnDef="postCode">
+      <th mat-header-cell *matHeaderCellDef> Code Postal </th>
+      <td mat-cell *matCellDef="let element"> {{element.postCode}} </td>
+    </ng-container>
+
+    <!-- Address Column -->
+    <ng-container matColumnDef="country">
+      <th mat-header-cell *matHeaderCellDef> Adresse </th>
+      <td mat-cell *matCellDef="let element"> {{element.country}} </td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions" style="min-width: 60px;">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <button type="button" class="btn btn-primary" (click)="editPlace(element)"> <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon></button>
+        <button type="button" class="btn btn-danger" (click)="deletePlace(element)" data-toggle="modal"
+          data-target="#deleteModal"><mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon></button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+
+  </table>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Supprimer un lieu</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Etes-vous sûr de vouloir supprimer le lieu ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-prim" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-danger">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>

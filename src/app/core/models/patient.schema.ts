@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from 'typeorm';
 import { Evenement } from './evenement.schema';
 @Entity()
 export class Patient{
@@ -21,6 +21,7 @@ export class Patient{
     address: string;
 
     @OneToMany(type => Evenement, event => event.patient)
+    @JoinColumn({name : 'event_id'})
     evenements: Evenement[];
 
 }

@@ -8,8 +8,8 @@ import { NavigationRoutingModule } from './navigation/navigation/navigation-rout
 import { DetailRoutingModule } from './detail/detail-routing.module';
 import { DriversRoutingModule } from './drivers/drivers-routing.module';
 import { PatientsComponent } from './patients/patients.component';
-import { PlanningComponent } from './planning/planning.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { PlacesComponent } from './places/places.component';
 
 const routes: Routes = [
   {
@@ -22,8 +22,8 @@ const routes: Routes = [
     component: PatientsComponent
   },
   {
-    path: 'planning',
-    component: PlanningComponent
+    path: 'places',
+    component: PlacesComponent
   },
   {
     path: 'calendar',
