@@ -22,8 +22,30 @@
             </li>
         </ul>
     </div> 
-</div>-->
+</div>
 
+<mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-action-row>
+            <button mat-button color="primary">Filtrer</button>
+          </mat-action-row>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="row">
+        <label></label>
+        <mat-radio-group *ngIf="displayTimeViewFilter" aria-label="Vue temporelle :" (change)="favoriteTimeViewChange($event)" [(ngModel)]="favoriteTimeView">
+            <mat-radio-button value="1">Matin</mat-radio-button>
+            <mat-radio-button value="2">Après-midi</mat-radio-button>
+            <mat-radio-button value="3">Journée entière (8h-22h)</mat-radio-button>
+          </mat-radio-group>
+    </div>
+  </mat-expansion-panel> -->
+
+<p class="alert-changes" *ngIf="displayChangesMsg">Des modifications ont été détecté. Voulez-vous les sauvegarder ? </p>
+
+<h1 *ngIf="updateEvent">Editer un évènement</h1>
+<p> {{eventToUpdate | json}}</p>
 
 <div class="row" style="margin-bottom: 2%;">
     <div class="col">
@@ -38,9 +60,10 @@
     <div class="row">
         <div class="col-10">
             <h3>Ajouter un évènement</h3>
+            <h3 *ngIf="updateEvent">Modifier un évènement</h3>
         </div>
         <div class="col-2">
-            <button type="button" class="btn btn-link" (click)="clearDriverForm()">Fermer</button>
+            <button type="button" class="btn btn-link" (click)="clearEventForm()">Fermer</button>
         </div>
     </div>
 
@@ -107,6 +130,47 @@
     <button type="submit" class="btn btn-info" [disabled]="!eventForm.valid">Valider</button>
 
 </form>
+
+
+<div class="col" *ngIf="displayEventClickedDetails">
+    <div class="row">
+        <div class="col-10">
+            <h3>Evènement sélectionné</h3>
+        </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-link" (click)="displayEventClicked(false)">Fermer</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3" style="background-color: aqua;">
+            <div class="row">
+                Conducteur : 
+                <p> {{eventClicked.driver.lastname}} {{eventClicked.driver.firstname}}</p>
+            </div>
+
+        </div>
+        <div class="col-3" style="background-color: yellow;">
+            <div class="row">
+                Patient :  
+                <p> {{eventClicked.patient.lastname}} {{eventClicked.patient.firstname}}</p>
+            </div>
+        </div>
+        <div class="col" style="background-color: green;">
+            <div class="row">
+                <p> De : {{eventClicked.startPoint.label }}
+    
+                    Vers : {{eventClicked.endPoint.label }}</p>
+            </div>
+        </div>
+    </div>
+
+   
+
+    <button class="btn btn-info" [disabled]="!eventForm.valid">Modifier</button>
+    <button class="btn btn-danger" [disabled]="!eventForm.valid">Supprimer</button>
+
+</div>
 
 
 <div class="printMe">

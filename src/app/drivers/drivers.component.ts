@@ -11,20 +11,6 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 })
 export class DriversComponent implements OnInit {
 
-  ELEMENT_DATA: Driver[] = [
-    { id: 1, firstname: 'Albert', lastname: "HUBERT", phoneNumber: '7896532140', email: 'albert.huubert@hotmail.fr', evenements: [] },
-    { id: 2, firstname: 'Eli', lastname: "TRUE", phoneNumber: '0800970087', email: 'eli.true@gmail.com', evenements: []  },
-    { id: 3, firstname: 'Lila', lastname: "CROLI", phoneNumber: '2871543980', email: 'lila.croli@hotmail.com', evenements: []  },
-    { id: 4, firstname: 'Albert', lastname: "HUBERT", phoneNumber: '7896532140', email: 'albert.huubert@hotmail.fr', evenements: []  },
-    { id: 5, firstname: 'Eli', lastname: "TRUE", phoneNumber: '0800970087', email: 'eli.true@gmail.com' , evenements: [] },
-    { id: 6, firstname: 'Lila', lastname: "CREOLI", phoneNumber: '2871543980', email: 'lila.croli@hotmail.com', evenements: []  },
-    { id: 7, firstname: 'Albert', lastname: "HUBERT", phoneNumber: '7896532140', email: 'albert.huubert@hotmail.fr' , evenements: [] },
-    { id: 8, firstname: 'Eli', lastname: "TRUE", phoneNumber: '0800970087', email: 'eli.true@gmail.com' , evenements: [] },
-    { id: 9, firstname: 'Lila', lastname: "CROLI", phoneNumber: '2871543980', email: 'lila.croli@hotmail.com', evenements: []  },
-    { id: 10, firstname: 'Albert', lastname: "HUBERT", phoneNumber: '7896532140', email: 'albert.huubert@hotmail.fr' , evenements: []},
-    { id: 12, firstname: 'Lila', lastname: "CROLI", phoneNumber: '2871543980', email: 'lila.croli@hotmail.com' , evenements: [] },
-  ];
-
   //Form
   driverForm: FormGroup;
   displayForm = false;
@@ -43,7 +29,6 @@ export class DriversComponent implements OnInit {
     this.initForm();
     this.driverService.getDrivers().subscribe((drivers) => (this.driverList = drivers));
     this.updateDatasource();
-
   }
 
   //Forms
@@ -53,7 +38,8 @@ export class DriversComponent implements OnInit {
       firstname: new FormControl(null, Validators.required),
       lastname: new FormControl(null, Validators.required),
       email: new FormControl(null),
-      phoneNumber: new FormControl(null)
+      phoneNumber: new FormControl(null),
+      color: new FormControl(null)
     })
   }
 
@@ -61,6 +47,7 @@ export class DriversComponent implements OnInit {
     console.log(this.driverForm);
     console.log("Firstname value " + this.driverForm.get('firstname').value);
     console.log("id value " + this.driverForm.get('id').value);
+    console.log("Color value " + this.driverForm.get('color').value);
 
     let driver = new Driver();
     driver.id=this.driverForm.get('id').value;
@@ -137,8 +124,7 @@ export class DriversComponent implements OnInit {
     this.driverForm.controls["firstname"].setValue(driver.firstname);
     this.driverForm.controls["lastname"].setValue(driver.lastname);
     this.driverForm.controls["email"].setValue(driver.email);
-    this.driverForm.controls["phoneNumber"].setValue(driver.phoneNumber);
-  
+    this.driverForm.controls["phoneNumber"].setValue(driver.phoneNumber);  
   }
 
   deleteDriver(driver): void {

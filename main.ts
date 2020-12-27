@@ -1,7 +1,7 @@
 import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { createConnection, getConnection } from 'typeorm';
+import { createConnection, getConnection, QueryRunner } from 'typeorm';
 import { Item } from './../EASapp/src/app/core/models/item.schema';
 import { Driver } from './../EASapp/src/app/core/models/driver.schema';
 import { Patient } from './../EASapp/src/app/core/models/patient.schema';
@@ -15,12 +15,19 @@ const args = process.argv.slice(1),
 async function createWindow(): Promise<BrowserWindow> {
 
   const connection = await createConnection({
+    name: "connection",
     type: 'sqlite',
     synchronize: true,
     logging: true,
     logger: 'simple-console',
     database: './src/assets/data/database.sqlite',
     entities: [Item, Evenement, Driver, Patient, Place],
+    migrationsTableName: "migration_table",
+    migrations: ["migration/*.ts"],
+    cli: {
+      "migrationsDir": "src/migration"
+    },
+    migrationsRun: true,
   });
 
   const itemRepo = connection.getRepository(Item);
@@ -178,19 +185,14 @@ async function createWindow(): Promise<BrowserWindow> {
 
   ipcMain.on('get-event-by-id', async (event: any, _eventId: number) => {
     try {
-      const user = await getConnection()
-        .createQueryBuilder()
-        .select("driver")
-        .from(Evenement, "driver")
-        .leftJoin(Patient, "p", "p.id=")
-        .where("driver.id = :id", { id: _eventId })
-        .getOne();
-      event.returnValue = user;
+      
+      event.returnValue = await eventRepo.findOne({ relations: ["patient", "driver", "startPoint", "endPoint"], where: { id: _eventId}});
+
     } catch (err) {
+      console.log("ERREUR "+ err);
       throw err;
     }
   });
-
 
   ipcMain.on('get-events', async (event: any, ...args: any[]) => {
     try {
@@ -202,10 +204,9 @@ async function createWindow(): Promise<BrowserWindow> {
     }
   });
 
-  ipcMain.on('delete-event', async (event: any, _evenement: Evenement) => {
+  ipcMain.on('delete-event', async (event: any, _evenId: number) => {
     try {
-      const item = await eventRepo.create(_evenement);
-      await eventRepo.remove(item);
+      await eventRepo.delete(_evenId);
       event.returnValue = await eventRepo.find();
     } catch (err) {
       throw err;

@@ -32,7 +32,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule } from '@angular/forms'
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatRadioModule} from '@angular/material/radio';
 
 //Ng Bootstrap modules
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -95,8 +97,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     MatTableModule, MatInputModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule,
     ReactiveFormsModule,
     FullCalendarModule,
-    MatDatepickerModule,
     NgbModule,
+    MatDialogModule,MatExpansionModule,MatRadioModule
   ],
   providers: [DriverService, ElectronService, PatientService, EventService, PlaceService],
   bootstrap: [AppComponent]

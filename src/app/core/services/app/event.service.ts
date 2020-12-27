@@ -9,6 +9,9 @@ import { Evenement } from '../../models/evenement.schema';
 export class EventService {
   constructor(private _electronService: ElectronService) {}
 
+  getEventById(eventId : number): Observable<Evenement> {
+      return of(this._electronService.ipcRenderer.sendSync('get-event-by-id', eventId))
+  }
 
   getEvents(): Observable<Evenement[]> {
     return of(this._electronService.ipcRenderer.sendSync('get-events')).pipe(
@@ -22,9 +25,9 @@ export class EventService {
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 
-  deleteEvent(event: Evenement): Observable<Evenement[]> {
+  deleteEvent(eventId: number): Observable<Evenement[]> {
     return of(
-      this._electronService.ipcRenderer.sendSync('delete-event', event)
+      this._electronService.ipcRenderer.sendSync('delete-event', eventId)
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 

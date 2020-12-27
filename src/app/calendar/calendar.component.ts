@@ -11,6 +11,8 @@ import { PatientService } from '../core/services/app/patient.service';
 import { Patient } from '../core/models/patient.schema';
 import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
+import Tooltip from 'tooltip.js'
+import { info } from 'console';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -23,7 +25,15 @@ export class CalendarComponent implements OnInit {
   patientList: Patient[];
   placeList: Place[];
   displayForm = false;
+  updateEvent = false;
   eventForm: FormGroup
+  displayTimeViewFilter = false
+  displayEventClickedDetails = false
+
+  //drag drop variables
+  displayChangesMsg = false;
+  eventChangesList: any[]
+
   selectedStartPointId: string
   selectedStarPoint: Place
   selectedEndPoint: Place
@@ -34,16 +44,14 @@ export class CalendarComponent implements OnInit {
   selectedPatient: Patient
   dateSelected: string
   selectedJourneyId: string
-  journeySelected
+  favoriteTimeView:string
+
+  eventPicked: string;
   calendarApi: Calendar;
-
-  journeyMock = [
-    { departure: "Hopital Salut Cren", arrival: "Domicile" },
-    { departure: "Hopital Deux Cyr", arrival: "Le François, Bourg" },
-    { departure: "Hopital Salut Cren", arrival: "Domicile" },
-    { departure: "Carrefour market Robert", arrival: "Hopital Deux Cyr" },
-  ]
-
+  eventToUpdate : Evenement
+  eventIdClicked : number;
+  eventClicked : any;
+  calendarOptions : CalendarOptions
   // references the #calendar in the template
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
 
@@ -72,54 +80,92 @@ export class CalendarComponent implements OnInit {
       this.placeList = items,
         console.log(items);
     });
+    this.initCalendar()
   }
 
   onPrint() {
     window.print();
   }
 
-  calendarOptions: CalendarOptions = {
-    locale: 'fr',
-    firstDay:1,
-    themeSystem: 'bootstrap',
-    initialView: 'listWeek',
-    timeZone: 'UTC',
-    editable: true,
-    slotDuration: '00:15',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'listDay timeGridWeek dayGridMonth listWeek',
-    },
-    titleFormat: { // will produce something like "Tuesday, September 18, 2018"
-      month: 'short',
-      year: 'numeric',
-      day: 'numeric',
-      weekday: 'long',
-      omitCommas: true,
-      hour12: false,
-      meridiem: false
-    },
-    dateClick: this.handleDateClick.bind(this), // bind is important!
-    eventClick: function(info) {
-      alert(
-      'Conducteur: ' + info.event.extendedProps.driver + '\n'+
-      'Patient: ' + info.event.extendedProps.driver + '\n'+
-      'Départ : ' + info.event.extendedProps.startPoint + '\n'+
-      'Arrivée : ' + info.event.extendedProps.endPoint);
-  
-      // change the border color just for fun
-      info.el.style.borderColor = 'green';
-    },
-    events: [
-      { title: 'event 1', date: '2020-12-01', backgroundColor: 'yellow', },
-      { title: 'event 2', date: '2020-12-02', backgroundColor: 'rgb(218, 143, 5, 0.753)' },
-      { title: 'event 3', date: '2020-12-14T00:00:00.000Z', backgroundColor: 'blue' },
-    ]
-  };
+  initCalendar(){
+    const eventService = this.eventService
+    const driverService = this.driverService
+    this.calendarOptions= {
+      locale: 'fr',
+      firstDay: 1,
+      slotMinTime: "8:00",
+      slotMaxTime: "22:00",
+      themeSystem: 'bootstrap',
+      initialView: 'listWeek',
+      timeZone: 'UTC',
+      editable: true,
+      droppable: true,
+      slotDuration: '00:15',
+      buttonText: {
+        today: 'Aujourd\'hui',
+        month: 'Mois',
+        week: 'Semaine',
+        day: 'Jour',
+        list: 'Jour',
+      },
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'timeGridWeek dayGridMonth listWeek',
+      },
+      titleFormat: { // will produce something like "Tuesday, September 18, 2018"
+        month: 'short',
+        year: 'numeric',
+        day: 'numeric',
+        weekday: 'long',
+        omitCommas: true,
+        hour12: false,
+        meridiem: false
+      },
+      viewDidMount: function(info){
+        console.log("VIEW DID MOUNT " + JSON.stringify(info))
+        //displayTimeViewFilter = (info.view.type == "timeGridWeek" ? true : false)
+      },
+      eventDragStart: function (info) {
+        alert("Event drag start : " + info.event.startStr);
+      },
+      eventDragStop: this.alertChanges.bind(this),
+      eventDrop: this.alertChangesEnd.bind(this),
+      eventClick: this.handleEventClick.bind(this),
+      events: [
+        { title: 'event 1', date: '2020-12-01', backgroundColor: 'yellow', },
+        { title: 'event 2', date: '2020-12-02', backgroundColor: 'rgb(218, 143, 5, 0.753)' },
+      ]
+    };
+  }
 
-  handleDateClick(arg) {
-    alert('date click! ' + arg.dateStr)
+  alertChanges(info){
+    console.log("change loadinng : " + JSON.stringify(info.event))
+    this.displayChangesMsg=true;
+  }
+
+  alertChangesEnd(info){
+    alert("Event drag stop : " + info.event.startStr);
+    console.log("new event : " + JSON.stringify(info.event))
+    this.convertEventCalendarToEvent(info.event)
+  }
+
+  handleEventClick(event) {
+    this.displayEventClickedDetails = true;
+
+        console.log(JSON.stringify(event.event.toPlainObject()));
+
+        this.eventIdClicked = event.event.extendedProps.eventId
+        console.log("EVENT ID CLICKED : " + this.eventIdClicked)
+
+        this.eventService.getEventById(event.event.extendedProps.eventId).subscribe(
+          (item) => { 
+            this.eventClicked = item;
+            console.log("EVENTS CLICKED : "+ JSON.stringify(item))});
+  }
+
+  handleEventDidMount(arg){
+    
   }
 
   //Forms
@@ -195,7 +241,28 @@ export class CalendarComponent implements OnInit {
     this.calendarApi.addEvent(eventInput);
   }
 
-  convertEventToEventCalendar(event : Evenement){
+  updateCalendar() {
+    this.calendarApi.removeAllEvents();
+    this.eventList.forEach((item) => {
+      this.addToCalendar(item);
+    })
+  }
+
+  convertEventCalendarToEvent(eventCalendar){
+    console.log("EVENT CALENDAR " + JSON.stringify(eventCalendar))
+
+    var event = new Evenement();
+    event.id = eventCalendar.extendedProps.eventId
+    event.title = eventCalendar.title
+    var date = eventCalendar.start.toString().slice(0,-10)
+
+    console.log("DATE CHANGED : " + date)
+    event.startHour = eventCalendar.start.toString().slice(11,16)
+    event.endHour = eventCalendar.end.toString().slice(11,16)
+    console.log("EVENT CONVERTED " + JSON.stringify(event))
+  }
+
+  convertEventToEventCalendar(event: Evenement) {
     console.log("DATE FORMAT");
     var dateEv = event.date;
     var startTimeEv = event.startHour;
@@ -211,15 +278,16 @@ export class CalendarComponent implements OnInit {
       end: dateEv + "T" + endTimeEv + ":00",
       backgroundColor: 'red',
       extendedProps: {
-        driver: event.driver.lastname.toUpperCase() + " " + event.driver.firstname,
-        patient: event.patient.lastname.toUpperCase() + " " + event.patient.firstname,
-        startPoint: event.startPoint.label,
-        endPoint: event.endPoint.label
+        eventId: event.id,
+        driverId: event.driver.id,
+        patientId: event.patient.id,
+        startPointId: event.startPoint.id,
+        endPointId: event.endPoint.id
       },
       description: 'Test Event'
     }
     return eventInput;
-    }
+  }
 
   alertWithSuccess(message) {
     Swal.fire('Ajout/Modification de conducteur', message, 'success')
@@ -239,9 +307,77 @@ export class CalendarComponent implements OnInit {
     this.displayForm = false;
   }
 
-  //Ajouter un conducteur
+  //Ajouter un evenement
   displayEventForm() {
     this.displayForm = !this.displayForm;
+  }
+
+  displayEventDetails(eventId){
+    this.updateEvent = !this.updateEvent;
+    this.eventService.getEventById(eventId).subscribe((eventFound)=>{
+      this.eventToUpdate = eventFound;
+    })
+    
+  }
+
+  deleteEventBox(eventId) {
+    Swal.fire({
+      title: 'Etes-vous sûr de vouloir supprimer cet évènement ?',
+      text: 'La suppression est irréversible.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, sûr',
+      cancelButtonText: 'Non, je le garde'
+    }).then((result) => {
+      if (result.value) {
+        this.eventService
+          .deleteEvent(eventId)
+          .subscribe(
+            (events) => {
+              this.eventList = events
+              this.updateCalendar();
+              Swal.fire(
+                'Supprimé!',
+                'L\'évènement a bien été supprimé.',
+                'success'
+              )
+            },
+            (error) => {
+              Swal.fire(
+                'Erreur',
+                'Echec de la suppression',
+                'error'
+              )
+            }
+          );
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Annulé',
+          'Suppression annulée',
+          'error'
+        )
+      }
+
+    })
+  }
+
+  
+  favoriteTimeViewChange(event){
+    var target = event.target;
+      if (this.favoriteTimeView == "1") { //Morning view 
+        this.calendarApi.setOption("slotMinTime", "08:00")
+        this.calendarApi.setOption("slotMaxTime", "12:30")
+      } else if(this.favoriteTimeView == "2") { //Afternoon view
+        this.calendarApi.setOption("slotMinTime", "12:00")
+        this.calendarApi.setOption("slotMaxTime", "22:00")
+      } else { //All day view
+        this.calendarApi.setOption("slotMinTime", "08:00")
+        this.calendarApi.setOption("slotMaxTime", "22:00")
+      }
+  }
+
+  displayEventClicked(hideOrNot){
+    this.displayEventClickedDetails = hideOrNot;
   }
 
 }
