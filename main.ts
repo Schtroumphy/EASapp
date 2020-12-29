@@ -209,6 +209,27 @@ async function createWindow(): Promise<BrowserWindow> {
       throw err;
     }
   });
+
+  ipcMain.on('update-event', async (event: any, _event: Evenement) => {
+
+    try {
+      let eventToUpdate = await eventRepo.findOne(_event.id);
+      eventToUpdate.title = _event.title;
+      eventToUpdate.driver = _event.driver;
+      eventToUpdate.patient = _event.patient;
+      eventToUpdate.startPoint = _event.startPoint;
+      eventToUpdate.startHour = _event.startHour;
+      eventToUpdate.endPoint = _event.endPoint;
+      eventToUpdate.endHour = _event.endHour;
+      eventToUpdate.date = _event.date;
+      await eventRepo.save(eventToUpdate);
+      event.returnValue = await eventRepo.find({
+        relations: ["patient", "driver", "startPoint", "endPoint"]
+      });
+    } catch (err) {
+      throw err;
+    }
+  });
   // -------------------------- PATIENTS --------------------------
   ipcMain.on('add-patient', async (event: any, _patient: Patient) => {
     try {

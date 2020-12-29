@@ -30,6 +30,10 @@ export class CalendarComponent implements OnInit {
   displayTimeViewFilter = false
   displayEventClickedDetails = false
 
+  //Form
+  newEvent = false;
+  updatingEvent = false;
+
   //drag drop variables
   displayChangesMsg = false;
   eventChangesList: any[]
@@ -44,14 +48,14 @@ export class CalendarComponent implements OnInit {
   selectedPatient: Patient
   dateSelected: string
   selectedJourneyId: string
-  favoriteTimeView:string
+  favoriteTimeView: string
 
   eventPicked: string;
   calendarApi: Calendar;
-  eventToUpdate : Evenement
-  eventIdClicked : number;
-  eventClicked : any;
-  calendarOptions : CalendarOptions
+  eventToUpdate: Evenement
+  eventIdClicked: number;
+  eventClicked: any;
+  calendarOptions: CalendarOptions
   // references the #calendar in the template
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
 
@@ -87,10 +91,10 @@ export class CalendarComponent implements OnInit {
     window.print();
   }
 
-  initCalendar(){
+  initCalendar() {
     const eventService = this.eventService
     const driverService = this.driverService
-    this.calendarOptions= {
+    this.calendarOptions = {
       locale: 'fr',
       firstDay: 1,
       slotMinTime: "8:00",
@@ -122,8 +126,8 @@ export class CalendarComponent implements OnInit {
         hour12: false,
         meridiem: false
       },
-      
-      viewDidMount: function(info){
+
+      viewDidMount: function (info) {
         console.log("VIEW DID MOUNT " + JSON.stringify(info))
         //displayTimeViewFilter = (info.view.type == "timeGridWeek" ? true : false)
       },
@@ -140,12 +144,12 @@ export class CalendarComponent implements OnInit {
     };
   }
 
-  alertChanges(info){
+  alertChanges(info) {
     console.log("change loadinng : " + JSON.stringify(info.event))
-    this.displayChangesMsg=true;
+    this.displayChangesMsg = true;
   }
 
-  alertChangesEnd(info){
+  alertChangesEnd(info) {
     alert("Event drag stop : " + info.event.startStr);
     console.log("new event : " + JSON.stringify(info.event))
     this.convertEventCalendarToEvent(info.event)
@@ -154,20 +158,22 @@ export class CalendarComponent implements OnInit {
   handleEventClick(event) {
     this.displayEventClickedDetails = true;
 
-        console.log(JSON.stringify(event.event.toPlainObject()));
+    console.log(JSON.stringify(event.event.toPlainObject()));
 
-        this.eventIdClicked = event.event.extendedProps.eventId
-        console.log("EVENT ID CLICKED : " + this.eventIdClicked)
+    this.eventIdClicked = event.event.extendedProps.eventId
+    console.log("EVENT ID CLICKED : " + this.eventIdClicked)
 
-        this.eventService.getEventById(event.event.extendedProps.eventId).subscribe(
-          (item) => { 
-            this.eventClicked = item;
-            console.log("EVENTS CLICKED : "+ JSON.stringify(item))});
+    this.eventService.getEventById(event.event.extendedProps.eventId).subscribe(
+      (item) => {
+        this.eventClicked = item;
+        console.log("EVENTS CLICKED : " + JSON.stringify(item))
+      });
   }
 
   //Forms
   initForm() {
     this.eventForm = new FormGroup({
+      id: new FormControl(),
       driver: new FormControl(null, Validators.required),
       patient: new FormControl(null, Validators.required),
       date: new FormControl(null),
@@ -175,7 +181,6 @@ export class CalendarComponent implements OnInit {
       startHour: new FormControl(null),
       endPoint: new FormControl(null, Validators.required),
       endHour: new FormControl(null),
-      journey: new FormControl(null),
     })
   }
 
@@ -218,20 +223,39 @@ export class CalendarComponent implements OnInit {
     eventToAddToDB.startHour = this.eventForm.get('startHour').value
     eventToAddToDB.endHour = this.eventForm.get('endHour').value
 
+    if (this.newEvent) {
+      console.log("Submit NEW")
+      this.eventService.addEvent(eventToAddToDB).subscribe(
+        (events) => {
+          this.eventList = events
+
+          this.alertWithSuccess('L\'évènement a été ajouté avec succès')
+          this.clearEventForm()
+          this.displayForm = false;
+          var eventInput = this.convertEventToEventCalendar(eventToAddToDB)
+          this.calendarApi.addEvent(eventInput);
+        },
+        (error) => this.errorAlert()
+      );
+    } else if (this.updatingEvent) {
+      console.log("Submit UPDATE")
+      this.eventService.updateEvent(eventToAddToDB).subscribe(
+        (events) => {
+          this.eventList = events;
+          this.eventList.forEach(element => {
+            console.log(JSON.stringify(element))
+
+          });
+          this.updateCalendar();
+          this.alertWithSuccess('L\'évènement a été modifié avec succès')
+          this.clearEventForm()
+        }
+      )
+    }
+
     console.log("Event to add : " + JSON.stringify(eventToAddToDB))
 
-    this.eventService.addEvent(eventToAddToDB).subscribe(
-      (events) => {
-        this.eventList = events
 
-        this.alertWithSuccess('L\'évènement a été ajouté avec succès')
-        this.clearEventForm()
-        this.displayForm = false;
-        var eventInput = this.convertEventToEventCalendar(eventToAddToDB)
-        this.calendarApi.addEvent(eventInput);
-      },
-      (error) => this.errorAlert()
-    );
 
   }
 
@@ -245,22 +269,22 @@ export class CalendarComponent implements OnInit {
   updateCalendar() {
     this.calendarApi.removeAllEvents();
     this.eventList.forEach((item) => {
-      console.log("New event list : "+ JSON.stringify(item))
+      console.log("New event list : " + JSON.stringify(item))
       this.addToCalendar(item);
     })
   }
 
-  convertEventCalendarToEvent(eventCalendar){
+  convertEventCalendarToEvent(eventCalendar) {
     console.log("EVENT CALENDAR " + JSON.stringify(eventCalendar))
 
     var event = new Evenement();
     event.id = eventCalendar.extendedProps.eventId
     event.title = eventCalendar.title
-    var date = eventCalendar.start.toString().slice(0,-10)
+    var date = eventCalendar.start.toString().slice(0, -10)
 
     console.log("DATE CHANGED : " + date)
-    event.startHour = eventCalendar.start.toString().slice(11,16)
-    event.endHour = eventCalendar.end.toString().slice(11,16)
+    event.startHour = eventCalendar.start.toString().slice(11, 16)
+    event.endHour = eventCalendar.end.toString().slice(11, 16)
     console.log("EVENT CONVERTED " + JSON.stringify(event))
   }
 
@@ -292,7 +316,7 @@ export class CalendarComponent implements OnInit {
   }
 
   alertWithSuccess(message) {
-    Swal.fire('Ajout/Modification de conducteur', message, 'success')
+    Swal.fire('Ajout/Modification d\'évènement', message, 'success')
   }
 
   errorAlert() {
@@ -310,16 +334,40 @@ export class CalendarComponent implements OnInit {
   }
 
   //Ajouter un evenement
-  displayEventForm() {
+  displayEventForm(newEvent: boolean) {
     this.displayForm = !this.displayForm;
+    if (newEvent) {
+      this.newEvent = true;
+      this.updatingEvent = false;
+    } else {
+      this.updatingEvent = true;
+      this.newEvent = false;
+    }
+    if (!this.displayForm) {
+      this.displayForm = !this.displayForm;
+    }
   }
 
-  displayEventDetails(eventId){
+  editEvent(event) {
+    this.displayEventClickedDetails = false;
+    this.displayEventForm(false);
+    console.log("Editer : " + JSON.stringify(event))
+    this.eventForm.controls["id"].setValue(event.id);
+    this.selectedDriverId = event.driver.id;
+    this.selectedPatientId = event.patient.id;
+    this.selectedStartPointId = event.startPoint.id;
+    this.selectedEndPointId = event.endPoint.id;
+    this.eventForm.controls["date"].setValue(event.date);
+    this.eventForm.controls["startHour"].setValue(event.startHour);
+    this.eventForm.controls["endHour"].setValue(event.endHour);
+  }
+
+  displayEventDetails(eventId) {
     this.updateEvent = !this.updateEvent;
-    this.eventService.getEventById(eventId).subscribe((eventFound)=>{
+    this.eventService.getEventById(eventId).subscribe((eventFound) => {
       this.eventToUpdate = eventFound;
     })
-    
+
   }
 
   deleteEventBox(eventId) {
@@ -339,7 +387,7 @@ export class CalendarComponent implements OnInit {
               this.eventList = events
               this.eventList.forEach(element => {
                 console.log(JSON.stringify(element))
-                
+
               });
               this.updateCalendar();
               Swal.fire(
@@ -365,26 +413,26 @@ export class CalendarComponent implements OnInit {
       }
     })
   }
-  
-  favoriteTimeViewChange(event){
+
+  favoriteTimeViewChange(event) {
     var target = event.target;
-      if (this.favoriteTimeView == "1") { //Morning view 
-        this.calendarApi.setOption("slotMinTime", "08:00")
-        this.calendarApi.setOption("slotMaxTime", "12:30")
-      } else if(this.favoriteTimeView == "2") { //Afternoon view
-        this.calendarApi.setOption("slotMinTime", "12:00")
-        this.calendarApi.setOption("slotMaxTime", "22:00")
-      } else { //All day view
-        this.calendarApi.setOption("slotMinTime", "08:00")
-        this.calendarApi.setOption("slotMaxTime", "22:00")
-      }
+    if (this.favoriteTimeView == "1") { //Morning view 
+      this.calendarApi.setOption("slotMinTime", "08:00")
+      this.calendarApi.setOption("slotMaxTime", "12:30")
+    } else if (this.favoriteTimeView == "2") { //Afternoon view
+      this.calendarApi.setOption("slotMinTime", "12:00")
+      this.calendarApi.setOption("slotMaxTime", "22:00")
+    } else { //All day view
+      this.calendarApi.setOption("slotMinTime", "08:00")
+      this.calendarApi.setOption("slotMaxTime", "22:00")
+    }
   }
 
-  displayEventClicked(hideOrNot){
+  displayEventClicked(hideOrNot) {
     this.displayEventClickedDetails = hideOrNot;
   }
 
-  deleteEventById(eventId){
+  deleteEventById(eventId) {
     console.log("event id to delete : " + eventId)
     this.deleteEventBox(eventId);
   }

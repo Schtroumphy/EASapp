@@ -43,12 +43,11 @@
   </mat-expansion-panel> -->
 <p class="alert-changes" *ngIf="displayChangesMsg">Des modifications ont été détecté. Voulez-vous les sauvegarder ? </p>
 
-<h1 *ngIf="updateEvent">Editer un évènement</h1>
 <p> {{eventToUpdate | json}}</p>
 
 <div class="row" style="margin-bottom: 2%;">
     <div class="col">
-        <button type="button" class="btn btn-primary" (click)="displayEventForm()"> Ajouter un event</button>
+        <button type="button" class="btn btn-primary" (click)="displayEventForm(true)"> Ajouter un event</button>
     </div>
     <div class="col-2">
         <button type="button" class="btn btn-info" (click)="onPrint()">Imprimer</button>
@@ -58,8 +57,8 @@
 <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
     <div class="row">
         <div class="col-10">
-            <h3>Ajouter un évènement</h3>
-            <h3 *ngIf="updateEvent">Modifier un évènement</h3>
+            <h3 *ngIf="!updatingEvent">Ajouter un évènement</h3>
+            <h3 *ngIf="updatingEvent">Editer un évènement</h3>
         </div>
         <div class="col-2">
             <button type="button" class="btn btn-link" (click)="clearEventForm()">Fermer</button>
@@ -168,7 +167,7 @@
         </div>
     </div>
 
-    <button class="btn btn-info">Modifier</button>
+    <button class="btn btn-info" (click)="editEvent(eventClicked)">Modifier</button>
     <button class="btn btn-danger" (click)="deleteEventById(eventClicked.id)">Supprimer</button>
 
 </div>
