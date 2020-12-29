@@ -122,6 +122,7 @@ export class CalendarComponent implements OnInit {
         hour12: false,
         meridiem: false
       },
+      
       viewDidMount: function(info){
         console.log("VIEW DID MOUNT " + JSON.stringify(info))
         //displayTimeViewFilter = (info.view.type == "timeGridWeek" ? true : false)
@@ -164,10 +165,6 @@ export class CalendarComponent implements OnInit {
             console.log("EVENTS CLICKED : "+ JSON.stringify(item))});
   }
 
-  handleEventDidMount(arg){
-    
-  }
-
   //Forms
   initForm() {
     this.eventForm = new FormGroup({
@@ -184,6 +181,10 @@ export class CalendarComponent implements OnInit {
 
   onSubmit() {
     console.log(this.eventForm);
+    console.log("Selected driver id " + this.selectedDriverId);
+    console.log("Selected patient id " + this.selectedPatientId);
+    console.log("Selected start point id " + this.selectedStartPointId);
+    console.log("Selected end point id " + this.selectedEndPointId);
 
     this.driverService.getDriverById(parseInt(this.selectedDriverId)).subscribe(
       (item) => { this.selectedDriver = item });
@@ -244,6 +245,7 @@ export class CalendarComponent implements OnInit {
   updateCalendar() {
     this.calendarApi.removeAllEvents();
     this.eventList.forEach((item) => {
+      console.log("New event list : "+ JSON.stringify(item))
       this.addToCalendar(item);
     })
   }
@@ -335,6 +337,10 @@ export class CalendarComponent implements OnInit {
           .subscribe(
             (events) => {
               this.eventList = events
+              this.eventList.forEach(element => {
+                console.log(JSON.stringify(element))
+                
+              });
               this.updateCalendar();
               Swal.fire(
                 'Supprimé!',
@@ -357,10 +363,8 @@ export class CalendarComponent implements OnInit {
           'error'
         )
       }
-
     })
   }
-
   
   favoriteTimeViewChange(event){
     var target = event.target;
@@ -378,6 +382,11 @@ export class CalendarComponent implements OnInit {
 
   displayEventClicked(hideOrNot){
     this.displayEventClickedDetails = hideOrNot;
+  }
+
+  deleteEventById(eventId){
+    console.log("event id to delete : " + eventId)
+    this.deleteEventBox(eventId);
   }
 
 }

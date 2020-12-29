@@ -41,7 +41,6 @@
           </mat-radio-group>
     </div>
   </mat-expansion-panel> -->
-
 <p class="alert-changes" *ngIf="displayChangesMsg">Des modifications ont été détecté. Voulez-vous les sauvegarder ? </p>
 
 <h1 *ngIf="updateEvent">Editer un évènement</h1>
@@ -135,7 +134,7 @@
 <div class="col" *ngIf="displayEventClickedDetails">
     <div class="row">
         <div class="col-10">
-            <h3>Evènement sélectionné</h3>
+            <h4>Evènement sélectionné</h4>
         </div>
         <div class="col-2">
             <button type="button" class="btn btn-link" (click)="displayEventClicked(false)">Fermer</button>
@@ -143,32 +142,34 @@
     </div>
 
     <div class="row">
-        <div class="col-3" style="background-color: aqua;">
-            <div class="row">
-                Conducteur : 
-                <p> {{eventClicked.driver.lastname}} {{eventClicked.driver.firstname}}</p>
-            </div>
-
+        <div class="col-*-*" style="background-color: aqua;">
+            Conducteur : 
         </div>
-        <div class="col-3" style="background-color: yellow;">
-            <div class="row">
-                Patient :  
-                <p> {{eventClicked.patient.lastname}} {{eventClicked.patient.firstname}}</p>
-            </div>
+        <div class="col-*-*" style="background-color: aqua;">
+            <p> {{eventClicked.driver.lastname}} {{eventClicked.driver.firstname}}</p>
         </div>
-        <div class="col" style="background-color: green;">
-            <div class="row">
-                <p> De : {{eventClicked.startPoint.label }}
-    
-                    Vers : {{eventClicked.endPoint.label }}</p>
-            </div>
+        <div class="col-*-*" style="background-color: yellow;">
+            Patient : 
+        </div>
+        <div class="col-*-*" style="background-color: yellow;">
+            <p>{{eventClicked.patient.lastname}} {{eventClicked.patient.firstname}}</p>
+        </div>
+        <div class="col-*-*" style="background-color: khaki;">
+            De : 
+        </div>
+        <div class="col-*-*" style="background-color: khaki;">
+            <p>{{eventClicked.startPoint.label }}</p>
+        </div>
+        <div class="col-*-*" style="background-color: purple;">
+            Vers : 
+        </div>
+        <div class="col-*-*" style="background-color: purple;">
+            <p>{{eventClicked.endPoint.label }}</p>
         </div>
     </div>
 
-   
-
-    <button class="btn btn-info" [disabled]="!eventForm.valid">Modifier</button>
-    <button class="btn btn-danger" [disabled]="!eventForm.valid">Supprimer</button>
+    <button class="btn btn-info">Modifier</button>
+    <button class="btn btn-danger" (click)="deleteEventById(eventClicked.id)">Supprimer</button>
 
 </div>
 

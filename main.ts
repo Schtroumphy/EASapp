@@ -146,13 +146,8 @@ async function createWindow(): Promise<BrowserWindow> {
 
   ipcMain.on('get-driver-by-id', async (event: any, _driverId: number) => {
     try {
-      const user = await getConnection()
-        .createQueryBuilder()
-        .select("driver")
-        .from(Driver, "driver")
-        .where("driver.id = :id", { id: _driverId })
-        .getOne();
-      event.returnValue = user;
+      event.returnValue = await driverRepo.findOne({ where: { id: _driverId }});
+
     } catch (err) {
       throw err;
     }
@@ -207,7 +202,9 @@ async function createWindow(): Promise<BrowserWindow> {
   ipcMain.on('delete-event', async (event: any, _evenId: number) => {
     try {
       await eventRepo.delete(_evenId);
-      event.returnValue = await eventRepo.find();
+      event.returnValue = await eventRepo.find({
+        relations: ["patient", "driver", "startPoint", "endPoint"]
+      });
     } catch (err) {
       throw err;
     }
@@ -243,13 +240,7 @@ async function createWindow(): Promise<BrowserWindow> {
 
   ipcMain.on('get-patient-by-id', async (event: any, _patientId: number) => {
     try {
-      const user = await getConnection()
-        .createQueryBuilder()
-        .select("patient")
-        .from(Patient, "patient")
-        .where("patient.id = :id", { id: _patientId })
-        .getOne();
-      event.returnValue = user;
+      event.returnValue = await patientRepo.findOne({ where: { id: _patientId }});
     } catch (err) {
       throw err;
     }
@@ -284,13 +275,8 @@ async function createWindow(): Promise<BrowserWindow> {
 
   ipcMain.on('get-place-by-id', async (event: any, _placeId: number) => {
     try {
-      const place = await getConnection()
-        .createQueryBuilder()
-        .select("place")
-        .from(Place, "place")
-        .where("place.id = :id", { id: _placeId })
-        .getOne();
-      event.returnValue = place;
+      event.returnValue = await placeRepo.findOne({ where: { id: _placeId }});
+
     } catch (err) {
       throw err;
     }
