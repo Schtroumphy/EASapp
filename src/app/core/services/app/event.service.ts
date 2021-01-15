@@ -13,6 +13,10 @@ export class EventService {
       return of(this._electronService.ipcRenderer.sendSync('get-event-by-id', eventId))
   }
 
+  getEventsByDriverId(driverId : number): Observable<Evenement[]> {
+    return of(this._electronService.ipcRenderer.sendSync('get-event-by-driver-id', driverId))
+}
+
   getEvents(): Observable<Evenement[]> {
     return of(this._electronService.ipcRenderer.sendSync('get-events')).pipe(
       catchError((error: any) => throwError(error.json))

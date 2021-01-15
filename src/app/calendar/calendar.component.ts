@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CalendarOptions, FullCalendarComponent, Calendar } from '@fullcalendar/angular'; // useful for typechecking
 import { Evenement } from '../core/models/evenement.schema';
 import { EventService } from '../core/services/app/event.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Driver } from '../core/models/driver.schema';
 import { DriverService } from '../core/services/app/driver.service';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -23,8 +23,10 @@ export class CalendarComponent implements OnInit {
   patientList: Patient[];
   placeList: Place[];
   displayForm = false;
+  displayFilteredForm = false;
   updateEvent = false;
   eventForm: FormGroup
+  filterForm: FormGroup
   displayTimeViewFilter = false
   displayEventClickedDetails = false
 
@@ -47,6 +49,8 @@ export class CalendarComponent implements OnInit {
   dateSelected: string
   selectedJourneyId: string
   favoriteTimeView: string
+  selectedFilteredDriverId1: string
+  selectedFilteredDriverId2: string
 
   eventPicked: string;
   calendarApi: Calendar;
@@ -90,8 +94,6 @@ export class CalendarComponent implements OnInit {
   }
 
   initCalendar() {
-    const eventService = this.eventService
-    const driverService = this.driverService
     this.calendarOptions = {
       locale: 'fr',
       firstDay: 1,
@@ -176,6 +178,35 @@ export class CalendarComponent implements OnInit {
       endPoint: new FormControl(null, Validators.required),
       endHour: new FormControl(null),
     })
+
+    this.filterForm = new FormGroup({
+      driver1: new FormControl(null, Validators.required),
+      driver2: new FormControl(),
+    })
+
+    this.filterForm.setValidators(this.checkIfDriverAreSame);
+  }
+
+  onFilterSubmit() {
+    console.log("Filter form driver 1 : " + this.selectedFilteredDriverId1)
+    console.log("Filter form driver 2 : " + this.selectedFilteredDriverId2)
+    this.eventList = []
+    this.eventService.getEventsByDriverId(parseInt(this.selectedFilteredDriverId1)).subscribe((items) => 
+      {
+        console.log("Events from ZAPHYR Gerald : " + JSON.stringify(items))
+        this.eventList = this.eventList.concat(items);
+      }
+    )
+    if(this.selectedFilteredDriverId1 != null){
+      this.eventService.getEventsByDriverId(parseInt(this.selectedFilteredDriverId2)).subscribe((items) => 
+      {
+        console.log("Events from ZAPHYR Gerald : " + JSON.stringify(items))
+        this.eventList = this.eventList.concat(items);
+      }
+    )
+    }
+    
+    this.updateCalendar()
   }
 
   onSubmit() {
@@ -324,6 +355,15 @@ export class CalendarComponent implements OnInit {
     this.displayForm = false;
   }
 
+  clearFilterForm() {
+    this.filterForm.reset()
+    this.displayFilteredForm = false
+  }
+
+  displayFilterForm(hideOrNot: boolean) {
+    (hideOrNot) ? this.displayFilteredForm = true : this.displayFilteredForm = false;
+  }
+
   //Ajouter un evenement
   displayEventForm(newEvent: boolean) {
     this.displayForm = !this.displayForm;
@@ -426,6 +466,17 @@ export class CalendarComponent implements OnInit {
   deleteEventById(eventId) {
     console.log("event id to delete : " + eventId)
     this.deleteEventBox(eventId);
+  }
+
+  checkIfDriverAreSame(c: AbstractControl) {
+    //safety check
+    if (c.get('driver1').value != c.get('driver2').value) {
+      return null
+    }
+    // carry out the actual date checks here for is-endDate-after-startDate
+    // if valid, return null,
+    // if invalid, return an error object (any arbitrary name), like, return { invalidEndDate: true }
+    // make sure it always returns a 'null' for valid or non-relevant cases, and a 'non-null' object for when an error should be raised on the formGroup
   }
 
 }

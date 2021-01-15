@@ -189,6 +189,20 @@ async function createWindow(): Promise<BrowserWindow> {
     }
   });
 
+  ipcMain.on('get-event-by-driver-id', async (event: any, _driverId: number) => {
+    try {
+      event.returnValue = await eventRepo.find({ relations: ["patient", "driver", "startPoint", "endPoint"], where: {
+        driver: {
+          id: _driverId
+        }
+      }});
+
+    } catch (err) {
+      console.log("ERREUR "+ err);
+      throw err;
+    }
+  });
+
   ipcMain.on('get-events', async (event: any, ...args: any[]) => {
     try {
       event.returnValue = await eventRepo.find({

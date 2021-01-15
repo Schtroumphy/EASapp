@@ -8,4 +8,5 @@ export class Constants{
         { color : 'pink'},
         { color : 'brown'},
     ];
+
 }

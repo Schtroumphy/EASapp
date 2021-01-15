@@ -1,58 +1,57 @@
 <h1> Planning </h1>
 
-<!--<p>Evenements en BDD: {{selectedDriverId}} {{selectedPatientId}} | places: {{selectedStartPointId}} {{selectedEndPointId}}</p>
-
- <button (click)="addEventMock()"> EventMock</button> 
-
-<div class="row">
-    <div class="col">
-        Liste des events
-        <ul style="list-style: none">
-            <li *ngFor="let item of eventList">
-                {{ item | json }}
-            </li>
-        </ul>
-    </div>
-
- <div class="col">
-        Liste des conducteurs
-        <ul style="list-style: none">
-            <li *ngFor="let item of driverList">
-                {{ item | json }}
-            </li>
-        </ul>
-    </div> 
-</div>
-
-<mat-expansion-panel hideToggle>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-action-row>
-            <button mat-button color="primary">Filtrer</button>
-          </mat-action-row>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="row">
-        <label></label>
-        <mat-radio-group *ngIf="displayTimeViewFilter" aria-label="Vue temporelle :" (change)="favoriteTimeViewChange($event)" [(ngModel)]="favoriteTimeView">
-            <mat-radio-button value="1">Matin</mat-radio-button>
-            <mat-radio-button value="2">Après-midi</mat-radio-button>
-            <mat-radio-button value="3">Journée entière (8h-22h)</mat-radio-button>
-          </mat-radio-group>
-    </div>
-  </mat-expansion-panel> -->
 <p class="alert-changes" *ngIf="displayChangesMsg">Des modifications ont été détecté. Voulez-vous les sauvegarder ? </p>
 
 <p> {{eventToUpdate | json}}</p>
 
 <div class="row" style="margin-bottom: 2%;">
     <div class="col">
-        <button type="button" class="btn btn-primary" (click)="displayEventForm(true)"> Ajouter un event</button>
+        <div class="row">
+            <button type="button" class="btn btn-info" (click)="displayEventForm(true)"> Ajouter un event</button>
+            <button type="button" class="btn btn-info" (click)="displayFilterForm(true)"> Filtrer</button>
+        </div>
     </div>
+
     <div class="col-2">
         <button type="button" class="btn btn-info" (click)="onPrint()">Imprimer</button>
     </div>
 </div>
+
+<form [formGroup]="filterForm" (ngSubmit)="onFilterSubmit()" *ngIf="displayFilteredForm">
+    <div class="row">
+        <div class="col-10">
+            <h3>Filtrer le planning</h3>
+        </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-link" (click)="clearFilterForm()">Fermer</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            <label for="driver">Conducteur 1 : </label>
+            <select formControlName="driver1" id="driver1" [(ngModel)]="selectedFilteredDriverId1">
+                <option *ngFor="let driver of driverList" [value]="driver.id">
+                    {{driver.firstname | lowercase }} {{driver.lastname | uppercase }}
+                </option>
+            </select>
+        </div>
+        <div class="col-3">
+            <label for="driver">Conducteur 2 : </label>
+            <select formControlName="driver2" id="driver2" [(ngModel)]="selectedFilteredDriverId2">
+                <option *ngFor="let driver of driverList" [value]="driver.id">
+                    {{driver.firstname | lowercase }} {{driver.lastname | uppercase }}
+                </option>
+            </select>
+        </div>
+        <div style="color:red" *ngIf="!filterForm.valid && filterForm.touched">
+            Veuillez rentrer des valeurs valides.
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-info" [disabled]="!filterForm.valid">Filtrer</button>
+        </div>
+    </div>
+</form>
 
 <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
     <div class="row">

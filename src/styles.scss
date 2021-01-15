@@ -65,6 +65,7 @@ html, body {
 }
 
 @media print {
+  @page {size: landscape} 
   app-calendar .printMe {
     visibility: visible
   }
