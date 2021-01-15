@@ -72,8 +72,8 @@ export class CalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.eventService.getEvents().subscribe((items) => (this.eventList = items));
-
+    this.getAllEvents();
+    
     this.driverService.getDrivers().subscribe((items) => {
       this.driverList = items,
         console.log(items);
@@ -87,6 +87,9 @@ export class CalendarComponent implements OnInit {
         console.log(items);
     });
     this.initCalendar()
+  }
+  getAllEvents() {
+    this.eventService.getEvents().subscribe((items) => (this.eventList = items));
   }
 
   onPrint() {
@@ -282,8 +285,7 @@ export class CalendarComponent implements OnInit {
   }
 
   addToCalendar(event: Evenement) {
-    console.log("Event to add to calendar : " + JSON.stringify(event));
-    console.log("EVENT DATE : " + event.date)
+    //console.log("Event to add to calendar : " + JSON.stringify(event));
     var eventInput = this.convertEventToEventCalendar(event)
     this.calendarApi.addEvent(eventInput);
   }
@@ -318,8 +320,8 @@ export class CalendarComponent implements OnInit {
 
     // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
     // January - 0, February - 1, etc.
-    console.log("START DATE TIME : " + dateEv + "T" + startTimeEv);
-    console.log("END DATE TIME : " + dateEv + "T" + endTimeEv);
+    // console.log("START DATE TIME : " + dateEv + "T" + startTimeEv);
+    // console.log("END DATE TIME : " + dateEv + "T" + endTimeEv);
     var eventInput = {
       title: event.patient.lastname.toUpperCase() + " " + event.patient.firstname,
       start: dateEv + "T" + startTimeEv + ":00",
@@ -329,11 +331,12 @@ export class CalendarComponent implements OnInit {
         eventId: event.id,
         driverId: event.driver.id,
         patientId: event.patient.id,
-        startPointId: event.startPoint.id,
-        endPointId: event.endPoint.id
+        startPointId: event.startPoint != null ? event.startPoint.id : "null",
+        endPointId: event.endPoint != null ? event.endPoint.id : "null",
       },
       description: 'Test Event'
     }
+    console.log("Event input : " + JSON.stringify(eventInput))
     return eventInput;
   }
 
@@ -443,6 +446,11 @@ export class CalendarComponent implements OnInit {
         )
       }
     })
+  }
+
+  clearFilter(){
+    this.getAllEvents()
+    this.updateCalendar()
   }
 
   favoriteTimeViewChange(event) {

@@ -50,6 +50,8 @@
         <div class="col">
             <button type="submit" class="btn btn-info" [disabled]="!filterForm.valid">Filtrer</button>
         </div>
+        <button type="button" class="btn btn-warning" (click)="clearFilter()">Effacer les filtres</button>
+
     </div>
 </form>
 

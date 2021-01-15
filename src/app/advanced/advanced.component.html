@@ -1,7 +1,5 @@
 <h1> Paramètres avancés </h1>
 
-<p> Recurring values array {{recurringValues | json}}</p>
-
 <div class="row" style="margin-bottom: 2%;">
     <div class="col">
         <button type="button" class="btn btn-primary" (click)="displayEventForm(true)"> Ajouter un event</button>
@@ -14,8 +12,7 @@
 <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
     <div class="row">
         <div class="col-10">
-            <h3 *ngIf="!updatingEvent">Ajouter un évènement</h3>
-            <h3 *ngIf="updatingEvent">Editer un évènement</h3>
+            <h3 *ngIf="!updatingEvent">Ajouter un évènement récurrent</h3>
         </div>
         <div class="col-2">
             <button type="button" class="btn btn-link" (click)="clearEventForm()">Fermer</button>
@@ -69,12 +66,12 @@
         <div class="col-2">
             <label for="startHour">Départ : </label>
             <div class="input-group">
-                <input class="form-control" type="time" id="startHour" formControlName="startHour">
+                <input class="form-control" type="time" id="startHour" formControlName="startHour" [(ngModel)]="startHourTest">
             </div>
         </div>
         <div class="col-2">
             <label for="endHour">Retour : </label>
-            <input type="time" id="endHour" class="form-control" formControlName="endHour">
+            <input type="time" id="endHour" class="form-control" formControlName="endHour" [value]="startHourTest" step="900">
         </div>
     </div>
 
@@ -120,7 +117,7 @@
 
     <p>Evènements à ajouter</p>
     <p *ngFor="let event of eventListToDisplay">
-        {{event.date | date: 'dd/MM/yyyy' }} | De {{event.startHour}} à {{event.endHour}}
+        {{event.date  }} | De {{event.startHour}} à {{event.endHour}}
     </p>
 
 
@@ -132,7 +129,6 @@
     </div>
 
 </form>
-
 
 <div class="col eventDetails" *ngIf="displayEventClickedDetails">
     <div class="row">

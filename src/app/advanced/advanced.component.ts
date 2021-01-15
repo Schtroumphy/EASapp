@@ -30,11 +30,11 @@ export class AdvancedComponent implements OnInit {
   eventForm: FormGroup
   displayEventClickedDetails = false
   daysArray = []
+  startHourTest: string
 
 
   //Form
   newEvent = false;
-  updatingEvent = false;
   recurringValues = [];
 
   selectedStartPointId: string
@@ -104,59 +104,24 @@ export class AdvancedComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.eventForm);
-    //console.log("Selected driver id " + this.selectedDriverId);
-    //console.log("Selected patient id " + this.selectedPatientId);
-    //console.log("Selected start point id " + this.selectedStartPointId);
-    //console.log("Selected end point id " + this.selectedEndPointId);
+    console.log("Event list : " + JSON.stringify(this.eventListToDisplay))
+  
 
-    this.driverService.getDriverById(parseInt(this.selectedDriverId)).subscribe(
-      (item) => { this.selectedDriver = item });
-    //console.log("DRIVER SELECTED : " + JSON.stringify(this.selectedDriver))
-
-    this.patientService.getPatientById(parseInt(this.selectedPatientId)).subscribe(
-      (item) => { this.selectedPatient = item });
-    //console.log("PATIENT SELECTED : " + JSON.stringify(this.selectedPatient))
-
-    // console.log("Date value " + this.eventForm.get('date').value);
-    // console.log("start hour value " + this.eventForm.get('startHour').value);
-    // console.log("end hour value " + this.eventForm.get('endHour').value);
-    // console.log("Départ value " + this.eventForm.get('startPoint').value);
-    // console.log("Arrivée value " + this.eventForm.get('endPoint').value);
-
-    this.placeService.getPlaceById(parseInt(this.selectedStartPointId)).subscribe(
-      (item) => { this.selectedStarPoint = item });
-    // console.log("Start point SELECTED : " + JSON.stringify(this.selectedStarPoint))
-
-    this.placeService.getPlaceById(parseInt(this.selectedEndPointId)).subscribe(
-      (item) => { this.selectedEndPoint = item });
-    // console.log("End point SELECTED : " + JSON.stringify(this.selectedEndPoint))
-
-    var eventToAddToDB = new Evenement();
-    eventToAddToDB.title = this.selectedPatient.firstname + " " + this.selectedPatient.lastname.toUpperCase();
-    eventToAddToDB.patient = this.selectedPatient;
-    eventToAddToDB.driver = this.selectedDriver
-    eventToAddToDB.date = this.eventForm.get('date').value
-    eventToAddToDB.startPoint = this.selectedStarPoint
-    eventToAddToDB.endPoint = this.selectedEndPoint
-    eventToAddToDB.startHour = this.eventForm.get('startHour').value
-    eventToAddToDB.endHour = this.eventForm.get('endHour').value
-
-    console.log("Submit NEW")
+    console.log("Submit NEW EVENt")
     if (this.recurringValues != []) {
-      this.recurringValues.forEach(element => {
-        //this.getNextDayDateForRecurrence(element).forEach(date => {
-        //  eventToAddToDB.date = date;
+      //Add each element to BDD
+      this.eventListToDisplay.forEach(element => {
+        element.title = element.patient.firstname + " " + element.patient.lastname.toUpperCase();
 
-        //});
-        //console.log("Event for recurr " + element + " : " + JSON.stringify(eventToAddToDB))
-        //this.addEventToDB(eventToAddToDB)
+        //Add it to database
+        this.addEventToDB(element);
       });
-    } else {
-      //this.addEventToDB(eventToAddToDB)
-    }
+      this.alertWithSuccess('Les évènements ont été ajouté avec succès')
 
-    //console.log("Event to add : " + JSON.stringify(eventToAddToDB))
+    } else {
+      //Display an error message
+      this.errorAlert()
+    }
 
   }
 
@@ -164,8 +129,6 @@ export class AdvancedComponent implements OnInit {
     this.eventService.addEvent(eventToAddToDB).subscribe(
       (events) => {
         this.eventList = events
-
-        this.alertWithSuccess('L\'évènement a été ajouté avec succès')
         this.clearEventForm()
         this.displayForm = false;
       },
@@ -173,15 +136,14 @@ export class AdvancedComponent implements OnInit {
     );
   }
 
-
   alertWithSuccess(message) {
-    Swal.fire('Ajout/Modification d\'évènement', message, 'success')
+    Swal.fire('Ajout d\'évènement(s)', message, 'success')
   }
 
   errorAlert() {
     Swal.fire({
       icon: 'error',
-      title: 'Echec de l\'ajout',
+      title: 'Echec de l\'ajout d\'un ou plusieurs évènement(s)',
       text: 'Quelque chose s\'est mal passé!',
       footer: '<a href>Contacter le service</a>'
     })
@@ -190,95 +152,6 @@ export class AdvancedComponent implements OnInit {
   clearEventForm() {
     this.eventForm.reset();
     this.displayForm = false;
-  }
-
-  //Ajouter un evenement
-  displayEventForm(newEvent: boolean) {
-    this.displayForm = !this.displayForm;
-    if (newEvent) {
-      this.newEvent = true;
-      this.updatingEvent = false;
-    } else {
-      this.updatingEvent = true;
-      this.newEvent = false;
-    }
-    if (!this.displayForm) {
-      this.displayForm = !this.displayForm;
-    }
-  }
-
-  editEvent(event) {
-    this.displayEventClickedDetails = false;
-    this.displayEventForm(false);
-    console.log("Editer : " + JSON.stringify(event))
-    this.eventForm.controls["id"].setValue(event.id);
-    this.selectedDriverId = event.driver.id;
-    this.selectedPatientId = event.patient.id;
-    this.selectedStartPointId = event.startPoint.id;
-    this.selectedEndPointId = event.endPoint.id;
-    this.eventForm.controls["date"].setValue(event.date);
-    this.eventForm.controls["startHour"].setValue(event.startHour);
-    this.eventForm.controls["endHour"].setValue(event.endHour);
-  }
-
-  displayEventDetails(eventId) {
-    this.updateEvent = !this.updateEvent;
-    this.eventService.getEventById(eventId).subscribe((eventFound) => {
-      this.eventToUpdate = eventFound;
-    })
-
-  }
-
-  deleteEventBox(eventId) {
-    Swal.fire({
-      title: 'Etes-vous sûr de vouloir supprimer cet évènement ?',
-      text: 'La suppression est irréversible.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Oui, sûr',
-      cancelButtonText: 'Non, je le garde'
-    }).then((result) => {
-      if (result.value) {
-        this.eventService
-          .deleteEvent(eventId)
-          .subscribe(
-            (events) => {
-              this.eventList = events
-              this.eventList.forEach(element => {
-                console.log(JSON.stringify(element))
-
-              });
-              Swal.fire(
-                'Supprimé!',
-                'L\'évènement a bien été supprimé.',
-                'success'
-              )
-            },
-            (error) => {
-              Swal.fire(
-                'Erreur',
-                'Echec de la suppression',
-                'error'
-              )
-            }
-          );
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire(
-          'Annulé',
-          'Suppression annulée',
-          'error'
-        )
-      }
-    })
-  }
-
-  displayEventClicked(hideOrNot) {
-    this.displayEventClickedDetails = hideOrNot;
-  }
-
-  deleteEventById(eventId) {
-    console.log("event id to delete : " + eventId)
-    this.deleteEventBox(eventId);
   }
 
   getCheckboxValue(event) {
@@ -305,6 +178,7 @@ export class AdvancedComponent implements OnInit {
     this.updateDaysArray()
     //console.log("Array : " + this.recurringValues.toString())
   }
+
   updateDaysArray() {
     this.daysArray = []
     this.eventListToDisplay = []
@@ -313,6 +187,7 @@ export class AdvancedComponent implements OnInit {
 
       this.getNextDayDateForRecurrence(element).forEach(date => {
         var eventToAddToDB = new Evenement();
+       
         eventToAddToDB.startHour = this.eventForm.get('startHour').value
         eventToAddToDB.endHour = this.eventForm.get('endHour').value
         console.log("element : " + element)
@@ -320,6 +195,15 @@ export class AdvancedComponent implements OnInit {
         this.eventListToDisplay.push(eventToAddToDB)
         console.log("Event to display list : " + JSON.stringify(eventToAddToDB))
 
+         //add driver, patient, title (from patient), start and end point to add it to datab
+         this.driverService.getDriverById(parseInt(this.selectedDriverId)).subscribe(
+          (item) => { eventToAddToDB.driver = item });
+        this.patientService.getPatientById(parseInt(this.selectedPatientId)).subscribe(
+          (item) => { eventToAddToDB.patient = item });
+        this.placeService.getPlaceById(parseInt(this.selectedStartPointId)).subscribe(
+          (item) => { eventToAddToDB.startPoint = item });
+        this.placeService.getPlaceById(parseInt(this.selectedEndPointId)).subscribe(
+          (item) => { eventToAddToDB.endPoint = item });
       });
       //eventToAddToDB.date = this.getNextDayDateForRecurrence(element);
 
@@ -355,15 +239,27 @@ export class AdvancedComponent implements OnInit {
   getNextDayDateForRecurrence(dayNumber) { //0: sunday, 1: monday etc
     var d = new Date();
     var d1 = new Date();
+    var zeroString = ""
+    
     d.setDate(d.getDate() + (dayNumber + 7 - d.getDay()) % 7);
-    var date = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
+    if(d.getMonth()<10){
+      zeroString = "0"
+    } else {
+      zeroString = ""
+    }
+    var date = d.getFullYear() + "-" + zeroString + (d.getMonth() + 1) + "-" + d.getDate()
     console.log("Date : " + date)
     var dateList = []
     dateList.push(date)
 
     //Same date 1 week later
     d1.setDate(d.getDate() + 7)
-    var date1weekLater = d1.getFullYear() + "-" + (d1.getMonth() + 1) + "-" + d1.getDate()
+    if(d1.getMonth()<10){
+      zeroString = "0"
+    } else {
+      zeroString = ""
+    }
+    var date1weekLater = d1.getFullYear() + "-" + zeroString + (d1.getMonth() + 1) + "-" + d1.getDate()
     dateList.push(date1weekLater)
     console.log("DATE LISTE SUR DEUX SEMAINES : " + JSON.stringify(dateList))
 

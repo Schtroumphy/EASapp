@@ -224,6 +224,8 @@ async function createWindow(): Promise<BrowserWindow> {
     }
   });
 
+  
+
   ipcMain.on('update-event', async (event: any, _event: Evenement) => {
 
     try {
