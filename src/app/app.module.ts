@@ -60,6 +60,7 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { EventService } from './core/services/app/event.service';
 import { PlacesComponent } from './places/places.component';
 import { EventComponent } from './event/event.component';
+import { AdvancedComponent } from './advanced/advanced.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -71,7 +72,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 ]);
 
 @NgModule({
-  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent],
+  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent],
   imports: [
     BrowserModule,
     FormsModule,

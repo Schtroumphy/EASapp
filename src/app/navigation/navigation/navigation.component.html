@@ -10,9 +10,12 @@
       <a mat-list-item routerLink="/patients">Patients</a>
       <a mat-list-item routerLink="/places">Lieux</a>
       <a mat-list-item routerLink="/calendar">Planning</a>
+      <a mat-list-item routerLink="/advanced">Avancé</a>
+      <a mat-list-item (click)="close()">Imprimer</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
+    <p><button mat-button (click)="sidenav.open()">Open</button></p>
     <mat-toolbar color="primary">
       <button
         type="button"

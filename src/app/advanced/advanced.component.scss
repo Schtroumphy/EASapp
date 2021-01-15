@@ -1,0 +1,43 @@
+.col-3{
+    justify-content: center;
+  }
+
+    input {
+      position: relative;
+      display: block;
+    }
+    
+    label {
+      display: block;
+      position: relative;
+    }
+  
+    select {
+      // Additional resets for further consistency
+      padding: 0 1em 0 0;
+      margin: 0;
+      width: 100%;
+      font-family: inherit;
+      font-size: inherit;
+      cursor: inherit;
+      line-height: inherit;
+    }
+  
+    h1{
+      text-align: center;
+      color: rgba(218, 143, 5, 0.603);;
+  }
+  
+  
+  button {
+      margin: 2%;
+  }
+  
+  form{
+      margin: 2%;
+      box-sizing: border-box;
+      border: solid rgba(218, 143, 5, 0.603) 3px;
+      padding: 2%;
+  }
+
+  

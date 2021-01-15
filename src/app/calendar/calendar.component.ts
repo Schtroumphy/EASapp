@@ -11,8 +11,6 @@ import { PatientService } from '../core/services/app/patient.service';
 import { Patient } from '../core/models/patient.schema';
 import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
-import Tooltip from 'tooltip.js'
-import { info } from 'console';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -97,6 +95,7 @@ export class CalendarComponent implements OnInit {
     this.calendarOptions = {
       locale: 'fr',
       firstDay: 1,
+      displayEventTime: false, // A adapter en fonction de la vue
       slotMinTime: "8:00",
       slotMaxTime: "22:00",
       themeSystem: 'bootstrap',
@@ -115,7 +114,7 @@ export class CalendarComponent implements OnInit {
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
-        right: 'timeGridWeek dayGridMonth listWeek',
+        right: 'timeGridWeek listWeek',
       },
       titleFormat: { // will produce something like "Tuesday, September 18, 2018"
         month: 'short',
@@ -126,13 +125,8 @@ export class CalendarComponent implements OnInit {
         hour12: false,
         meridiem: false
       },
-
-      viewDidMount: function (info) {
-        console.log("VIEW DID MOUNT " + JSON.stringify(info))
-        //displayTimeViewFilter = (info.view.type == "timeGridWeek" ? true : false)
-      },
       eventDragStart: function (info) {
-        alert("Event drag start : " + info.event.startStr);
+        //alert("Event drag start : " + info.event.startStr);
       },
       eventDragStop: this.alertChanges.bind(this),
       eventDrop: this.alertChangesEnd.bind(this),
@@ -254,9 +248,6 @@ export class CalendarComponent implements OnInit {
     }
 
     console.log("Event to add : " + JSON.stringify(eventToAddToDB))
-
-
-
   }
 
   addToCalendar(event: Evenement) {

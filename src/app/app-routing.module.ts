@@ -10,6 +10,7 @@ import { DriversRoutingModule } from './drivers/drivers-routing.module';
 import { PatientsComponent } from './patients/patients.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { PlacesComponent } from './places/places.component';
+import { AdvancedComponent } from './advanced/advanced.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,10 @@ const routes: Routes = [
   {
     path: 'calendar',
     component: CalendarComponent
+  },
+  {
+    path: 'advanced',
+    component: AdvancedComponent
   },
   {
     path: '**',

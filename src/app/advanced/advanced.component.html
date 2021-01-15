@@ -1,49 +1,6 @@
-<h1> Planning </h1>
+<h1> Paramètres avancés </h1>
 
-<!--<p>Evenements en BDD: {{selectedDriverId}} {{selectedPatientId}} | places: {{selectedStartPointId}} {{selectedEndPointId}}</p>
-
- <button (click)="addEventMock()"> EventMock</button> 
-
-<div class="row">
-    <div class="col">
-        Liste des events
-        <ul style="list-style: none">
-            <li *ngFor="let item of eventList">
-                {{ item | json }}
-            </li>
-        </ul>
-    </div>
-
- <div class="col">
-        Liste des conducteurs
-        <ul style="list-style: none">
-            <li *ngFor="let item of driverList">
-                {{ item | json }}
-            </li>
-        </ul>
-    </div> 
-</div>
-
-<mat-expansion-panel hideToggle>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-action-row>
-            <button mat-button color="primary">Filtrer</button>
-          </mat-action-row>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="row">
-        <label></label>
-        <mat-radio-group *ngIf="displayTimeViewFilter" aria-label="Vue temporelle :" (change)="favoriteTimeViewChange($event)" [(ngModel)]="favoriteTimeView">
-            <mat-radio-button value="1">Matin</mat-radio-button>
-            <mat-radio-button value="2">Après-midi</mat-radio-button>
-            <mat-radio-button value="3">Journée entière (8h-22h)</mat-radio-button>
-          </mat-radio-group>
-    </div>
-  </mat-expansion-panel> -->
-<p class="alert-changes" *ngIf="displayChangesMsg">Des modifications ont été détecté. Voulez-vous les sauvegarder ? </p>
-
-<p> {{eventToUpdate | json}}</p>
+<p> Recurring values array {{recurringValues | json}}</p>
 
 <div class="row" style="margin-bottom: 2%;">
     <div class="col">
@@ -121,6 +78,52 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col">
+            <label> Récurrence : </label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="monday" value="1" (checked)="checkboxStatus1" (change)="getCheckboxValue($event)">
+                <label class="form-check-label">Lundi</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="tuesday" value="2" (checked)="checkboxStatus2" (change)="getCheckboxValue($event)">
+                <label class="form-check-label" for="inlineCheckbox2">Mardi</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="wednesday" value="3" (checked)="checkboxStatus" (change)="getCheckboxValue($event)">
+                <label class="form-check-label">Mercredi</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="thursday" value="4" (checked)="checkboxStatus" (change)="getCheckboxValue($event)">
+                <label class="form-check-label">Jeudi</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="friday" value="5" (checked)="checkboxStatus" (change)="getCheckboxValue($event)">
+                <label class="form-check-label">Vendredi</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="saturday" value="6" (checked)="checkboxStatus" (change)="getCheckboxValue($event)">
+                <label class="form-check-label">Samedi</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="sunday" value="0" (checked)="checkboxStatus" (change)="getCheckboxValue($event)">
+                <label class="form-check-label">Dimanche</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="alldays" value="7"  (checked)="checkboxStatusAllDay" (change)="getCheckboxValue($event)">
+                <label class="form-check-label">Tous les jours</label>
+              </div>
+        </div>
+    </div>
+
+    <p *ngIf="daysArray.length > 0"> Cet évènement sera ajouté tous les {{daysArray | json}} à compter du {{eventForm.get('date').value | date: 'dd/MM/yyyy'}} pendant 2 semaines.</p>
+
+    <p>Evènements à ajouter</p>
+    <p *ngFor="let event of eventListToDisplay">
+        {{event.date | date: 'dd/MM/yyyy' }} | De {{event.startHour}} à {{event.endHour}}
+    </p>
+
+
     <div style="color:red" *ngIf="!eventForm.valid && eventForm.touched">
         Veuillez rentrer des valeurs valides.
     </div>
@@ -173,9 +176,4 @@
     <button class="btn btn-info" (click)="editEvent(eventClicked)">Modifier</button>
     <button class="btn btn-danger" (click)="deleteEventById(eventClicked.id)">Supprimer</button>
 
-</div>
-
-
-<div class="printMe">
-    <full-calendar #calendar [options]="calendarOptions"></full-calendar>
 </div>
