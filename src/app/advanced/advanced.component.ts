@@ -13,7 +13,6 @@ import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-
 @Component({
   selector: 'app-advanced',
   templateUrl: './advanced.component.html',
@@ -62,7 +61,9 @@ export class AdvancedComponent implements OnInit {
   ngAfterViewInit(): void {
     this.eventList.forEach((item) => {
     })
+
   }
+
 
   constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService, private placeService: PlaceService) { }
 
@@ -83,7 +84,9 @@ export class AdvancedComponent implements OnInit {
       this.placeList = items
       //console.log(items);
     });
+
   }
+
 
   onPrint() {
     window.print();

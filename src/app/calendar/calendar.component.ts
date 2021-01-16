@@ -11,6 +11,7 @@ import { PatientService } from '../core/services/app/patient.service';
 import { Patient } from '../core/models/patient.schema';
 import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
+import { COLORS } from '../core/constants';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -52,6 +53,9 @@ export class CalendarComponent implements OnInit {
   selectedFilteredDriverId1: string
   selectedFilteredDriverId2: string
 
+  //Map driver-color
+  driverColorMap : Map<string,string> = new Map();
+
   eventPicked: string;
   calendarApi: Calendar;
   eventToUpdate: Evenement
@@ -67,6 +71,8 @@ export class CalendarComponent implements OnInit {
       this.addToCalendar(item);
     })
   }
+
+
 
   constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService, private placeService: PlaceService) { }
 
@@ -86,8 +92,19 @@ export class CalendarComponent implements OnInit {
       this.placeList = items,
         console.log(items);
     });
+    this.createDriverColorMap(this.driverList.map(e => e.id), COLORS)
     this.initCalendar()
   }
+
+ createDriverColorMap(keys, vals) {
+  var map = new Map()
+  keys.forEach(function (key, index) {
+    map[key] = vals[index];
+  });
+  this.driverColorMap = map;
+  console.log("Driver-Color MAP : " + JSON.stringify(this.driverColorMap))
+}
+
   getAllEvents() {
     this.eventService.getEvents().subscribe((items) => (this.eventList = items));
   }
@@ -326,7 +343,7 @@ export class CalendarComponent implements OnInit {
       title: event.patient.lastname.toUpperCase() + " " + event.patient.firstname,
       start: dateEv + "T" + startTimeEv + ":00",
       end: dateEv + "T" + endTimeEv + ":00",
-      backgroundColor: 'red',
+      backgroundColor: this.getColorFromId(event.driver.id),
       extendedProps: {
         eventId: event.id,
         driverId: event.driver.id,
@@ -338,6 +355,14 @@ export class CalendarComponent implements OnInit {
     }
     console.log("Event input : " + JSON.stringify(eventInput))
     return eventInput;
+  }
+
+  getColorFromId(id: number) : string{
+    console.log("GET COLOR")
+    console.log("Driver-Color MAP : " + JSON.stringify(this.driverColorMap))
+
+    console.log("For id " + id + " : " + this.driverColorMap[id])
+    return this.driverColorMap[id]
   }
 
   alertWithSuccess(message) {
