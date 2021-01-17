@@ -5,11 +5,11 @@
     ou 
     <button type="button" class="btn btn-link" (click)="clearChanges()">Non</button>
 </div>
-<p *ngIf="displayChangesMsg">Modifications : </p>
+<div *ngIf="displayChangesMsg"> Modifications :
 <p *ngFor="let event of eventChangesList">
     Evènement n°{{event.id}} - Le {{event.date}} - De {{event.startHour}} à {{event.endHour}} | Conducteur : {{event.driver.firstname}}
 </p>
-<p> {{eventToUpdate | json}}</p>
+</div>
 
 <div class="row" style="margin-bottom: 2%;">
     <div class="col">

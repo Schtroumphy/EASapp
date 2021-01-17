@@ -14,6 +14,7 @@ import { Place } from '../core/models/place.schema';
 import { COLORS } from '../core/constants';
 import { DatePipe } from '@angular/common';
 import { AdvancedConsoleLogger } from 'typeorm';
+import { finalize } from 'rxjs/internal/operators/finalize';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -36,11 +37,12 @@ export class CalendarComponent implements OnInit {
   //Form
   newEvent = false;
   updatingEvent = false;
-  startHourSelected : string;
+  startHourSelected: string;
 
   //drag drop variables
   displayChangesMsg = false;
   eventChangesList: Evenement[] = []
+  loading: boolean = true;
 
   selectedStartPointId: string
   selectedStarPoint: Place
@@ -57,7 +59,7 @@ export class CalendarComponent implements OnInit {
   selectedFilteredDriverId2: string
 
   //Map driver-color
-  driverColorMap : Map<string,string> = new Map();
+  driverColorMap: Map<string, string> = new Map();
 
   eventPicked: string;
   calendarApi: Calendar;
@@ -67,6 +69,7 @@ export class CalendarComponent implements OnInit {
   calendarOptions: CalendarOptions
   // references the #calendar in the template
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
+
 
   ngAfterViewInit(): void {
     this.calendarApi = this.calendarComponent.getApi();
@@ -82,7 +85,7 @@ export class CalendarComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.getAllEvents();
-    
+
     this.driverService.getDrivers().subscribe((items) => {
       this.driverList = items,
         console.log(items);
@@ -99,14 +102,14 @@ export class CalendarComponent implements OnInit {
     this.initCalendar()
   }
 
- createDriverColorMap(keys, vals) {
-  var map = new Map()
-  keys.forEach(function (key, index) {
-    map[key] = vals[index];
-  });
-  this.driverColorMap = map;
-  console.log("Driver-Color MAP : " + JSON.stringify(this.driverColorMap))
-}
+  createDriverColorMap(keys, vals) {
+    var map = new Map()
+    keys.forEach(function (key, index) {
+      map[key] = vals[index];
+    });
+    this.driverColorMap = map;
+    console.log("Driver-Color MAP : " + JSON.stringify(this.driverColorMap))
+  }
 
   getAllEvents() {
     this.eventService.getEvents().subscribe((items) => (this.eventList = items));
@@ -120,16 +123,16 @@ export class CalendarComponent implements OnInit {
     this.calendarOptions = {
       locale: 'fr',
       firstDay: 1,
-      weekends: false,
+      weekends: true,
       allDaySlot: false,
-      allDayText:"Journée entière",
-      displayEventTime: false, // A adapter en fonction de la vue
+      displayEventTime: true,
+      allDayText: "Journée entière",
       slotMinTime: "8:00",
       slotMaxTime: "22:00",
       themeSystem: 'bootstrap',
       initialView: 'listWeek',
       timeZone: 'local',
-      eventTextColor : 'color',
+      eventTextColor: 'white',
       editable: true,
       droppable: true,
       slotDuration: '00:15',
@@ -154,16 +157,20 @@ export class CalendarComponent implements OnInit {
         hour12: false,
         meridiem: false
       },
-      eventDragStart: function (info) {
-        //alert("Event drag start : " + info.event.startStr);
-      },
+
       eventDragStop: null,
       eventDrop: this.alertChangesEnd.bind(this),
       eventClick: this.handleEventClick.bind(this),
       events: [
-        { title: 'event 1', date: '2020-12-01', backgroundColor: 'yellow', },
-        { title: 'event 2', date: '2020-12-02', backgroundColor: 'rgb(218, 143, 5, 0.753)' },
-      ]
+      ],
+      views: {
+        timeGridWeek: { // week view
+          displayEventTime: false,
+          // other view-specific options here
+        },
+        listWeek: {
+        }
+      }
     };
   }
 
@@ -173,7 +180,7 @@ export class CalendarComponent implements OnInit {
     var eventConverted = this.convertEventCalendarToEvent(info.event)
 
     //Add it to changed event array
-    this.eventChangesList.push(eventConverted) 
+    this.eventChangesList.push(eventConverted)
 
     console.log("")
   }
@@ -189,7 +196,6 @@ export class CalendarComponent implements OnInit {
     this.eventService.getEventById(event.event.extendedProps.eventId).subscribe(
       (item) => {
         this.eventClicked = item;
-        console.log("EVENTS CLICKED : " + JSON.stringify(item))
       });
   }
 
@@ -215,24 +221,18 @@ export class CalendarComponent implements OnInit {
   }
 
   onFilterSubmit() {
-    console.log("Filter form driver 1 : " + this.selectedFilteredDriverId1)
-    console.log("Filter form driver 2 : " + this.selectedFilteredDriverId2)
     this.eventList = []
-    this.eventService.getEventsByDriverId(parseInt(this.selectedFilteredDriverId1)).subscribe((items) => 
-      {
-        console.log("Events from ZAPHYR Gerald : " + JSON.stringify(items))
-        this.eventList = this.eventList.concat(items);
-      }
-    )
-    if(this.selectedFilteredDriverId1 != null){
-      this.eventService.getEventsByDriverId(parseInt(this.selectedFilteredDriverId2)).subscribe((items) => 
-      {
-        console.log("Events from ZAPHYR Gerald : " + JSON.stringify(items))
-        this.eventList = this.eventList.concat(items);
-      }
-    )
+    this.eventService.getEventsByDriverId(parseInt(this.selectedFilteredDriverId1)).subscribe((items) => {
+      this.eventList = this.eventList.concat(items);
     }
-    
+    )
+    if (this.selectedFilteredDriverId1 != null) {
+      this.eventService.getEventsByDriverId(parseInt(this.selectedFilteredDriverId2)).subscribe((items) => {
+        this.eventList = this.eventList.concat(items);
+      }
+      )
+    }
+
     this.updateCalendar()
   }
 
@@ -277,13 +277,15 @@ export class CalendarComponent implements OnInit {
 
     if (this.newEvent) {
       console.log("Submit NEW")
-      this.eventService.addEvent(eventToAddToDB).subscribe(
+      this.eventService.addEventAndGetId(eventToAddToDB).subscribe(
         (events) => {
-          this.eventList = events
-
+          this.eventList = events[1]
+          var eventIdAdded = events[0]
+          eventToAddToDB.id = eventIdAdded //add id to the freshly added event to retrieve it after click
           this.alertWithSuccess('L\'évènement a été ajouté avec succès')
           this.clearEventForm()
           this.displayForm = false;
+          console.log("Event to convert " + JSON.stringify(eventToAddToDB))
           var eventInput = this.convertEventToEventCalendar(eventToAddToDB)
           this.calendarApi.addEvent(eventInput);
         },
@@ -310,7 +312,6 @@ export class CalendarComponent implements OnInit {
   }
 
   addToCalendar(event: Evenement) {
-    //console.log("Event to add to calendar : " + JSON.stringify(event));
     var eventInput = this.convertEventToEventCalendar(event)
     this.calendarApi.addEvent(eventInput);
   }
@@ -318,33 +319,26 @@ export class CalendarComponent implements OnInit {
   updateCalendar() {
     this.calendarApi.removeAllEvents();
     this.eventList.forEach((item) => {
-      console.log("New event list : " + JSON.stringify(item))
+      //console.log("New event list : " + JSON.stringify(item))
       this.addToCalendar(item);
     })
   }
 
-  convertEventCalendarToEvent(eventCalendar) : Evenement {
-    console.log("EVENT CALENDAR " + JSON.stringify(eventCalendar))
+  convertEventCalendarToEvent(eventCalendar): Evenement {
     var event = new Evenement();
 
     //If event has already been changed and have been add to event list changes
-    if(this.eventChangesList.some(e => e.id === eventCalendar.extendedProps.eventId)){
+    if (this.eventChangesList.some(e => e.id === eventCalendar.extendedProps.eventId)) {
       console.log("Already changed")
 
       //get event from array thanks to id 
-      var eventFound = this.eventChangesList.find(e=> e.id == eventCalendar.extendedProps.eventId)
+      var eventFound = this.eventChangesList.find(e => e.id == eventCalendar.extendedProps.eventId)
       this.eventChangesList = this.eventChangesList.filter(obj => obj !== eventFound);
 
-      console.log("Element id " + eventCalendar.extendedProps.eventId + " found : " + JSON.stringify(eventFound))
-
-      //Déjà dans 
+      //Already in eventChangesList
       eventFound.date = this.datePipe.transform(eventCalendar.start, 'dd/MM/yyyy')
-      //console.log("DATE CHANGED : " + event.date)
-      eventFound.startHour = this.datePipe.transform(eventCalendar.start, 'HH:mm' )
-      eventFound.endHour = this.datePipe.transform(eventCalendar.end, 'HH:mm' )
-      console.log("START DATE  : " + eventCalendar.start)
-      console.log("START HOUR  : " + this.datePipe.transform(eventCalendar.start, 'dd/MM/yyyy HH:mm'))
-      console.log("START HOUR event : " + eventFound.startHour)
+      eventFound.startHour = this.datePipe.transform(eventCalendar.start, 'HH:mm')
+      eventFound.endHour = this.datePipe.transform(eventCalendar.end, 'HH:mm')
       event = eventFound
 
 
@@ -354,40 +348,34 @@ export class CalendarComponent implements OnInit {
       event.id = eventCalendar.extendedProps.eventId
       event.title = eventCalendar.title
       event.date = this.datePipe.transform(eventCalendar.start, 'yyyy-MM-dd')
-      //console.log("DATE CHANGED : " + event.date)
-      event.startHour = this.datePipe.transform(eventCalendar.start, 'HH:mm' )
-      event.endHour = this.datePipe.transform(eventCalendar.end, 'HH:mm' )
-      console.log("START DATE  : " + eventCalendar.start)
-      console.log("START HOUR  : " + this.datePipe.transform(eventCalendar.start, 'dd/MM/yyyy HH:mm'))
-      console.log("START HOUR event : " + event.startHour)
-  
+      event.startHour = this.datePipe.transform(eventCalendar.start, 'HH:mm')
+      event.endHour = this.datePipe.transform(eventCalendar.end, 'HH:mm')
+
       //Driver
       this.driverService.getDriverById(parseInt(eventCalendar.extendedProps.driverId)).subscribe(
         (item) => { event.driver = item });
       //console.log("Event driver : " + JSON.stringify(event.driver))
-  
+
       //Patient
       this.patientService.getPatientById(parseInt(eventCalendar.extendedProps.patientId)).subscribe(
         (item) => { event.patient = item });
       //console.log("Event patient : " + JSON.stringify(event.patient))
-  
+
       //Places start and end
       this.placeService.getPlaceById(parseInt(eventCalendar.extendedProps.startPointId)).subscribe(
         (item) => { event.startPoint = item });
       //console.log("Event Start point : " + JSON.stringify(event.startPoint))
-  
+
       this.placeService.getPlaceById(parseInt(eventCalendar.extendedProps.endPointId)).subscribe(
         (item) => { event.endPoint = item });
       //console.log("Event End point : " + JSON.stringify(event.endPoint))
 
     }
     console.log("EVENT CONVERTED " + JSON.stringify(event))
-    
     return event;
   }
 
   convertEventToEventCalendar(event: Evenement) {
-    console.log("DATE FORMAT");
     var dateEv = event.date;
     var startTimeEv = event.startHour;
     var endTimeEv = event.endHour;
@@ -397,7 +385,7 @@ export class CalendarComponent implements OnInit {
     // console.log("START DATE TIME : " + dateEv + "T" + startTimeEv);
     // console.log("END DATE TIME : " + dateEv + "T" + endTimeEv);
     var eventInput = {
-      title: event.patient.firstname+ " " + event.patient.lastname.toUpperCase() ,
+      title: event.patient.firstname + " " + event.patient.lastname.toUpperCase() + "\n | " + event.driver.firstname + "\n | " + event.startPoint.label + " - " + event.endPoint.label,
       start: dateEv + "T" + startTimeEv + ":00",
       end: dateEv + "T" + endTimeEv + ":00",
       backgroundColor: this.getColorFromId(event.driver.id),
@@ -408,17 +396,14 @@ export class CalendarComponent implements OnInit {
         startPointId: event.startPoint != null ? event.startPoint.id : "null",
         endPointId: event.endPoint != null ? event.endPoint.id : "null",
       },
-      description: 'Test Event'
+      description: 'Calendar Event'
     }
-    console.log("Event input : " + JSON.stringify(eventInput))
     return eventInput;
   }
 
-  getColorFromId(id: number) : string{
-    console.log("GET COLOR")
-    console.log("Driver-Color MAP : " + JSON.stringify(this.driverColorMap))
-
-    console.log("For id " + id + " : " + this.driverColorMap[id])
+  getColorFromId(id: number): string {
+    //console.log("Driver-Color MAP : " + JSON.stringify(this.driverColorMap))
+    //console.log("For id " + id + " : " + this.driverColorMap[id])
     return this.driverColorMap[id]
   }
 
@@ -459,7 +444,7 @@ export class CalendarComponent implements OnInit {
       this.updatingEvent = true;
       this.newEvent = false;
     }
-    
+
   }
 
   editEvent(event) {
@@ -529,13 +514,12 @@ export class CalendarComponent implements OnInit {
     })
   }
 
-  clearFilter(){
+  clearFilter() {
     this.getAllEvents()
     this.updateCalendar()
   }
 
   favoriteTimeViewChange(event) {
-    var target = event.target;
     if (this.favoriteTimeView == "1") { //Morning view 
       this.calendarApi.setOption("slotMinTime", "08:00")
       this.calendarApi.setOption("slotMaxTime", "12:30")
@@ -568,11 +552,13 @@ export class CalendarComponent implements OnInit {
     // make sure it always returns a 'null' for valid or non-relevant cases, and a 'non-null' object for when an error should be raised on the formGroup
   }
 
-  saveChanges(){
+  saveChanges() {
     console.log("Save changes")
     this.displayChangesMsg = false
-    console.log("EVENT CHANGES LIST : " + JSON.stringify(this.eventChangesList))
-    this.eventChangesList.forEach((eventToUpdate)=>{
+    this.loading = true
+
+    //console.log("EVENT CHANGES LIST : " + JSON.stringify(this.eventChangesList))
+    this.eventChangesList.forEach((eventToUpdate) => {
       this.eventService.updateEvent(eventToUpdate).subscribe(
         (events) => {
           this.eventList = events;
@@ -582,14 +568,14 @@ export class CalendarComponent implements OnInit {
           this.updateCalendar();
         }
       )
+      this.loading = false
       this.alertWithSuccess('Les modifications ont été pris en compte.')
     })
   }
-  
-  clearChanges(){
+
+  clearChanges() {
     console.log("Clear changes")
     this.eventChangesList = [];
-    console.log("EVENT CHANGES LIST : " + JSON.stringify(this.eventChangesList))
     this.displayChangesMsg = false
     this.updateCalendar()
   }

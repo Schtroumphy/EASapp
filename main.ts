@@ -178,6 +178,34 @@ async function createWindow(): Promise<BrowserWindow> {
     }
   });
 
+  ipcMain.on('add-event-and-get-id', async (event: any, _evenement: Evenement) => {
+    try {
+      const evenement = new Evenement();
+      evenement.title = _evenement.title;
+      evenement.date = _evenement.date;
+      evenement.startPoint = _evenement.startPoint;
+      evenement.startHour = _evenement.startHour;
+      evenement.endPoint = _evenement.endPoint;
+      evenement.endHour = _evenement.endHour;
+      evenement.patient = _evenement.patient;
+      evenement.driver = _evenement.driver;
+      var newEventId;
+      await eventRepo.save(evenement) .then(evenement => {
+        console.log("Event has been saved. Event id is", evenement.id);
+        newEventId = evenement.id;
+    });;
+      const eventList = await eventRepo.find({
+        relations: ['driver', 'patient', 'startPoint', 'endPoint'],
+      });
+
+      //const item = await eventRepo.create(_evenement);
+      //await eventRepo.save(item);
+      event.returnValue = [newEventId, eventList]
+    } catch (err) {
+      throw err;
+    }
+  });
+
   ipcMain.on('get-event-by-id', async (event: any, _eventId: number) => {
     try {
       

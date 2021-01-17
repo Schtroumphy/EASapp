@@ -24,7 +24,6 @@ export class AdvancedComponent implements OnInit {
   driverList: Driver[];
   patientList: Patient[];
   placeList: Place[];
-  displayForm = true;
   updateEvent = false;
   eventForm: FormGroup
   displayEventClickedDetails = false
@@ -117,7 +116,6 @@ export class AdvancedComponent implements OnInit {
       (events) => {
         this.eventList = events
         this.clearEventForm()
-        this.displayForm = false;
       },
       (error) => this.errorAlert()
     );
@@ -138,7 +136,6 @@ export class AdvancedComponent implements OnInit {
 
   clearEventForm() {
     this.eventForm.reset();
-    this.displayForm = false;
   }
 
   getCheckboxValue(event) {

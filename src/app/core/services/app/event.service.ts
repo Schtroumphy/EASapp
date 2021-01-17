@@ -29,6 +29,12 @@ export class EventService {
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 
+  addEventAndGetId(event: Evenement): Observable<[number, Evenement[]]> {
+    return of(
+      this._electronService.ipcRenderer.sendSync('add-event-and-get-id', event)
+    ).pipe(catchError((error: any) => throwError(error.json)));
+  }
+
   deleteEvent(eventId: number): Observable<Evenement[]> {
     return of(
       this._electronService.ipcRenderer.sendSync('delete-event', eventId)
