@@ -12,8 +12,13 @@ import { MatSidenav } from '@angular/material/sidenav';
 export class NavigationComponent {
   @ViewChild('drawer') sidenav: MatSidenav;
 
-  close() {
+  closeAndPrint() {
     this.sidenav.toggle();
+    print()
+  }
+
+  print(){
+    window.print();
   }
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)

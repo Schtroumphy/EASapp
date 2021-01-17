@@ -61,6 +61,7 @@ import { EventService } from './core/services/app/event.service';
 import { PlacesComponent } from './places/places.component';
 import { EventComponent } from './event/event.component';
 import { AdvancedComponent } from './advanced/advanced.component';
+import { DatePipe } from '@angular/common';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -101,7 +102,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     NgbModule,
     MatDialogModule,MatExpansionModule,MatRadioModule
   ],
-  providers: [DriverService, ElectronService, PatientService, EventService, PlaceService],
+  providers: [DriverService, ElectronService, PatientService, EventService, PlaceService, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

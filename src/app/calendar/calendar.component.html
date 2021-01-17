@@ -1,7 +1,14 @@
 <h1> Planning </h1>
 
-<p class="alert-changes" *ngIf="displayChangesMsg">Des modifications ont été détecté. Voulez-vous les sauvegarder ? </p>
-
+<div class="alert-changes" *ngIf="displayChangesMsg">Des modifications ont été détecté. Voulez-vous les sauvegarder ? 
+    <button type="button" class="btn btn-link" (click)="saveChanges()">Oui</button> 
+    ou 
+    <button type="button" class="btn btn-link" (click)="clearChanges()">Non</button>
+</div>
+<p *ngIf="displayChangesMsg">Modifications : </p>
+<p *ngFor="let event of eventChangesList">
+    Evènement n°{{event.id}} - Le {{event.date}} - De {{event.startHour}} à {{event.endHour}} | Conducteur : {{event.driver.firstname}}
+</p>
 <p> {{eventToUpdate | json}}</p>
 
 <div class="row" style="margin-bottom: 2%;">
@@ -113,12 +120,12 @@
         <div class="col-2">
             <label for="startHour">Départ : </label>
             <div class="input-group">
-                <input class="form-control" type="time" id="startHour" formControlName="startHour">
+                <input class="form-control" type="time" id="startHour" formControlName="startHour" [(ngModel)]="startHourSelected">
             </div>
         </div>
         <div class="col-2">
             <label for="endHour">Retour : </label>
-            <input type="time" id="endHour" class="form-control" formControlName="endHour">
+            <input type="time" id="endHour" class="form-control" formControlName="endHour" [value]="startHourSelected">
         </div>
     </div>
 

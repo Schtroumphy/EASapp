@@ -11,11 +11,11 @@
       <a mat-list-item routerLink="/places">Lieux</a>
       <a mat-list-item routerLink="/calendar">Planning</a>
       <a mat-list-item routerLink="/advanced">Avancé</a>
-      <a mat-list-item (click)="close()">Imprimer</a>
+      <a mat-list-item (click)="closeAndPrint()">Imprimer</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <p><button mat-button (click)="sidenav.open()">Open</button></p>
+    <!--<p><button mat-button class="btn btn-info" *ngIf="!drawer.opened" (click)="sidenav.open()">Menu</button></p> -->
     <mat-toolbar color="primary">
       <button
         type="button"
@@ -26,7 +26,7 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
     </mat-toolbar>
-    <router-outlet></router-outlet>
-    <!-- Add Content Here -->
+        <!-- Add Content Here -->
+        <router-outlet class="printMe"></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

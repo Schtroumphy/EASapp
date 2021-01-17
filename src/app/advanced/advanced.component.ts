@@ -29,8 +29,7 @@ export class AdvancedComponent implements OnInit {
   eventForm: FormGroup
   displayEventClickedDetails = false
   daysArray = []
-  startHourTest: string
-
+  startHourSelected: string
 
   //Form
   newEvent = false;
@@ -45,16 +44,8 @@ export class AdvancedComponent implements OnInit {
   selectedPatientId: string
   selectedPatient: Patient
   dateSelected: string
-  selectedJourneyId: string
-  favoriteTimeView: string
   eventListToDisplay = []
 
-  eventPicked: string;
-  calendarApi: Calendar;
-  eventToUpdate: Evenement
-  eventIdClicked: number;
-  eventClicked: any;
-  calendarOptions: CalendarOptions
   // references the #calendar in the template
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
 
@@ -63,7 +54,6 @@ export class AdvancedComponent implements OnInit {
     })
 
   }
-
 
   constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService, private placeService: PlaceService) { }
 
@@ -74,19 +64,14 @@ export class AdvancedComponent implements OnInit {
 
     this.driverService.getDrivers().subscribe((items) => {
       this.driverList = items
-      //console.log(items);
     });
     this.patientService.getPatients().subscribe((items) => {
       this.patientList = items
-      //console.log(items);
     });
     this.placeService.getPlaces().subscribe((items) => {
       this.placeList = items
-      //console.log(items);
     });
-
   }
-
 
   onPrint() {
     window.print();
@@ -109,7 +94,6 @@ export class AdvancedComponent implements OnInit {
   onSubmit() {
     console.log("Event list : " + JSON.stringify(this.eventListToDisplay))
   
-
     console.log("Submit NEW EVENt")
     if (this.recurringValues != []) {
       //Add each element to BDD

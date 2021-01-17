@@ -1,14 +1,5 @@
 <h1> Paramètres avancés </h1>
 
-<div class="row" style="margin-bottom: 2%;">
-    <div class="col">
-        <button type="button" class="btn btn-primary" (click)="displayEventForm(true)"> Ajouter un event</button>
-    </div>
-    <div class="col-2">
-        <button type="button" class="btn btn-info" (click)="onPrint()">Imprimer</button>
-    </div>
-</div>
-
 <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
     <div class="row">
         <div class="col-10">
@@ -66,12 +57,12 @@
         <div class="col-2">
             <label for="startHour">Départ : </label>
             <div class="input-group">
-                <input class="form-control" type="time" id="startHour" formControlName="startHour" [(ngModel)]="startHourTest">
+                <input class="form-control" type="time" id="startHour" formControlName="startHour" [(ngModel)]="startHourSelected">
             </div>
         </div>
         <div class="col-2">
             <label for="endHour">Retour : </label>
-            <input type="time" id="endHour" class="form-control" formControlName="endHour" [value]="startHourTest" step="900">
+            <input type="time" id="endHour" class="form-control" formControlName="endHour" [value]="startHourSelected" step="900">
         </div>
     </div>
 
@@ -129,47 +120,3 @@
     </div>
 
 </form>
-
-<div class="col eventDetails" *ngIf="displayEventClickedDetails">
-    <div class="row">
-        <div class="col-8">
-            <h4>Evènement sélectionné</h4>
-        </div>
-        <div class="col">
-            <button type="button" class="btn btn-link" (click)="displayEventClicked(false)">Fermer</button>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col">
-            <strong>Conducteur : </strong>
-        </div>
-        <div class="col">
-            <p> {{eventClicked.driver.lastname}} {{eventClicked.driver.firstname}}</p>
-        </div>
-        <div class="col">
-            <strong>Patient : </strong>
-        </div>
-        <div class="col">
-            <p> {{eventClicked.patient.lastname}} {{eventClicked.patient.firstname}}</p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <strong>De : </strong>
-        </div>
-        <div class="col">
-            <p> {{eventClicked.startPoint.label }}</p>
-        </div>
-        <div class="col">
-            <strong>Vers : </strong>
-        </div>
-        <div class="col">
-            <p> {{eventClicked.endPoint.label }}</p>
-        </div>
-    </div>
-
-    <button class="btn btn-info" (click)="editEvent(eventClicked)">Modifier</button>
-    <button class="btn btn-danger" (click)="deleteEventById(eventClicked.id)">Supprimer</button>
-
-</div>

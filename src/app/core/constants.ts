@@ -4,5 +4,5 @@ export class Constants{
 }
 
 export var COLORS=[
-    'red','blue', 'yellow','green','purple','pink','brown'
+    'teal', 'blue', 'coral', 'chocolate', 'red','olive',  'khaki', 'LightSeaGreen', 'gray','purple','green','pink','brown'
 ];
