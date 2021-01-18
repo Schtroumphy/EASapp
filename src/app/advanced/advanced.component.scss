@@ -3,8 +3,7 @@
   }
 
     input {
-      position: relative;
-      display: block;
+      vertical-align: bottom;
     }
     
     label {
@@ -21,6 +20,7 @@
       font-size: inherit;
       cursor: inherit;
       line-height: inherit;
+      vertical-align: bottom;
     }
   
     h1{
@@ -40,4 +40,8 @@
       padding: 2%;
   }
 
+  .row {
+    margin-right: 0px; 
+    margin-left: 0px;
+  }
   

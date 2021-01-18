@@ -73,18 +73,17 @@ export class CalendarComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.calendarApi = this.calendarComponent.getApi();
+    this.getAllEvents();
+
     this.eventList.forEach((item) => {
       this.addToCalendar(item);
     })
   }
 
-
-
   constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService, private placeService: PlaceService, private datePipe: DatePipe) { }
 
   ngOnInit(): void {
     this.initForm();
-    this.getAllEvents();
 
     this.driverService.getDrivers().subscribe((items) => {
       this.driverList = items,
@@ -379,6 +378,7 @@ export class CalendarComponent implements OnInit {
     var dateEv = event.date;
     var startTimeEv = event.startHour;
     var endTimeEv = event.endHour;
+    var i=1;
 
     // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
     // January - 0, February - 1, etc.

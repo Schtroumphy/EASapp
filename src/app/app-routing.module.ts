@@ -11,6 +11,7 @@ import { PatientsComponent } from './patients/patients.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { PlacesComponent } from './places/places.component';
 import { AdvancedComponent } from './advanced/advanced.component';
+import { UserGuideComponent } from './user-guide/user-guide.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
   {
     path: 'advanced',
     component: AdvancedComponent
+  },
+  {
+    path: 'guide',
+    component: UserGuideComponent
   },
   {
     path: '**',

@@ -1,6 +1,94 @@
 <h1> Paramètres avancés </h1>
 
-<form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+<div class="col">
+    <div class="row">
+        <button type="button" class="btn btn-info" (click)="displayEventForm()"> Ajouter un évènement</button>
+        <button type="button" class="btn btn-info" (click)="test()"> Planifier un conducteur</button>
+    </div>
+</div>
+
+<div *ngIf="displayPlanDriver">
+    <div class="row">
+        <div class="col-3">
+            <label for="date">Date : </label>
+            <input class="form-control" type="date" id="date" placeholder="jj/mm/aaaa" [(ngModel)]="selectedDatePlan">
+        </div>
+        <div class="col-3">
+            <label for="driver">Conducteur à planifier: </label>
+            <select id="driver" [(ngModel)]="selectedPlanDriverId">
+                <option *ngFor="let driver of driverList" [value]="driver.id">
+                    {{driver.firstname | lowercase }} {{driver.lastname | uppercase }}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-5">
+            <div class="row">
+                <div class="col">
+                    <label for="startHourPlanSelected"> De : </label>
+                    <select id="startHourPlanSelected" [(ngModel)]="startHourPlanSelected"
+                        (change)="updateHoursJobFrom()">
+                        <option *ngFor="let hour of hours_job" [value]="hour">
+                            {{hour}} h 00
+                        </option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="endHourPlanSelected"> A : </label>
+                    <select id="endHourPlanSelected" [(ngModel)]="endHourPlanSelected">
+                        <option *ngFor="let hour of hours_job_from" [value]="hour">
+                            {{hour}} h 00
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-info"
+            *ngIf="selectedDatePlan !== null && selectedPlanDriverId !== null && startHourPlanSelected !== null && endHourPlanSelected !== null"
+            (click)="planDriver()">
+            Planifier
+        </button>
+    </div>
+    <div class="row" *ngFor="let hour of intervalsHour; let index = index" style="margin: 1%;">
+        <div class="col-2">{{hour[0]}} - {{hour[1]}} | </div>
+        <div class="col-2">
+            <label for="patient"> Patient : </label>
+            <select id="patient" (change)="savePatientPlanSelection(hour, index, $event.target.value)">
+                <option [value]="0"></option>
+                <option *ngFor="let patient of patientList" [value]="patient.id">
+                    {{patient.firstname | lowercase }} {{patient.lastname | uppercase }}
+                </option>
+            </select>
+        </div>
+        <div class="col">
+            <label for="journey"> Trajet : </label>
+            <div class="row">
+                De :
+                <div class="col">
+                    <select id="startPoint" (change)="saveStartHourSelection(hour, index, $event.target.value)">
+                        <option [value]="0"></option>
+                        <option *ngFor="let place of placeList" [value]="place.id">
+                            {{place.label | uppercase }}
+                        </option>
+                    </select>
+                </div>
+                Vers :
+                <div class="col">
+                    <select id="endPoint" (change)="saveEndHourSelection(hour, index, $event.target.value)">
+                        <option [value]="0"></option>
+                        <option *ngFor="let place of placeList" [value]="place.id">
+                            {{place.label | uppercase }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <i class="fas fa-times" (click)="removeInterval(hour)"></i>
+        <div class="col-12" style="background-color: orange; height: 3px; margin-top: 1%;"></div>
+    </div>
+</div>
+
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
     <div class="row">
         <div class="col-10">
             <h3 *ngIf="!updatingEvent">Ajouter un évènement récurrent</h3>
@@ -57,12 +145,14 @@
         <div class="col-2">
             <label for="startHour">Départ : </label>
             <div class="input-group">
-                <input class="form-control" type="time" id="startHour" formControlName="startHour" [(ngModel)]="startHourSelected">
+                <input class="form-control" type="time" id="startHour" formControlName="startHour"
+                    [(ngModel)]="startHourSelected">
             </div>
         </div>
         <div class="col-2">
             <label for="endHour">Retour : </label>
-            <input type="time" id="endHour" class="form-control" formControlName="endHour" [value]="startHourSelected" step="900">
+            <input type="time" id="endHour" class="form-control" formControlName="endHour" [value]="startHourSelected"
+                step="900">
         </div>
     </div>
 
@@ -70,41 +160,50 @@
         <div class="col">
             <label> Récurrence : </label>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="monday" value="1" (checked)="checkboxStatus1" (change)="getCheckboxValue($event)">
+                <input class="form-check-input" type="checkbox" id="monday" value="1" (checked)="checkboxStatus1"
+                    (change)="getCheckboxValue($event)">
                 <label class="form-check-label">Lundi</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="tuesday" value="2" (checked)="checkboxStatus2" (change)="getCheckboxValue($event)">
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="tuesday" value="2" (checked)="checkboxStatus2"
+                    (change)="getCheckboxValue($event)">
                 <label class="form-check-label" for="inlineCheckbox2">Mardi</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="wednesday" value="3" (checked)="checkboxStatus" (change)="getCheckboxValue($event)">
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="wednesday" value="3" (checked)="checkboxStatus"
+                    (change)="getCheckboxValue($event)">
                 <label class="form-check-label">Mercredi</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="thursday" value="4" (checked)="checkboxStatus" (change)="getCheckboxValue($event)">
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="thursday" value="4" (checked)="checkboxStatus"
+                    (change)="getCheckboxValue($event)">
                 <label class="form-check-label">Jeudi</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="friday" value="5" (checked)="checkboxStatus" (change)="getCheckboxValue($event)">
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="friday" value="5" (checked)="checkboxStatus"
+                    (change)="getCheckboxValue($event)">
                 <label class="form-check-label">Vendredi</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="saturday" value="6" (checked)="checkboxStatus" (change)="getCheckboxValue($event)">
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="saturday" value="6" (checked)="checkboxStatus"
+                    (change)="getCheckboxValue($event)">
                 <label class="form-check-label">Samedi</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="sunday" value="0" (checked)="checkboxStatus" (change)="getCheckboxValue($event)">
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="sunday" value="0" (checked)="checkboxStatus"
+                    (change)="getCheckboxValue($event)">
                 <label class="form-check-label">Dimanche</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="alldays" value="7"  (checked)="checkboxStatusAllDay" (change)="getCheckboxValue($event)">
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="alldays" value="7" (checked)="checkboxStatusAllDay"
+                    (change)="getCheckboxValue($event)">
                 <label class="form-check-label">Tous les jours</label>
-              </div>
+            </div>
         </div>
     </div>
 
-    <p *ngIf="daysArray.length > 0"> Cet évènement sera ajouté tous les {{daysArray | json}} à compter du {{eventForm.get('date').value | date: 'dd/MM/yyyy'}} pendant 2 semaines.</p>
+    <p *ngIf="daysArray.length > 0"> Cet évènement sera ajouté tous les {{daysArray | json}} à compter du
+        {{eventForm.get('date').value | date: 'dd/MM/yyyy'}} pendant 2 semaines.</p>
 
     <p *ngIf="daysArray.length > 0">Evènements à ajouter</p>
     <p *ngFor="let event of eventListToDisplay">
@@ -120,3 +219,5 @@
     </div>
 
 </form>
+
+<button *ngIf="displaySaveButton" type="button" class="btn btn-info" (click)="savePlan()"> Sauvegarder le planning</button>
