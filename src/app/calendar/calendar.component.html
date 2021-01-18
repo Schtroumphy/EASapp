@@ -150,13 +150,13 @@
     </div>
 
     <div class="row">
-        <div class="col">
+        <div class="col-2">
             <strong>Conducteur : </strong>
         </div>
         <div class="col">
             <p> {{eventClicked.driver.lastname}} {{eventClicked.driver.firstname}}</p>
         </div>
-        <div class="col">
+        <div class="col-2">
             <strong>Patient : </strong>
         </div>
         <div class="col">
@@ -164,17 +164,31 @@
         </div>
     </div>
     <div class="row">
-        <div class="col">
+        <div class="col-1">
             <strong>De : </strong>
         </div>
         <div class="col">
             <p> {{eventClicked.startPoint.label }}</p>
         </div>
-        <div class="col">
+        <div class="col-1">
             <strong>Vers : </strong>
         </div>
         <div class="col">
             <p> {{eventClicked.endPoint.label }}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <strong *ngIf="eventClicked.driver.comment !== null">Détails conducteur : </strong>
+        </div>
+        <div class="col">
+            <p> {{eventClicked.driver.comment}}</p>
+        </div>
+        <div class="col-2">
+            <strong *ngIf="eventClicked.patient.comment !== null">Détails patient : </strong>
+        </div>
+        <div class="col">
+            <p> {{eventClicked.patient.comment}}</p>
         </div>
     </div>
 
