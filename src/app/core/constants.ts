@@ -4,5 +4,8 @@ export class Constants{
 }
 
 export var COLORS=[
-    'teal', 'blue', 'coral', 'chocolate', 'red','olive',  'khaki', 'LightSeaGreen', 'gray','purple','green','pink','brown'
+    'blue', 'chocolate', 'red', 'khaki', 'LightSeaGreen', 'gray','purple','green','pink','brown'
 ];
+
+export var FORMAT_yyyy_MM_dd = 'yyyy-MM-dd'
+export var FORMAT_HH_mm = 'HH:mm'

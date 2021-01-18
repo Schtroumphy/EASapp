@@ -11,7 +11,7 @@ import { PatientService } from '../core/services/app/patient.service';
 import { Patient } from '../core/models/patient.schema';
 import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
-import { COLORS } from '../core/constants';
+import { COLORS, FORMAT_HH_mm, FORMAT_yyyy_MM_dd } from '../core/constants';
 import { DatePipe } from '@angular/common';
 import { AdvancedConsoleLogger } from 'typeorm';
 import { finalize } from 'rxjs/internal/operators/finalize';
@@ -186,11 +186,7 @@ export class CalendarComponent implements OnInit {
 
   handleEventClick(event) {
     this.displayEventClickedDetails = true;
-
-    console.log(JSON.stringify(event.event.toPlainObject()));
-
     this.eventIdClicked = event.event.extendedProps.eventId
-    console.log("EVENT ID CLICKED : " + this.eventIdClicked)
 
     this.eventService.getEventById(event.event.extendedProps.eventId).subscribe(
       (item) => {
@@ -215,8 +211,6 @@ export class CalendarComponent implements OnInit {
       driver1: new FormControl(null, Validators.required),
       driver2: new FormControl(),
     })
-
-    this.filterForm.setValidators(this.checkIfDriverAreSame);
   }
 
   onFilterSubmit() {
@@ -237,32 +231,18 @@ export class CalendarComponent implements OnInit {
 
   onSubmit() {
     console.log(this.eventForm);
-    console.log("Selected driver id " + this.selectedDriverId);
-    console.log("Selected patient id " + this.selectedPatientId);
-    console.log("Selected start point id " + this.selectedStartPointId);
-    console.log("Selected end point id " + this.selectedEndPointId);
 
     this.driverService.getDriverById(parseInt(this.selectedDriverId)).subscribe(
       (item) => { this.selectedDriver = item });
-    console.log("DRIVER SELECTED : " + JSON.stringify(this.selectedDriver))
 
     this.patientService.getPatientById(parseInt(this.selectedPatientId)).subscribe(
       (item) => { this.selectedPatient = item });
-    console.log("PATIENT SELECTED : " + JSON.stringify(this.selectedPatient))
-
-    console.log("Date value " + this.eventForm.get('date').value);
-    console.log("start hour value " + this.eventForm.get('startHour').value);
-    console.log("end hour value " + this.eventForm.get('endHour').value);
-    console.log("Départ value " + this.eventForm.get('startPoint').value);
-    console.log("Arrivée value " + this.eventForm.get('endPoint').value);
 
     this.placeService.getPlaceById(parseInt(this.selectedStartPointId)).subscribe(
       (item) => { this.selectedStarPoint = item });
-    console.log("Start point SELECTED : " + JSON.stringify(this.selectedStarPoint))
 
     this.placeService.getPlaceById(parseInt(this.selectedEndPointId)).subscribe(
       (item) => { this.selectedEndPoint = item });
-    console.log("End point SELECTED : " + JSON.stringify(this.selectedEndPoint))
 
     var eventToAddToDB = new Evenement();
     eventToAddToDB.title = this.selectedPatient.firstname + " " + this.selectedPatient.lastname.toUpperCase();
@@ -275,7 +255,6 @@ export class CalendarComponent implements OnInit {
     eventToAddToDB.endHour = this.eventForm.get('endHour').value
 
     if (this.newEvent) {
-      console.log("Submit NEW")
       this.eventService.addEventAndGetId(eventToAddToDB).subscribe(
         (events) => {
           this.eventList = events[1]
@@ -284,7 +263,6 @@ export class CalendarComponent implements OnInit {
           this.alertWithSuccess('L\'évènement a été ajouté avec succès')
           this.clearEventForm()
           this.displayForm = false;
-          console.log("Event to convert " + JSON.stringify(eventToAddToDB))
           var eventInput = this.convertEventToEventCalendar(eventToAddToDB)
           this.calendarApi.addEvent(eventInput);
         },
@@ -292,13 +270,10 @@ export class CalendarComponent implements OnInit {
       );
     } else if (this.updatingEvent) {
       eventToAddToDB.id = this.eventForm.get('id').value
-      console.log("Submit UPDATE")
-      console.log("Event to edit : " + JSON.stringify(eventToAddToDB))
       this.eventService.updateEvent(eventToAddToDB).subscribe(
         (events) => {
           this.eventList = events;
           this.eventList.forEach(element => {
-            console.log(JSON.stringify(element))
           });
           this.updateCalendar();
           this.alertWithSuccess('L\'évènement a été modifié avec succès')
@@ -306,8 +281,6 @@ export class CalendarComponent implements OnInit {
         }
       )
     }
-
-    console.log("Event to add : " + JSON.stringify(eventToAddToDB))
   }
 
   addToCalendar(event: Evenement) {
@@ -318,7 +291,6 @@ export class CalendarComponent implements OnInit {
   updateCalendar() {
     this.calendarApi.removeAllEvents();
     this.eventList.forEach((item) => {
-      //console.log("New event list : " + JSON.stringify(item))
       this.addToCalendar(item);
     })
   }
@@ -328,8 +300,6 @@ export class CalendarComponent implements OnInit {
 
     //If event has already been changed and have been add to event list changes
     if (this.eventChangesList.some(e => e.id === eventCalendar.extendedProps.eventId)) {
-      console.log("Already changed")
-
       //get event from array thanks to id 
       var eventFound = this.eventChangesList.find(e => e.id == eventCalendar.extendedProps.eventId)
       this.eventChangesList = this.eventChangesList.filter(obj => obj !== eventFound);
@@ -340,37 +310,29 @@ export class CalendarComponent implements OnInit {
       eventFound.endHour = this.datePipe.transform(eventCalendar.end, 'HH:mm')
       event = eventFound
 
-
     } else {
       //New change
-      console.log("NEW CHANGE")
       event.id = eventCalendar.extendedProps.eventId
       event.title = eventCalendar.title
-      event.date = this.datePipe.transform(eventCalendar.start, 'yyyy-MM-dd')
-      event.startHour = this.datePipe.transform(eventCalendar.start, 'HH:mm')
-      event.endHour = this.datePipe.transform(eventCalendar.end, 'HH:mm')
+      event.date = this.datePipe.transform(eventCalendar.start, FORMAT_yyyy_MM_dd)
+      event.startHour = this.datePipe.transform(eventCalendar.start, FORMAT_HH_mm)
+      event.endHour = this.datePipe.transform(eventCalendar.end, FORMAT_HH_mm)
 
       //Driver
       this.driverService.getDriverById(parseInt(eventCalendar.extendedProps.driverId)).subscribe(
         (item) => { event.driver = item });
-      //console.log("Event driver : " + JSON.stringify(event.driver))
 
       //Patient
       this.patientService.getPatientById(parseInt(eventCalendar.extendedProps.patientId)).subscribe(
         (item) => { event.patient = item });
-      //console.log("Event patient : " + JSON.stringify(event.patient))
 
       //Places start and end
       this.placeService.getPlaceById(parseInt(eventCalendar.extendedProps.startPointId)).subscribe(
         (item) => { event.startPoint = item });
-      //console.log("Event Start point : " + JSON.stringify(event.startPoint))
 
       this.placeService.getPlaceById(parseInt(eventCalendar.extendedProps.endPointId)).subscribe(
         (item) => { event.endPoint = item });
-      //console.log("Event End point : " + JSON.stringify(event.endPoint))
-
     }
-    console.log("EVENT CONVERTED " + JSON.stringify(event))
     return event;
   }
 
@@ -382,8 +344,6 @@ export class CalendarComponent implements OnInit {
 
     // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
     // January - 0, February - 1, etc.
-    // console.log("START DATE TIME : " + dateEv + "T" + startTimeEv);
-    // console.log("END DATE TIME : " + dateEv + "T" + endTimeEv);
     var eventInput = {
       title: event.patient.firstname + " " + event.patient.lastname.toUpperCase() + "\n | " + event.driver.firstname + "\n | " + event.startPoint.label + " - " + event.endPoint.label,
       start: dateEv + "T" + startTimeEv + ":00",
@@ -396,14 +356,12 @@ export class CalendarComponent implements OnInit {
         startPointId: event.startPoint != null ? event.startPoint.id : "null",
         endPointId: event.endPoint != null ? event.endPoint.id : "null",
       },
-      description: 'Calendar Event'
+      description: ''
     }
     return eventInput;
   }
 
   getColorFromId(id: number): string {
-    //console.log("Driver-Color MAP : " + JSON.stringify(this.driverColorMap))
-    //console.log("For id " + id + " : " + this.driverColorMap[id])
     return this.driverColorMap[id]
   }
 
@@ -450,7 +408,6 @@ export class CalendarComponent implements OnInit {
   editEvent(event) {
     this.displayEventClickedDetails = false;
     this.displayEventForm(false); //false = not new event
-    console.log("Editer : " + JSON.stringify(event))
     this.eventForm.controls["id"].setValue(event.id);
     this.selectedDriverId = event.driver.id;
     this.selectedPatientId = event.patient.id;
@@ -484,10 +441,6 @@ export class CalendarComponent implements OnInit {
           .subscribe(
             (events) => {
               this.eventList = events
-              this.eventList.forEach(element => {
-                console.log(JSON.stringify(element))
-
-              });
               this.updateCalendar();
               Swal.fire(
                 'Supprimé!',
@@ -519,52 +472,22 @@ export class CalendarComponent implements OnInit {
     this.updateCalendar()
   }
 
-  favoriteTimeViewChange(event) {
-    if (this.favoriteTimeView == "1") { //Morning view 
-      this.calendarApi.setOption("slotMinTime", "08:00")
-      this.calendarApi.setOption("slotMaxTime", "12:30")
-    } else if (this.favoriteTimeView == "2") { //Afternoon view
-      this.calendarApi.setOption("slotMinTime", "12:00")
-      this.calendarApi.setOption("slotMaxTime", "22:00")
-    } else { //All day view
-      this.calendarApi.setOption("slotMinTime", "08:00")
-      this.calendarApi.setOption("slotMaxTime", "22:00")
-    }
-  }
-
   displayEventClicked(hideOrNot) {
     this.displayEventClickedDetails = hideOrNot;
   }
 
   deleteEventById(eventId) {
-    console.log("event id to delete : " + eventId)
     this.deleteEventBox(eventId);
   }
 
-  checkIfDriverAreSame(c: AbstractControl) {
-    //safety check
-    if (c.get('driver1').value != c.get('driver2').value) {
-      return null
-    }
-    // carry out the actual date checks here for is-endDate-after-startDate
-    // if valid, return null,
-    // if invalid, return an error object (any arbitrary name), like, return { invalidEndDate: true }
-    // make sure it always returns a 'null' for valid or non-relevant cases, and a 'non-null' object for when an error should be raised on the formGroup
-  }
-
   saveChanges() {
-    console.log("Save changes")
     this.displayChangesMsg = false
     this.loading = true
 
-    //console.log("EVENT CHANGES LIST : " + JSON.stringify(this.eventChangesList))
     this.eventChangesList.forEach((eventToUpdate) => {
       this.eventService.updateEvent(eventToUpdate).subscribe(
         (events) => {
           this.eventList = events;
-          this.eventList.forEach(element => {
-            console.log(JSON.stringify(element))
-          });
           this.updateCalendar();
         }
       )
@@ -574,7 +497,6 @@ export class CalendarComponent implements OnInit {
   }
 
   clearChanges() {
-    console.log("Clear changes")
     this.eventChangesList = [];
     this.displayChangesMsg = false
     this.updateCalendar()
