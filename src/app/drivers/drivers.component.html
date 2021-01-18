@@ -90,7 +90,7 @@
     <ng-container matColumnDef="planning">
       <th mat-header-cell *matHeaderCellDef> Plannings </th>
       <td mat-cell *matCellDef="let element">
-        <button type="button" class="btn btn-info" (click)="planning()"><mat-icon aria-hidden="false" aria-label="Example home icon">date_range</mat-icon></button>
+        <button type="button" class="btn btn-info" (click)="planning(element.id)"><mat-icon aria-hidden="false" aria-label="Example home icon">date_range</mat-icon></button>
       </td>
     </ng-container>
 

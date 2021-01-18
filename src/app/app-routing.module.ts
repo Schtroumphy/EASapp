@@ -32,6 +32,10 @@ const routes: Routes = [
     component: CalendarComponent
   },
   {
+    path: 'calendar/:p1',
+    component: CalendarComponent
+  },
+  {
     path: 'advanced',
     component: AdvancedComponent
   },

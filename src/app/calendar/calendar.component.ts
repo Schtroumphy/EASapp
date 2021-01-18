@@ -15,6 +15,7 @@ import { COLORS, FORMAT_HH_mm, FORMAT_yyyy_MM_dd } from '../core/constants';
 import { DatePipe } from '@angular/common';
 import { AdvancedConsoleLogger } from 'typeorm';
 import { finalize } from 'rxjs/internal/operators/finalize';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -58,6 +59,8 @@ export class CalendarComponent implements OnInit {
   selectedFilteredDriverId1: string
   selectedFilteredDriverId2: string
 
+  filterAfterRedirectionFromdriverPage : boolean = false
+
   //Map driver-color
   driverColorMap: Map<string, string> = new Map();
 
@@ -78,9 +81,24 @@ export class CalendarComponent implements OnInit {
     this.eventList.forEach((item) => {
       this.addToCalendar(item);
     })
+
+    if(this.filterAfterRedirectionFromdriverPage){
+      console.log("FILTER")
+      this.onFilterSubmit()
+    }
   }
 
-  constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService, private placeService: PlaceService, private datePipe: DatePipe) { }
+  constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService, 
+    private placeService: PlaceService, private datePipe: DatePipe, private router: Router, private route: ActivatedRoute) {
+    console.log()
+    // Synchrone
+    console.log("P1 Synchrone : " + this.route.snapshot.params['p1']);
+
+    if(this.route.snapshot.params['p1'] !== null && this.route.snapshot.params['p1'] !== undefined){
+      this.filterAfterRedirectionFromdriverPage = true
+      this.selectedFilteredDriverId1 = this.route.snapshot.params['p1']
+    }
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -99,6 +117,7 @@ export class CalendarComponent implements OnInit {
     });
     this.createDriverColorMap(this.driverList.map(e => e.id), COLORS)
     this.initCalendar()
+    
   }
 
   createDriverColorMap(keys, vals) {
@@ -340,7 +359,7 @@ export class CalendarComponent implements OnInit {
     var dateEv = event.date;
     var startTimeEv = event.startHour;
     var endTimeEv = event.endHour;
-    var i=1;
+    var i = 1;
 
     // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
     // January - 0, February - 1, etc.

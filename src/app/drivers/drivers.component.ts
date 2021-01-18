@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Driver } from '../core/models/driver.schema';
 import { DriverService } from '../core/services/app/driver.service';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-drivers',
@@ -23,7 +24,7 @@ export class DriversComponent implements OnInit {
   columnsToDisplay: string[] = this.displayedColumns.slice();
   dataSource: Driver[];
 
-  constructor(private driverService: DriverService) { }
+  constructor(private driverService: DriverService, private _router: Router) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -181,8 +182,9 @@ export class DriversComponent implements OnInit {
     this.dataSource = this.driverList;
   }
 
-  planning() {
-    console.log("PLanning")
+  planning(event) {
+    console.log("PLanning : " + event)
+    this._router.navigate(['calendar', {p1: event}]);
   }
 
   removeColumn() {
