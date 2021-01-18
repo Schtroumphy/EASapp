@@ -23,4 +23,6 @@ export class Driver{
     @JoinColumn({name : 'event_id'})
     evenements: Evenement[];
 
+    @Column({default: null, nullable: true})
+    comment: string;
 }

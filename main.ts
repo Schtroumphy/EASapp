@@ -7,6 +7,7 @@ import { Driver } from './../EASapp/src/app/core/models/driver.schema';
 import { Patient } from './../EASapp/src/app/core/models/patient.schema';
 import { Evenement } from './src/app/core/models/evenement.schema';
 import { Place } from './src/app/core/models/place.schema';
+import { join } from 'path';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
@@ -14,21 +15,29 @@ const args = process.argv.slice(1),
 
 async function createWindow(): Promise<BrowserWindow> {
 
+  console.log("DIRNAME : " + __dirname)
   const connection = await createConnection({
     name: "connection",
     type: 'sqlite',
-    synchronize: true,
+    synchronize: false,
     logging: true,
     logger: 'simple-console',
     database: './src/assets/data/database.sqlite',
     entities: [Item, Evenement, Driver, Patient, Place],
-    migrationsTableName: "migration_table",
-    migrations: ["migration/*.ts"],
-    cli: {
-      "migrationsDir": "src/migration"
-    },
-    migrationsRun: true,
+    // migrations: [
+    //   "../src/migration/*{.ts,.js}"
+    // ],
+    // cli: {
+    //   migrationsDir: "../src/migration"
+    // },
+    // migrationsRun: true,
   });
+
+ 
+    // await connection.query('PRAGMA foreign_keys=OFF');
+    // await connection.synchronize();
+    // await connection.query('PRAGMA foreign_keys=ON');
+ 
 
   const itemRepo = connection.getRepository(Item);
   const eventRepo = connection.getRepository(Evenement);
@@ -119,6 +128,7 @@ async function createWindow(): Promise<BrowserWindow> {
       driverToUpdate.lastname = _driver.lastname;
       driverToUpdate.email = _driver.email;
       driverToUpdate.phoneNumber = _driver.phoneNumber;
+      driverToUpdate.comment = _driver.comment;
       await driverRepo.save(driverToUpdate);
       event.returnValue = await driverRepo.find();
     } catch (err) {
@@ -146,7 +156,7 @@ async function createWindow(): Promise<BrowserWindow> {
 
   ipcMain.on('get-driver-by-id', async (event: any, _driverId: number) => {
     try {
-      event.returnValue = await driverRepo.findOne({ where: { id: _driverId }});
+      event.returnValue = await driverRepo.findOne({ where: { id: _driverId } });
 
     } catch (err) {
       throw err;
@@ -190,10 +200,10 @@ async function createWindow(): Promise<BrowserWindow> {
       evenement.patient = _evenement.patient;
       evenement.driver = _evenement.driver;
       var newEventId;
-      await eventRepo.save(evenement) .then(evenement => {
+      await eventRepo.save(evenement).then(evenement => {
         console.log("Event has been saved. Event id is", evenement.id);
         newEventId = evenement.id;
-    });;
+      });;
       const eventList = await eventRepo.find({
         relations: ['driver', 'patient', 'startPoint', 'endPoint'],
       });
@@ -208,25 +218,27 @@ async function createWindow(): Promise<BrowserWindow> {
 
   ipcMain.on('get-event-by-id', async (event: any, _eventId: number) => {
     try {
-      
-      event.returnValue = await eventRepo.findOne({ relations: ["patient", "driver", "startPoint", "endPoint"], where: { id: _eventId}});
+
+      event.returnValue = await eventRepo.findOne({ relations: ["patient", "driver", "startPoint", "endPoint"], where: { id: _eventId } });
 
     } catch (err) {
-      console.log("ERREUR "+ err);
+      console.log("ERREUR " + err);
       throw err;
     }
   });
 
   ipcMain.on('get-event-by-driver-id', async (event: any, _driverId: number) => {
     try {
-      event.returnValue = await eventRepo.find({ relations: ["patient", "driver", "startPoint", "endPoint"], where: {
-        driver: {
-          id: _driverId
+      event.returnValue = await eventRepo.find({
+        relations: ["patient", "driver", "startPoint", "endPoint"], where: {
+          driver: {
+            id: _driverId
+          }
         }
-      }});
+      });
 
     } catch (err) {
-      console.log("ERREUR "+ err);
+      console.log("ERREUR " + err);
       throw err;
     }
   });
@@ -252,7 +264,7 @@ async function createWindow(): Promise<BrowserWindow> {
     }
   });
 
-  
+
 
   ipcMain.on('update-event', async (event: any, _event: Evenement) => {
 
@@ -305,7 +317,7 @@ async function createWindow(): Promise<BrowserWindow> {
 
   ipcMain.on('get-patient-by-id', async (event: any, _patientId: number) => {
     try {
-      event.returnValue = await patientRepo.findOne({ where: { id: _patientId }});
+      event.returnValue = await patientRepo.findOne({ where: { id: _patientId } });
     } catch (err) {
       throw err;
     }
@@ -340,7 +352,7 @@ async function createWindow(): Promise<BrowserWindow> {
 
   ipcMain.on('get-place-by-id', async (event: any, _placeId: number) => {
     try {
-      event.returnValue = await placeRepo.findOne({ where: { id: _placeId }});
+      event.returnValue = await placeRepo.findOne({ where: { id: _placeId } });
 
     } catch (err) {
       throw err;
@@ -389,11 +401,11 @@ async function createWindow(): Promise<BrowserWindow> {
     // when you should delete the corresponding element.
     win = null;
   });
-
   return win;
 }
 
 try {
+  
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.

@@ -19,7 +19,7 @@ export class DriversComponent implements OnInit {
 
   driverList: Driver[] = [];
 
-  displayedColumns = ['id', 'firstname', 'lastname', 'phoneNumber', 'email', 'actions', 'planning'];
+  displayedColumns = ['id', 'firstname', 'lastname', 'phoneNumber', 'email', 'comment', 'actions', 'planning'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
   dataSource: Driver[];
 
@@ -39,6 +39,7 @@ export class DriversComponent implements OnInit {
       lastname: new FormControl(null, Validators.required),
       email: new FormControl(null),
       phoneNumber: new FormControl(null),
+      comment:new FormControl(),
       color: new FormControl(null)
     })
   }
@@ -55,6 +56,7 @@ export class DriversComponent implements OnInit {
     driver.lastname = this.driverForm.get('lastname').value;
     driver.email = this.driverForm.get('email').value;
     driver.phoneNumber = this.driverForm.get('phoneNumber').value;
+    driver.comment = this.driverForm.get('comment').value;
 
     if(this.newDriver){
       console.log("Submit NEW")
