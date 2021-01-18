@@ -1,4 +1,4 @@
-<h1> Planning </h1>
+<h1 class="hideForPrint"> Planning </h1>
 
 <div class="alert-changes" *ngIf="displayChangesMsg">Des modifications ont été détecté. Voulez-vous les sauvegarder ? 
     <button type="button" class="btn btn-link" (click)="saveChanges()">Oui</button> 
@@ -12,15 +12,11 @@
 </div>
 
 <div class="row" style="margin-bottom: 2%;">
-    <div class="col">
+    <div class="col hideForPrint">
         <div class="row">
             <button type="button" class="btn btn-info" (click)="displayEventForm(true)"> Ajouter un event</button>
             <button type="button" class="btn btn-info" (click)="displayFilterForm(true)"> Filtrer</button>
         </div>
-    </div>
-
-    <div class="col-2">
-        <button type="button" class="btn btn-info" (click)="onPrint()">Imprimer</button>
     </div>
 </div>
 

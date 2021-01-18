@@ -11,13 +11,13 @@ export class Patient{
     @Column()
     lastname: string;
 
-    @Column()
+    @Column({default: null, nullable: true})
     phoneNumber: string;
 
-    @Column()
+    @Column({default: null, nullable: true})
     email: string;
 
-    @Column()
+    @Column({default: null, nullable: true})
     address: string;
 
     @OneToMany(type => Evenement, event => event.patient)

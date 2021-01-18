@@ -100,8 +100,7 @@
       <th mat-header-cell *matHeaderCellDef> Actions </th>
       <td mat-cell *matCellDef="let element">
         <button type="button" class="btn btn-primary" (click)="editDriver(element)"> <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon></button>
-        <button type="button" class="btn btn-danger" (click)="deleteDriver(element)" data-toggle="modal"
-          data-target="#deleteModal"><mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon></button>
+        <button type="button" class="btn btn-danger" (click)="deleteDriver(element)"><mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon></button>
       </td>
     </ng-container>
 
@@ -111,9 +110,8 @@
   </table>
 </div>
 
-<p>   Planning bientôt disponible.</p>
-
 <!-- Delete Modal -->
+<!--  Add to button attribute : data-toggle="modal" data-target="#deleteModal" -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">

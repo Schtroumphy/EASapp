@@ -49,3 +49,9 @@ form{
   border: solid rgba(218, 143, 5, 0.603) 3px;
   padding: 2%;
 }
+
+@media print{
+  .hideForPrint{
+    display : none
+  }
+}

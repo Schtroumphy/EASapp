@@ -13,10 +13,10 @@ export class Driver{
     @Column()
     lastname: string;
 
-    @Column()
+    @Column({default: null, nullable: true})
     phoneNumber: string;
 
-    @Column()
+    @Column({default: null, nullable: true})
     email: string;
 
     @OneToMany(type => Evenement, event => event.driver)

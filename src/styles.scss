@@ -57,29 +57,27 @@ html, body {
   }
 }
 
-@media print {
-  :not(app-calendar .printMe) {
-    visibility: hidden;
-  }
+body app-root app-navigation mat-sidenav-container mat-sidenav{
+  visibility: hidden;
 }
 
 @media print {
-  html, body {
-    width: 210mm;
-    /* height: 297mm; */
-    height: 282mm;
-    font-size: 11px;
-    background: #FFF;
-    overflow:visible;
-}
-  @page  
-{ 
+  .mat-drawer-content{
+    display: none;
+  }
+
+  mat-sidenav {
+    visibility: collapse;
+
+  }
+
+  @page { 
   size: A4 landscape;   /* auto is the initial value */ 
 
     /* Chrome sets own margins, we change these printer settings */
   margin: 27mm 16mm 27mm 16mm; 
 } 
-  app-calendar .printMe {
+  .printMe {
     visibility: visible
   }
 }

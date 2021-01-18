@@ -12,12 +12,13 @@ import { MatSidenav } from '@angular/material/sidenav';
 export class NavigationComponent {
   @ViewChild('drawer') sidenav: MatSidenav;
 
-  closeAndPrint() {
+  async closeAndPrint() {
     this.sidenav.toggle();
+    await delay(3000);
     print()
   }
 
-  print(){
+  print() {
     window.print();
   }
 
@@ -27,6 +28,10 @@ export class NavigationComponent {
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(private breakpointObserver: BreakpointObserver) { }
 
+}
+
+function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
 }

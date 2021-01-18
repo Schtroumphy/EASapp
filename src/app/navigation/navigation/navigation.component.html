@@ -1,35 +1,32 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport
-      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-      [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      [opened]="(isHandset$ | async) === false">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item ></a>
+      <a mat-list-item></a>
       <a mat-list-item routerLink="/home">Accueil</a>
       <a mat-list-item routerLink="/drivers">Conducteurs</a>
       <a mat-list-item routerLink="/patients">Patients</a>
       <a mat-list-item routerLink="/places">Lieux</a>
       <a mat-list-item routerLink="/calendar">Planning</a>
       <a mat-list-item routerLink="/advanced">Avancé</a>
-      <a mat-list-item (click)="closeAndPrint()">Imprimer</a>
-      <a mat-list-item ></a>
+      <a mat-list-item (click)="closeAndPrint()">Optimiser</a>
+      <a mat-list-item></a>
       <a mat-list-item routerLink="/guide">Guide utilisateur</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <!--<p><button mat-button class="btn btn-info" *ngIf="!drawer.opened" (click)="sidenav.open()">Menu</button></p> -->
+    <p><button mat-button class="btn btn-info hideForPrint" style="@media print{
+      .hideForPrint{
+        display : none
+      }}" *ngIf="!drawer.opened" (click)="sidenav.open()">Menu</button></p>
     <mat-toolbar color="primary">
-      <button
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()"
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
         *ngIf="isHandset$ | async">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
     </mat-toolbar>
-        <!-- Add Content Here -->
-        <router-outlet class="printMe"></router-outlet>
+    <!-- Add Content Here -->
+    <router-outlet class="printMe"></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { Item } from '../../models/item.schema';
 import { Patient } from '../../models/patient.schema';
 
 import { ElectronService } from 'ngx-electron';

@@ -33,11 +33,15 @@ export class Evenement {
     @Column()
     endHour: string;
 
-    @ManyToOne(type => Driver, driver => driver.evenements)
+    @ManyToOne(type => Driver, driver => driver.evenements, {
+        onDelete: "CASCADE"
+    })
     @JoinTable()
     driver: Driver;
 
-    @ManyToOne(type => Patient, patient => patient.evenements)
+    @ManyToOne(type => Patient, patient => patient.evenements, {
+        onDelete: "CASCADE"
+    })
     @JoinTable()
     patient: Patient;
 

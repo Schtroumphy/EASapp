@@ -2,7 +2,6 @@ import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import { createConnection, getConnection, QueryRunner } from 'typeorm';
-import { Item } from './../EASapp/src/app/core/models/item.schema';
 import { Driver } from './../EASapp/src/app/core/models/driver.schema';
 import { Patient } from './../EASapp/src/app/core/models/patient.schema';
 import { Evenement } from './src/app/core/models/evenement.schema';
@@ -23,7 +22,7 @@ async function createWindow(): Promise<BrowserWindow> {
     logging: true,
     logger: 'simple-console',
     database: './src/assets/data/database.sqlite',
-    entities: [Item, Evenement, Driver, Patient, Place],
+    entities: [Evenement, Driver, Patient, Place],
     // migrations: [
     //   "../src/migration/*{.ts,.js}"
     // ],
@@ -32,14 +31,11 @@ async function createWindow(): Promise<BrowserWindow> {
     // },
     // migrationsRun: true,
   });
-
  
     await connection.query('PRAGMA foreign_keys=OFF');
     await connection.synchronize();
     await connection.query('PRAGMA foreign_keys=ON');
  
-
-  const itemRepo = connection.getRepository(Item);
   const eventRepo = connection.getRepository(Evenement);
   const driverRepo = connection.getRepository(Driver);
   const patientRepo = connection.getRepository(Patient);
@@ -79,35 +75,6 @@ async function createWindow(): Promise<BrowserWindow> {
       slashes: true
     }));
   }
-
-  ipcMain.on('get-items', async (event: any, ...args: any[]) => {
-    try {
-      event.returnValue = await itemRepo.find();
-    } catch (err) {
-      throw err;
-    }
-  });
-
-
-  ipcMain.on('add-item', async (event: any, _item: Item) => {
-    try {
-      const item = await itemRepo.create(_item);
-      await itemRepo.save(item);
-      event.returnValue = await itemRepo.find();
-    } catch (err) {
-      throw err;
-    }
-  });
-
-  ipcMain.on('delete-item', async (event: any, _item: Item) => {
-    try {
-      const item = await itemRepo.create(_item);
-      await itemRepo.remove(item);
-      event.returnValue = await itemRepo.find();
-    } catch (err) {
-      throw err;
-    }
-  });
 
   // -------------------------- DRIVER --------------------------
   ipcMain.on('add-driver', async (event: any, _driver: Driver) => {

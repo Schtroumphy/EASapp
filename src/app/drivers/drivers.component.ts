@@ -133,14 +133,13 @@ export class DriversComponent implements OnInit {
   deleteDriver(driver): void {
     console.log("Suppression du conducteur : " +JSON.stringify(driver));
     this.confirmBox(driver)
-    
   }
 
   confirmBox(driver:Driver){  
     let driverName = driver.firstname + " " + driver.lastname;
     Swal.fire({  
       title: 'Etes-vous sûr de vouloir supprimer ' + driverName + " ?",  
-      text: 'La suppression est irréversible.',  
+      text: 'La suppression est irréversible. Tous ses trajets seront également supprimés.',  
       icon: 'warning',  
       showCancelButton: true,  
       confirmButtonText: 'Oui, sûr',  

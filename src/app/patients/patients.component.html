@@ -104,8 +104,7 @@
         <button type="button" class="btn btn-primary" (click)="editPatient(element)">
           <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
         </button>
-        <button type="button" class="btn btn-danger" (click)="deletePatient(element)" data-toggle="modal"
-          data-target="#deleteModal">
+        <button type="button" class="btn btn-danger" (click)="deletePatient(element)">
           <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
         </button>
       </td>
@@ -116,8 +115,6 @@
 
   </table>
 </div>
-
-<p> Planning bientôt disponible.</p>
 
 <!-- Delete Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"

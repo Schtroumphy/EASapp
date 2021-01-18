@@ -142,7 +142,7 @@ export class PatientsComponent implements OnInit {
     let patientName = patient.firstname + " " + patient.lastname;
     Swal.fire({  
       title: 'Etes-vous sûr de vouloir supprimer ' + patientName + " ?",  
-      text: 'La suppression est irréversible.',  
+      text: 'La suppression est irréversible. Les trajets dont il fait partie seront également supprimés.',  
       icon: 'warning',  
       showCancelButton: true,  
       confirmButtonText: 'Oui, sûr',  
