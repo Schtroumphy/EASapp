@@ -34,9 +34,9 @@ async function createWindow(): Promise<BrowserWindow> {
   });
 
  
-    // await connection.query('PRAGMA foreign_keys=OFF');
-    // await connection.synchronize();
-    // await connection.query('PRAGMA foreign_keys=ON');
+    await connection.query('PRAGMA foreign_keys=OFF');
+    await connection.synchronize();
+    await connection.query('PRAGMA foreign_keys=ON');
  
 
   const itemRepo = connection.getRepository(Item);
@@ -332,6 +332,7 @@ async function createWindow(): Promise<BrowserWindow> {
       patientToUpdate.email = _patient.email;
       patientToUpdate.phoneNumber = _patient.phoneNumber;
       patientToUpdate.address = _patient.address;
+      patientToUpdate.comment = _patient.comment;
       await patientRepo.save(patientToUpdate);
       event.returnValue = await patientRepo.find();
     } catch (err) {

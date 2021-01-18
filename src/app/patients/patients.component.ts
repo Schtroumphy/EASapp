@@ -19,7 +19,7 @@ export class PatientsComponent implements OnInit {
 
   patientList: Patient[] = [];
 
-  displayedColumns = ['id', 'firstname', 'lastname', 'phoneNumber', 'email', 'address', 'actions'];
+  displayedColumns = ['id', 'firstname', 'lastname', 'phoneNumber', 'email', 'address', 'comment', 'actions'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
   dataSource: Patient[];
 
@@ -40,7 +40,8 @@ export class PatientsComponent implements OnInit {
       lastname: new FormControl(null, Validators.required),
       address:new FormControl(null),
       email: new FormControl(null),
-      phoneNumber: new FormControl(null)
+      phoneNumber: new FormControl(null),
+      comment: new FormControl()
     })
   }
 
@@ -55,6 +56,7 @@ export class PatientsComponent implements OnInit {
     patient.address = this.patientForm.get('address').value;
     patient.email = this.patientForm.get('email').value;
     patient.phoneNumber = this.patientForm.get('phoneNumber').value;
+    patient.comment = this.patientForm.get('comment').value;
 
     if(this.newPatient){
       console.log("Submit NEW")
