@@ -16,6 +16,7 @@ import { DatePipe } from '@angular/common';
 import { AdvancedConsoleLogger } from 'typeorm';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ThrowStmt } from '@angular/compiler';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -34,6 +35,8 @@ export class CalendarComponent implements OnInit {
   filterForm: FormGroup
   displayTimeViewFilter = false
   displayEventClickedDetails = false
+  startCalendarTime = "8:00"
+  endCalendarTime = "22:00"
 
   //Form
   newEvent = false;
@@ -151,10 +154,10 @@ export class CalendarComponent implements OnInit {
       allDaySlot: false,
       displayEventTime: true,
       allDayText: "Journée entière",
-      slotMinTime: "8:00",
-      slotMaxTime: "22:00",
+      slotMinTime: this.startCalendarTime,
+      slotMaxTime: this.endCalendarTime,
       themeSystem: 'bootstrap',
-      initialView: 'listWeek',
+      initialView: 'timeGridWeek',
       timeZone: 'local',
       eventTextColor: 'white',
       editable: true,
@@ -231,9 +234,9 @@ export class CalendarComponent implements OnInit {
     })
 
     this.filterForm = new FormGroup({
-      driver1: new FormControl(null),
+      driver1: new FormControl(),
       driver2: new FormControl(),
-      startHourFilterSelected : new FormControl(null),
+      startHourFilterSelected : new FormControl(),
       endHourFilterSelected : new FormControl(),
     })
   }
@@ -251,12 +254,18 @@ export class CalendarComponent implements OnInit {
       )
     }
 
-    if(this.startHourFilterSelected !==null){
-      if(this.endHourFilterSelected !== null){
-
-      } else {
+    console.log("FILTRES HEURES : " + this.startHourFilterSelected + " - " + this.endHourFilterSelected)
+    if(this.startHourFilterSelected == null || this.endHourFilterSelected == null){
+      console.log("Un filtre heure est nul")
         this.startHourFilterSelected = ""
-      }
+        this.endHourFilterSelected = ""
+    } else {
+      console.log("DEUX HORAIRS FILTER NON NUL")
+      console.log("Les 2 filtres heure sont non nul ")
+      // this.startCalendarTime = this.startHourFilterSelected 
+      // this.endCalendarTime = this.endHourFilterSelected 
+      this.calendarComponent.options.slotMinTime = this.startHourFilterSelected
+      this.calendarComponent.options.slotMaxTime = this.endHourFilterSelected
     }
 
     this.updateCalendar()
@@ -419,6 +428,8 @@ export class CalendarComponent implements OnInit {
   clearFilterForm() {
     this.filterForm.reset()
     this.displayFilteredForm = false
+    this.filterForm.controls["driver1"].setValue("");
+    this.selectedFilteredDriverId1=""
   }
 
   displayFilterForm(hideOrNot: boolean) {
@@ -435,7 +446,6 @@ export class CalendarComponent implements OnInit {
       this.updatingEvent = true;
       this.newEvent = false;
     }
-
   }
 
   editEvent(event) {
@@ -537,6 +547,10 @@ export class CalendarComponent implements OnInit {
 
   updateHoursJobFrom() {
     this.hours_job_from = this.hours_job.filter(e => parseInt(e) > parseInt(this.startHourFilterSelected))
+  }
+
+  print(){
+    window.print()
   }
 
 }

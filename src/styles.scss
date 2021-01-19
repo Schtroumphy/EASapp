@@ -61,23 +61,40 @@ body app-root app-navigation mat-sidenav-container mat-sidenav{
   visibility: hidden;
 }
 
-@media print {
-  .mat-drawer-content{
-    display: none;
-  }
+// @media print {
+//   .mat-drawer-content{
+//     display: none;
+//   }
 
-  mat-sidenav {
-    visibility: collapse;
+//   mat-sidenav {
+//     visibility: collapse;
 
-  }
+//   }
 
-  @page { 
-  size: A4 landscape;   /* auto is the initial value */ 
+//   @page { 
+//   size: A4;   /* auto is the initial value */ 
 
-    /* Chrome sets own margins, we change these printer settings */
-  margin: 27mm 16mm 27mm 16mm; 
-} 
-  .printMe {
-    visibility: visible
-  }
-}
+//     /* Chrome sets own margins, we change these printer settings */
+//   margin: 0mm 0mm 0mm 0mm; 
+// } 
+//   .printMe {
+//     visibility: visible
+//   }
+// }
+
+// @media print
+
+// {
+// body * { visibility: hidden; }
+// .div2 * { visibility: visible; }
+// .div2 { position: absolute; top: 40px; left: 30px; }
+
+// .mat-drawer-content{
+//   display: none;
+// }
+
+// mat-sidenav {
+//   visibility: collapse;
+
+// }
+//}

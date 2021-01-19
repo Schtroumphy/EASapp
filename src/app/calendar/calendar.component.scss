@@ -50,8 +50,28 @@ form{
   padding: 2%;
 }
 
-@media print{
+@media print {
   .hideForPrint{
     display : none
+  }
+
+  .mat-drawer-content{
+    display: none;
+  }
+
+  mat-sidenav {
+    visibility: collapse;
+
+  }
+
+  @page { 
+  size: A4 landscape;   /* auto is the initial value */ 
+
+    /* Chrome sets own margins, we change these printer settings */
+  margin: 0mm 0mm 0mm 0mm; 
+} 
+  .printMe {
+    visibility: visible;
+    zoom: 0.8
   }
 }

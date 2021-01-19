@@ -14,8 +14,8 @@ export class NavigationComponent {
 
   async closeAndPrint() {
     this.sidenav.toggle();
-    await delay(3000);
-    print()
+    //await delay(3000);
+    //print()
   }
 
   print() {
