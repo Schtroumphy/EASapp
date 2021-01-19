@@ -195,9 +195,11 @@ export class AdvancedComponent implements OnInit {
     this.daysArray = []
     this.eventListToDisplay = []
 
+    console.log("Date selected "+ this.eventForm.get("date").value)
     this.recurringValues.forEach((element) => {
 
-      this.getNextDayDateForRecurrence(element).forEach(date => {
+
+      this.getNextDayDateForRecurrence(this.eventForm.get("date").value, element).forEach(date => {
         var eventToAddToDB = new Evenement();
 
         eventToAddToDB.startHour = this.eventForm.get('startHour').value
@@ -248,9 +250,9 @@ export class AdvancedComponent implements OnInit {
     });
   }
 
-  getNextDayDateForRecurrence(dayNumber) { //0: sunday, 1: monday etc
-    var d = new Date();
-    var d1 = new Date();
+  getNextDayDateForRecurrence(firstDate, dayNumber) { //0: sunday, 1: monday etc
+    var d = new Date(firstDate);
+    var d1 = new Date(firstDate);
     var zeroString = ""
 
     d.setDate(d.getDate() + (dayNumber + 7 - d.getDay()) % 7);

@@ -129,6 +129,7 @@ export class PatientsComponent implements OnInit {
     this.patientForm.controls["address"].setValue(patient.address);
     this.patientForm.controls["email"].setValue(patient.email);
     this.patientForm.controls["phoneNumber"].setValue(patient.phoneNumber);
+    this.patientForm.controls["comment"].setValue(patient.comment);
   
   }
 

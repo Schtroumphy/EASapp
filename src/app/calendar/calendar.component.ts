@@ -54,11 +54,15 @@ export class CalendarComponent implements OnInit {
   selectedPatientId: string
   selectedPatient: Patient
   dateSelected: string
-  selectedJourneyId: string
+  selectedJourneyId : string
   favoriteTimeView: string
   selectedFilteredDriverId1: string
   selectedFilteredDriverId2: string
+  startHourFilterSelected : string
+  endHourFilterSelected : string
 
+  hours_job: string[] = [];
+  hours_job_from: string[] = [];
   filterAfterRedirectionFromdriverPage : boolean = false
 
   //Map driver-color
@@ -117,7 +121,13 @@ export class CalendarComponent implements OnInit {
     });
     this.createDriverColorMap(this.driverList.map(e => e.id), COLORS)
     this.initCalendar()
-    
+    this.hours_job = Array.from(Array(23).keys()).map(x => {
+      if(x<10){
+        return "0" + x
+      } else {
+        return "" + x
+      }
+    }).filter(x => parseInt(x) > 7 && parseInt(x)  < 23)
   }
 
   createDriverColorMap(keys, vals) {
@@ -131,10 +141,6 @@ export class CalendarComponent implements OnInit {
 
   getAllEvents() {
     this.eventService.getEvents().subscribe((items) => (this.eventList = items));
-  }
-
-  onPrint() {
-    window.print();
   }
 
   initCalendar() {
@@ -199,8 +205,6 @@ export class CalendarComponent implements OnInit {
 
     //Add it to changed event array
     this.eventChangesList.push(eventConverted)
-
-    console.log("")
   }
 
   handleEventClick(event) {
@@ -227,8 +231,10 @@ export class CalendarComponent implements OnInit {
     })
 
     this.filterForm = new FormGroup({
-      driver1: new FormControl(null, Validators.required),
+      driver1: new FormControl(null),
       driver2: new FormControl(),
+      startHourFilterSelected : new FormControl(null),
+      endHourFilterSelected : new FormControl(),
     })
   }
 
@@ -243,6 +249,14 @@ export class CalendarComponent implements OnInit {
         this.eventList = this.eventList.concat(items);
       }
       )
+    }
+
+    if(this.startHourFilterSelected !==null){
+      if(this.endHourFilterSelected !== null){
+
+      } else {
+        this.startHourFilterSelected = ""
+      }
     }
 
     this.updateCalendar()
@@ -324,9 +338,9 @@ export class CalendarComponent implements OnInit {
       this.eventChangesList = this.eventChangesList.filter(obj => obj !== eventFound);
 
       //Already in eventChangesList
-      eventFound.date = this.datePipe.transform(eventCalendar.start, 'dd/MM/yyyy')
-      eventFound.startHour = this.datePipe.transform(eventCalendar.start, 'HH:mm')
-      eventFound.endHour = this.datePipe.transform(eventCalendar.end, 'HH:mm')
+      eventFound.date = this.datePipe.transform(eventCalendar.start, FORMAT_yyyy_MM_dd)
+      eventFound.startHour = this.datePipe.transform(eventCalendar.start, FORMAT_HH_mm)
+      eventFound.endHour = this.datePipe.transform(eventCalendar.end, FORMAT_HH_mm)
       event = eventFound
 
     } else {
@@ -519,6 +533,10 @@ export class CalendarComponent implements OnInit {
     this.eventChangesList = [];
     this.displayChangesMsg = false
     this.updateCalendar()
+  }
+
+  updateHoursJobFrom() {
+    this.hours_job_from = this.hours_job.filter(e => parseInt(e) > parseInt(this.startHourFilterSelected))
   }
 
 }

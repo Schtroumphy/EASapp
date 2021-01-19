@@ -1,14 +1,15 @@
 <h1 class="hideForPrint"> Planning </h1>
 
-<div class="alert-changes" *ngIf="displayChangesMsg">Des modifications ont été détecté. Voulez-vous les sauvegarder ? 
-    <button type="button" class="btn btn-link" (click)="saveChanges()">Oui</button> 
-    ou 
+<div class="alert-changes" *ngIf="displayChangesMsg">Des modifications ont été détecté. Voulez-vous les sauvegarder ?
+    <button type="button" class="btn btn-link" (click)="saveChanges()">Oui</button>
+    ou
     <button type="button" class="btn btn-link" (click)="clearChanges()">Non</button>
 </div>
 <div *ngIf="displayChangesMsg"> Modifications :
-<p *ngFor="let event of eventChangesList">
-    Evènement n°{{event.id}} - Le {{event.date}} - De {{event.startHour}} à {{event.endHour}} | Conducteur : {{event.driver.firstname}}
-</p>
+    <p *ngFor="let event of eventChangesList">
+        Evènement n°{{event.id}} - Le {{event.date}} - De {{event.startHour}} à {{event.endHour}} | Conducteur :
+        {{event.driver.firstname}}
+    </p>
 </div>
 
 <div class="row" style="margin-bottom: 2%;">
@@ -47,12 +48,29 @@
                 </option>
             </select>
         </div>
+        <div class="col">
+            <label for="startHourFilterSelected"> De : </label>
+            <select formControlName="startHourFilterSelected" id="startHourFilterSelected" [(ngModel)]="startHourFilterSelected" (change)="updateHoursJobFrom()">
+                <option *ngFor="let hour of hours_job" [value]="hour">
+                    {{hour}} h 00
+                </option>
+            </select>
+        </div>
+        <div class="col">
+            <label for="endHourFilterSelected"> A : </label>
+            <select formControlName="endHourFilterSelected" id="endHourFilterSelected" [(ngModel)]="endHourFilterSelected">
+                <option *ngFor="let hour of hours_job_from" [value]="hour">
+                    {{hour}} h 00
+                </option>
+            </select>
+        </div>
+
+    </div>
+    <div class="row">
         <div style="color:red" *ngIf="!filterForm.valid && filterForm.touched">
             Veuillez rentrer des valeurs valides.
         </div>
-        <div class="col">
-            <button type="submit" class="btn btn-info" [disabled]="!filterForm.valid">Filtrer</button>
-        </div>
+        <button type="submit" class="btn btn-info" [disabled]="!filterForm.valid">Filtrer</button>
         <button type="button" class="btn btn-warning" (click)="clearFilter()">Effacer les filtres</button>
 
     </div>
@@ -116,7 +134,8 @@
         <div class="col-2">
             <label for="startHour">Départ : </label>
             <div class="input-group">
-                <input class="form-control" type="time" id="startHour" formControlName="startHour" [(ngModel)]="startHourSelected">
+                <input class="form-control" type="time" id="startHour" formControlName="startHour"
+                    [(ngModel)]="startHourSelected">
             </div>
         </div>
         <div class="col-2">
