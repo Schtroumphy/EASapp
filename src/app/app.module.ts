@@ -51,6 +51,13 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   interactionPlugin
 ]);
 
+// Angular Calendar
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { CommonModule } from '@angular/common';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { FlatpickrModule } from 'angularx-flatpickr';
+
 //Services
 import { DriverService } from '../app/core/services/app/driver.service'
 import { PatientService } from '../app/core/services/app/patient.service'
@@ -63,6 +70,8 @@ import { EventComponent } from './event/event.component';
 import { AdvancedComponent } from './advanced/advanced.component';
 import { DatePipe } from '@angular/common';
 import { UserGuideComponent } from './user-guide/user-guide.component';
+import { AngularCalendarComponent } from './angular-calendar/angular-calendar.component';
+import { ModuleWithProviders } from '@angular/core';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -73,8 +82,10 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   dayGridPlugin, bootstrapPlugin, listPlugin,timeGridPlugin,interactionPlugin
 ]);
 
+
+
 @NgModule({
-  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent],
+  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, AngularCalendarComponent],
   imports: [
     BrowserModule, BrowserAnimationsModule,
     FormsModule,
@@ -100,9 +111,27 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     ReactiveFormsModule,
     FullCalendarModule,
     NgbModule,
-    MatDialogModule,MatExpansionModule,MatRadioModule
+    MatDialogModule,MatExpansionModule,MatRadioModule,
+    FlatpickrModule.forRoot(),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
+    CommonModule,
+    NgbModalModule
+
   ],
   providers: [DriverService, ElectronService, PatientService, EventService, PlaceService, DatePipe],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+  
+}
+declare module "@angular/core" {
+  interface ModuleWithProviders<T = any> {
+    ngModule: Type<T>;
+    providers?: Provider[];
+  }
+}
+
+

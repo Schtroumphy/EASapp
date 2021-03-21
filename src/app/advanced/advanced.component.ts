@@ -181,7 +181,6 @@ export class AdvancedComponent implements OnInit {
       console.log("uncheck all ")
 
       this.checklist.filter(check => check.id != 7).forEach(check =>{ check.isSelected = event.target.checked ? true : false})
-      //this.uncheckAllCheckbox()
     } else {
       this.checklist[this.checklist.findIndex(check => check.id == event.target.value)].isSelected = event.target.checked ? true : false
       console.log("New checklist " + JSON.stringify(this.checklist))
@@ -189,8 +188,6 @@ export class AdvancedComponent implements OnInit {
     this.checkedlist = this.checklist.filter(check => check.isSelected && check.id != 7)
     console.log("change checked list" + JSON.stringify(this.checkedlist))
     this.updateRecurringEventList()
-    //this.updateDaysArray()
-    //console.log("Array : " + this.recurringValues.toString())
   }
 
   //Display form to add event

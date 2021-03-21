@@ -61,6 +61,9 @@ body app-root app-navigation mat-sidenav-container mat-sidenav{
   visibility: hidden;
 }
 
+/* angular-cli file: src/styles.css */
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
+
 // @media print {
 //   .mat-drawer-content{
 //     display: none;

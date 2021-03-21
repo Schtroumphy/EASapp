@@ -11,6 +11,7 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { PlacesComponent } from './places/places.component';
 import { AdvancedComponent } from './advanced/advanced.component';
 import { UserGuideComponent } from './user-guide/user-guide.component';
+import { AngularCalendarComponent } from './angular-calendar/angular-calendar.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,10 @@ const routes: Routes = [
   {
     path: 'calendar',
     component: CalendarComponent
+  },
+  {
+    path: 'angular-calendar',
+    component: AngularCalendarComponent
   },
   {
     path: 'calendar/:p1',
