@@ -13,6 +13,7 @@ import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
+import { DAYS, FORMAT_yyyy_MM_dd } from '../core/constants';
 @Component({
   selector: 'app-advanced',
   templateUrl: './advanced.component.html',
@@ -42,6 +43,8 @@ export class AdvancedComponent implements OnInit {
   selectedDatePlan: string;
   eventPlanList = []
   displaySaveButton: boolean = false
+  checklist = []
+  checkedlist = []
 
   selectedStartPointId: string
   selectedStarPoint: Place
@@ -68,7 +71,18 @@ export class AdvancedComponent implements OnInit {
     })
   }
 
-  constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService, private placeService: PlaceService, private datePipe: DatePipe) { }
+  constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService, private placeService: PlaceService, private datePipe: DatePipe) {
+    this.checklist = [
+      { id: 1, label: 'Lundi', isSelected: false },
+      { id: 2, label: 'Mardi', isSelected: false },
+      { id: 3, label: 'Mercredi', isSelected: false },
+      { id: 4, label: 'Jeudi', isSelected: false },
+      { id: 5, label: 'Vendredi', isSelected: false },
+      { id: 6, label: 'Samedi', isSelected: false },
+      { id: 0, label: 'Dimanche', isSelected: false },
+      { id: 7, label: 'Tous les jours', isSelected: false },
+    ];
+  }
 
   ngOnInit(): void {
     registerLocaleData(localeFr, 'fr');
@@ -85,12 +99,12 @@ export class AdvancedComponent implements OnInit {
       this.placeList = items
     });
     this.hours_job = Array.from(Array(23).keys()).map(x => {
-      if(x<10){
+      if (x < 10) {
         return "0" + x
       } else {
         return "" + x
       }
-    }).filter(x => parseInt(x) > 7 && parseInt(x)  < 23)
+    }).filter(x => parseInt(x) > 7 && parseInt(x) < 23)
   }
 
   onPrint() {
@@ -115,7 +129,7 @@ export class AdvancedComponent implements OnInit {
     console.log("Event list : " + JSON.stringify(this.eventListToDisplay))
 
     console.log("Submit NEW EVENt")
-    if (this.recurringValues != []) {
+    if (this.eventListToDisplay != []) {
       //Add each element to BDD
       this.eventListToDisplay.forEach(element => {
         element.title = element.patient.firstname + " " + element.patient.lastname.toUpperCase();
@@ -161,45 +175,71 @@ export class AdvancedComponent implements OnInit {
     this.displayForm = false;
   }
 
-  getCheckboxValue(event) {
+  updateCheckedList(event) {
+    console.log("change check " + JSON.stringify(event))
     if (event.target.value == 7) {
-      if (event.target.checked) {
-        this.recurringValues = [0, 1, 2, 3, 4, 5, 6]
-      } else {
-        this.recurringValues = []
-      }
+      console.log("uncheck all ")
+
+      this.checklist.filter(check => check.id != 7).forEach(check =>{ check.isSelected = event.target.checked ? true : false})
+      //this.uncheckAllCheckbox()
     } else {
-      //console.log("NOT ALL DAY")
-      if (this.recurringValues.includes(parseInt(event.target.value))) {
-        if (!event.target.checked) {
-          //console.log("Remove item")
-          this.removeReccuringValue(parseInt(event.target.value))
-        }
-      } else {
-        if (event.target.checked) {
-          //console.log("Addin item")
-          this.recurringValues.push(parseInt(event.target.value))
-        }
-      }
+      this.checklist[this.checklist.findIndex(check => check.id == event.target.value)].isSelected = event.target.checked ? true : false
+      console.log("New checklist " + JSON.stringify(this.checklist))
     }
-    this.updateDaysArray()
+    this.checkedlist = this.checklist.filter(check => check.isSelected && check.id != 7)
+    console.log("change checked list" + JSON.stringify(this.checkedlist))
+    this.updateRecurringEventList()
+    //this.updateDaysArray()
     //console.log("Array : " + this.recurringValues.toString())
   }
 
   //Display form to add event
   displayEventForm() {
     this.displayForm = !this.displayForm;
+    this.displayPlanDriver = false
+  }
+
+  updateRecurringEventList(){
+    this.eventListToDisplay = []
+    this.checkedlist.forEach((day) =>{
+      this.getNextDayDateForRecurrence(this.eventForm.get("date").value, day.id).forEach(date => {
+
+        var eventToAddToDB = new Evenement();
+
+        eventToAddToDB.startHour = this.eventForm.get('startHour').value
+        eventToAddToDB.endHour = this.eventForm.get('endHour').value
+        console.log("element : " + day.id)
+        eventToAddToDB.date = this.datePipe.transform(date, FORMAT_yyyy_MM_dd);
+        this.eventListToDisplay.push(eventToAddToDB)
+        console.log("Event to display list : " + JSON.stringify(eventToAddToDB))
+
+        //add driver, patient, title (from patient), start and end point to add it to datab
+        this.driverService.getDriverById(parseInt(this.selectedDriverId)).subscribe(
+          (item) => { eventToAddToDB.driver = item });
+        this.patientService.getPatientById(parseInt(this.selectedPatientId)).subscribe(
+          (item) => { eventToAddToDB.patient = item });
+        this.placeService.getPlaceById(parseInt(this.selectedStartPointId)).subscribe(
+          (item) => { eventToAddToDB.startPoint = item });
+        this.placeService.getPlaceById(parseInt(this.selectedEndPointId)).subscribe(
+          (item) => { eventToAddToDB.endPoint = item });
+      });
+      //eventToAddToDB.date = this.getNextDayDateForRecurrence(element);
+
+      console.log("liste : " + JSON.stringify(this.eventListToDisplay))
+
+    })
   }
 
   updateDaysArray() {
     this.daysArray = []
     this.eventListToDisplay = []
 
-    console.log("Date selected "+ this.eventForm.get("date").value)
+    console.log("Date selected " + this.eventForm.get("date").value)
+    console.log("Recrring values " + JSON.stringify(this.recurringValues))
     this.recurringValues.forEach((element) => {
 
-
       this.getNextDayDateForRecurrence(this.eventForm.get("date").value, element).forEach(date => {
+
         var eventToAddToDB = new Evenement();
 
         eventToAddToDB.startHour = this.eventForm.get('startHour').value
@@ -222,26 +262,7 @@ export class AdvancedComponent implements OnInit {
       //eventToAddToDB.date = this.getNextDayDateForRecurrence(element);
 
       console.log("liste : " + JSON.stringify(this.eventListToDisplay))
-
-      if (element == 0) {
-        this.daysArray.push("Dimanche")
-      } else if (element == 1) {
-        this.daysArray.push("Lundi")
-      } else if (element == 2) {
-        this.daysArray.push("Mardi")
-      } else if (element == 3) {
-        this.daysArray.push("Mercredi")
-      } else if (element == 4) {
-        this.daysArray.push("Jeudi")
-      } else if (element == 5) {
-        this.daysArray.push("Vendredi")
-      } else if (element == 6) {
-        this.daysArray.push("Samedi")
-      } else if (element == 7) {
-        this.daysArray = ["tous les jours"]
-      }
     })
-
   }
 
   removeReccuringValue(dayToRemove) {
@@ -251,17 +272,33 @@ export class AdvancedComponent implements OnInit {
   }
 
   getNextDayDateForRecurrence(firstDate, dayNumber) { //0: sunday, 1: monday etc
+    console.log("Date selcted : " + JSON.stringify(firstDate))
     var d = new Date(firstDate);
     var d1 = new Date(firstDate);
     var zeroString = ""
+    console.log("Date selcted convert to date: " + JSON.stringify(d))
 
-    d.setDate(d.getDate() + (dayNumber + 7 - d.getDay()) % 7);
+    console.log("Get date : " + JSON.stringify(d.getDate()))
+    console.log("Day number : " + dayNumber)
+    console.log("Get day : " + JSON.stringify(d.getDay()))
+    console.log("RESULT " + d.getDate() + (dayNumber + 7 - d.getDay()) % 7)
+
+    d.setDate(d.getDate() + (dayNumber + 7 - d.getDay()) % 7)
+
+    console.log("D after set date : " + d)
+    console.log("D after set date : " + JSON.stringify(d))
+
+    console.log("Date selcted convert w/ format: " + JSON.stringify(d))
+    var date = this.datePipe.transform(d, FORMAT_yyyy_MM_dd)
+    console.log("Date selcted convert w/ format: " + JSON.stringify(date))
+
     if (d.getMonth() < 10) {
       zeroString = "0"
     } else {
       zeroString = ""
     }
-    var date = d.getFullYear() + "-" + zeroString + (d.getMonth() + 1) + "-" + d.getDate()
+
+    //var date = d.getFullYear() + "-" + zeroString + (d.getMonth() + 1) + "-" + d.getDate()
     console.log("Date : " + date)
     var dateList = []
     dateList.push(date)
@@ -280,60 +317,11 @@ export class AdvancedComponent implements OnInit {
     return dateList;
   }
 
-
-  // getPeriodSelected(event) {
-  //   if (event.target.value == 1) {
-  //     //Morning
-  //     this.periodIdSelected = 1
-  //     this.isDisabledAM = false
-  //     if (event.target.checked) {
-  //       this.isDisabledAllDay = true
-  //       this.isDisabledPM = true
-  //     } else {
-  //       this.isDisabledAllDay = false
-  //       this.isDisabledPM = false
-  //     }
-  //   } else if (event.target.value == 2) {
-  //     //Afternoon
-  //     this.periodIdSelected = 2
-  //     this.isDisabledPM = false
-  //     if (event.target.checked) {
-  //       this.isDisabledAllDay = true
-  //       this.isDisabledAM = true
-  //     } else {
-  //       this.isDisabledAllDay = false
-  //       this.isDisabledAM = false
-  //     }
-  //   } else if (event.target.value == 3) {
-  //     //Afternoon
-  //     this.periodIdSelected = 3
-  //     this.isDisabledPM = false
-  //     if (event.target.checked) {
-  //       this.isDisabledAllDay = true
-  //       this.isDisabledAM = true
-  //     } else {
-  //       this.isDisabledAllDay = false
-  //       this.isDisabledAM = false
-  //     }
-  //   } else {
-  //     //All day
-  //     this.periodIdSelected = 4
-  //     this.isDisabledAllDay = false
-
-  //     if (event.target.checked) {
-  //       this.isDisabledPM = true
-  //       this.isDisabledAM = true
-  //     } else {
-  //       this.isDisabledPM = false
-  //       this.isDisabledAM = false
-  //     }
-  //   }
-  // }
-
-  test() {
+  displayPlanForm() {
     //console.log(" HOUR JOB " + JSON.stringify(this.hours_job))
     this.createHalfHourIntervals(8, 12) //Morning
     this.displayPlanDriver = !this.displayPlanDriver
+    this.displayForm = false;
   }
 
   planDriver() {
@@ -348,30 +336,12 @@ export class AdvancedComponent implements OnInit {
     var from, until;
     from = parseInt(this.startHourPlanSelected)
     until = parseInt(this.endHourPlanSelected)
-    // if (this.periodIdSelected == 1) {
-    //   from = 8
-    //   until = 12
-    // } else if (this.periodIdSelected == 2) {
-    //   from = 12
-    //   until = 17
-    // } else if (this.periodIdSelected == 3) {
-    //   from = 17
-    //   until = 22
-    // } else {
-    //   from = 8
-    //   until = 22
-    // }
     var driverPlan;
     this.driverService.getDriverById(parseInt(this.selectedPlanDriverId)).subscribe((item) => {
       driverPlan = item
     });
 
     var startHour, endHour;
-    // if (d.getMonth() < 10) {
-    //   zeroString = "0"
-    // } else {
-    //   zeroString = ""
-    // }
     this.intervalsHour = this.createHalfHourIntervals(from, until)
     this.intervalsHour.forEach((interval) => {
       startHour = interval[0]
@@ -406,15 +376,15 @@ export class AdvancedComponent implements OnInit {
     for (let i = from; i < until; i++) {
       console.log("i : " + i)
       quarterHours.forEach(quarter => {
-        if(i<10){
+        if (i < 10) {
           intervals.push("0" + i + ":" + quarter)
-        }else {
+        } else {
           intervals.push(i + ":" + quarter)
         }
         console.log("Intervals " + JSON.stringify(intervals))
       })
     }
-    until<10 ? intervals.push("0" + until + ":00") : intervals.push(until + ":00")
+    until < 10 ? intervals.push("0" + until + ":00") : intervals.push(until + ":00")
 
     var intervals2 = []
     var intervalsDef = []
@@ -452,7 +422,7 @@ export class AdvancedComponent implements OnInit {
     console.log("Event plan patient " + JSON.stringify(this.eventPlanList.find(e => e.startHour == hour[0] && e.endHour == hour[1])))
   }
 
-  saveStartHourSelection(hour, index, placeId) {
+  saveStartPointSelection(hour, index, placeId) {
     console.log("START PLAN SELECTION")
     console.log("Hour " + hour)
     console.log("Index " + index)
@@ -513,5 +483,17 @@ export class AdvancedComponent implements OnInit {
       this.displayPlanDriver = false
     }
 
+  }
+
+  clearRecurrence() {
+    this.recurringValues = []
+  }
+
+
+  uncheckAllCheckbox() {
+    this.checklist.forEach(check => {
+      if(check.id != 7)
+        check.isSelected = false;
+    })
   }
 }

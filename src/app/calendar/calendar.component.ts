@@ -57,16 +57,18 @@ export class CalendarComponent implements OnInit {
   selectedPatientId: string
   selectedPatient: Patient
   dateSelected: string
-  selectedJourneyId : string
+  selectedJourneyId: string
   favoriteTimeView: string
   selectedFilteredDriverId1: string
   selectedFilteredDriverId2: string
-  startHourFilterSelected : string
-  endHourFilterSelected : string
+  startHourFilterSelected: string
+  endHourFilterSelected: string
+  frequencySelected: string
 
   hours_job: string[] = [];
   hours_job_from: string[] = [];
-  filterAfterRedirectionFromdriverPage : boolean = false
+  frequencyArray: string[] = [];
+  filterAfterRedirectionFromdriverPage: boolean = false
 
   //Map driver-color
   driverColorMap: Map<string, string> = new Map();
@@ -89,19 +91,19 @@ export class CalendarComponent implements OnInit {
       this.addToCalendar(item);
     })
 
-    if(this.filterAfterRedirectionFromdriverPage){
+    if (this.filterAfterRedirectionFromdriverPage) {
       console.log("FILTER")
       this.onFilterSubmit()
     }
   }
 
-  constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService, 
+  constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService,
     private placeService: PlaceService, private datePipe: DatePipe, private router: Router, private route: ActivatedRoute) {
     console.log()
     // Synchrone
     console.log("P1 Synchrone : " + this.route.snapshot.params['p1']);
 
-    if(this.route.snapshot.params['p1'] !== null && this.route.snapshot.params['p1'] !== undefined){
+    if (this.route.snapshot.params['p1'] !== null && this.route.snapshot.params['p1'] !== undefined) {
       this.filterAfterRedirectionFromdriverPage = true
       this.selectedFilteredDriverId1 = this.route.snapshot.params['p1']
     }
@@ -125,12 +127,13 @@ export class CalendarComponent implements OnInit {
     this.createDriverColorMap(this.driverList.map(e => e.id), COLORS)
     this.initCalendar()
     this.hours_job = Array.from(Array(23).keys()).map(x => {
-      if(x<10){
+      if (x < 10) {
         return "0" + x
       } else {
         return "" + x
       }
-    }).filter(x => parseInt(x) > 7 && parseInt(x)  < 23)
+    }).filter(x => parseInt(x) > 7 && parseInt(x) < 23)
+    this.frequencyArray = ["05", "10", "15", "30"]
   }
 
   createDriverColorMap(keys, vals) {
@@ -154,8 +157,8 @@ export class CalendarComponent implements OnInit {
       allDaySlot: false,
       displayEventTime: true,
       allDayText: "Journée entière",
-      slotMinTime: this.startCalendarTime,
-      slotMaxTime: this.endCalendarTime,
+      slotMinTime: '8:00',
+      slotMaxTime: '22:00',
       themeSystem: 'bootstrap',
       initialView: 'timeGridWeek',
       timeZone: 'local',
@@ -236,18 +239,24 @@ export class CalendarComponent implements OnInit {
     this.filterForm = new FormGroup({
       driver1: new FormControl(),
       driver2: new FormControl(),
-      startHourFilterSelected : new FormControl(),
-      endHourFilterSelected : new FormControl(),
+      startHourFilterSelected: new FormControl(),
+      endHourFilterSelected: new FormControl(),
+      frequencySelected: new FormControl(),
     })
   }
 
   onFilterSubmit() {
-    this.eventList = []
-    this.eventService.getEventsByDriverId(parseInt(this.selectedFilteredDriverId1)).subscribe((items) => {
-      this.eventList = this.eventList.concat(items);
-    }
-    )
     if (this.selectedFilteredDriverId1 != null) {
+      this.eventList = []
+      this.eventService.getEventsByDriverId(parseInt(this.selectedFilteredDriverId1)).subscribe((items) => {
+        this.eventList = this.eventList.concat(items);
+      }
+      )
+    }
+    if (this.selectedFilteredDriverId2 != null) {
+      if (this.selectedFilteredDriverId1 == null) {
+        this.eventList = []
+      }
       this.eventService.getEventsByDriverId(parseInt(this.selectedFilteredDriverId2)).subscribe((items) => {
         this.eventList = this.eventList.concat(items);
       }
@@ -255,20 +264,24 @@ export class CalendarComponent implements OnInit {
     }
 
     console.log("FILTRES HEURES : " + this.startHourFilterSelected + " - " + this.endHourFilterSelected)
-    if(this.startHourFilterSelected == null || this.endHourFilterSelected == null){
+    if (this.startHourFilterSelected == null || this.endHourFilterSelected == null) {
       console.log("Un filtre heure est nul")
-        this.startHourFilterSelected = ""
-        this.endHourFilterSelected = ""
+      this.startHourFilterSelected = ""
+      this.endHourFilterSelected = ""
     } else {
       console.log("DEUX HORAIRS FILTER NON NUL")
       console.log("Les 2 filtres heure sont non nul ")
-      // this.startCalendarTime = this.startHourFilterSelected 
-      // this.endCalendarTime = this.endHourFilterSelected 
-      this.calendarComponent.options.slotMinTime = this.startHourFilterSelected
-      this.calendarComponent.options.slotMaxTime = this.endHourFilterSelected
+      this.calendarApi.setOption("slotMinTime", this.startHourFilterSelected + ":00:00");
+      this.calendarApi.setOption("slotMaxTime", this.endHourFilterSelected + ":00:00");
+    }
+    console.log("Fréquence selected : " + this.frequencySelected)
+    if (this.frequencySelected) {
+      console.log("Freq non null")
+      this.calendarApi.setOption("slotDuration", "00:" + this.frequencySelected);
     }
 
     this.updateCalendar()
+    this.filterForm.reset()
   }
 
   onSubmit() {
@@ -332,6 +345,7 @@ export class CalendarComponent implements OnInit {
 
   updateCalendar() {
     this.calendarApi.removeAllEvents();
+    console.log("event list " + JSON.stringify(this.eventList))
     this.eventList.forEach((item) => {
       this.addToCalendar(item);
     })
@@ -429,7 +443,10 @@ export class CalendarComponent implements OnInit {
     this.filterForm.reset()
     this.displayFilteredForm = false
     this.filterForm.controls["driver1"].setValue("");
-    this.selectedFilteredDriverId1=""
+    this.selectedFilteredDriverId1 = ""
+    this.calendarApi.setOption("slotMinTime", "08:00:00");
+    this.calendarApi.setOption("slotMaxTime", "22:00:00");
+    this.calendarApi.setOption("slotDuration", "00:15");
   }
 
   displayFilterForm(hideOrNot: boolean) {
@@ -549,7 +566,7 @@ export class CalendarComponent implements OnInit {
     this.hours_job_from = this.hours_job.filter(e => parseInt(e) > parseInt(this.startHourFilterSelected))
   }
 
-  print(){
+  print() {
     window.print()
   }
 
