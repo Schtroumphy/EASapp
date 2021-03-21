@@ -18,6 +18,7 @@ import { AppComponent } from './app.component';
 import { NavigationComponent } from './navigation/navigation/navigation.component';
 import { DriversComponent } from './drivers/drivers.component';
 import { PatientsComponent } from './patients/patients.component';
+import { CalendarHeaderComponent } from './angular-calendar/header/calendar-header';
 
 
 import { LayoutModule } from '@angular/cdk/layout';
@@ -85,7 +86,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 
 
 @NgModule({
-  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, AngularCalendarComponent],
+  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarHeaderComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, AngularCalendarComponent],
   imports: [
     BrowserModule, BrowserAnimationsModule,
     FormsModule,
@@ -124,14 +125,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   providers: [DriverService, ElectronService, PatientService, EventService, PlaceService, DatePipe],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  
-}
-declare module "@angular/core" {
-  interface ModuleWithProviders<T = any> {
-    ngModule: Type<T>;
-    providers?: Provider[];
-  }
-}
+export class AppModule {}
+
+
+
 
 
