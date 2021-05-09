@@ -47,6 +47,7 @@ import { FORMAT_yyyy_dd_MM } from '../core/constants';
 })
 export class AngularCalendarComponent implements OnInit {
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
+  @ViewChild('modalInfoContent', { static: true }) modalInfoContent: TemplateRef<any>;
 
   view: CalendarView = CalendarView.Month;
   viewDate: Date = new Date();
@@ -94,6 +95,10 @@ export class AngularCalendarComponent implements OnInit {
 
   modalData: {
     action: string;
+    event: CalendarEvent;
+  };
+
+  modalInfoData: {
     event: CalendarEvent;
   };
 
@@ -194,6 +199,11 @@ export class AngularCalendarComponent implements OnInit {
     this.modal.open(this.modalContent, { size: 'lg' });
   }
 
+  displayEventInfoDialog(event: CalendarEvent): void {
+    this.modalInfoData = { event };
+    this.modal.open(this.modalInfoContent, { size: 'lg' });
+  }
+
   addEvent(event : Evenement): void {
     console.log("Event to analyse : " + JSON.stringify(event))
     let year = parseInt(event.date.split("-")[2])
@@ -234,6 +244,7 @@ export class AngularCalendarComponent implements OnInit {
   /** CRUD on events */
   eventClicked({ event }: { event: CalendarEvent }): void {
     console.log('Event clicked', event);
+    this.displayEventInfoDialog(event)
   }
 
   deleteEvent(eventToDelete: CalendarEvent) {
