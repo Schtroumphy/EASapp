@@ -13,7 +13,7 @@ import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import { DAYS, FORMAT_yyyy_MM_dd } from '../core/constants';
+import { DAYS, FORMAT_yyyy_dd_MM } from '../core/constants';
 @Component({
   selector: 'app-advanced',
   templateUrl: './advanced.component.html',
@@ -206,7 +206,7 @@ export class AdvancedComponent implements OnInit {
         eventToAddToDB.startHour = this.eventForm.get('startHour').value
         eventToAddToDB.endHour = this.eventForm.get('endHour').value
         console.log("element : " + day.id)
-        eventToAddToDB.date = this.datePipe.transform(date, FORMAT_yyyy_MM_dd);
+        eventToAddToDB.date = this.datePipe.transform(date, FORMAT_yyyy_dd_MM);
         this.eventListToDisplay.push(eventToAddToDB)
         console.log("Event to display list : " + JSON.stringify(eventToAddToDB))
 
@@ -286,7 +286,7 @@ export class AdvancedComponent implements OnInit {
     console.log("D after set date : " + JSON.stringify(d))
 
     console.log("Date selcted convert w/ format: " + JSON.stringify(d))
-    var date = this.datePipe.transform(d, FORMAT_yyyy_MM_dd)
+    var date = this.datePipe.transform(d, FORMAT_yyyy_dd_MM)
     console.log("Date selcted convert w/ format: " + JSON.stringify(date))
 
     if (d.getMonth() < 10) {

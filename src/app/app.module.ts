@@ -18,7 +18,7 @@ import { AppComponent } from './app.component';
 import { NavigationComponent } from './navigation/navigation/navigation.component';
 import { DriversComponent } from './drivers/drivers.component';
 import { PatientsComponent } from './patients/patients.component';
-import { CalendarHeaderComponent } from './angular-calendar/header/calendar-header';
+import { CalendarHeaderComponent } from './angular-calendar/header/calendar-header.component';
 
 
 import { LayoutModule } from '@angular/cdk/layout';
@@ -33,9 +33,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule } from '@angular/forms'
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatRadioModule} from '@angular/material/radio';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule} from '@angular/material/expansion';
+import { MatRadioModule} from '@angular/material/radio';
 
 //Ng Bootstrap modules
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -55,9 +55,11 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 // Angular Calendar
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-import { CommonModule } from '@angular/common';
-import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { FlatpickrModule } from 'angularx-flatpickr';
+import localeFr from '@angular/common/locales/fr';
+
+registerLocaleData(localeFr);
 
 //Services
 import { DriverService } from '../app/core/services/app/driver.service'
@@ -72,7 +74,7 @@ import { AdvancedComponent } from './advanced/advanced.component';
 import { DatePipe } from '@angular/common';
 import { UserGuideComponent } from './user-guide/user-guide.component';
 import { AngularCalendarComponent } from './angular-calendar/angular-calendar.component';
-import { ModuleWithProviders } from '@angular/core';
+
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -82,8 +84,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   dayGridPlugin, bootstrapPlugin, listPlugin,timeGridPlugin,interactionPlugin
 ]);
-
-
 
 @NgModule({
   declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarHeaderComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, AngularCalendarComponent],
@@ -108,26 +108,24 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    MatTableModule, MatInputModule, MatPaginatorModule, MatSortModule, MatProgressSpinnerModule,
+    MatTableModule, 
+    MatInputModule,
+    MatPaginatorModule, 
+    MatSortModule, 
+    MatProgressSpinnerModule,
     ReactiveFormsModule,
     FullCalendarModule,
-    NgbModule,
-    MatDialogModule,MatExpansionModule,MatRadioModule,
+    MatDialogModule,
+    MatExpansionModule,MatRadioModule,
     FlatpickrModule.forRoot(),
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,
     }),
-    CommonModule,
-    NgbModalModule
-
+    CommonModule
   ],
   providers: [DriverService, ElectronService, PatientService, EventService, PlaceService, DatePipe],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ ]
 })
 export class AppModule {}
-
-
-
-
-

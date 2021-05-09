@@ -1,7 +1,7 @@
 import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { createConnection, getConnection, QueryRunner } from 'typeorm';
+import { Connection, createConnection, getConnection, getConnectionManager, QueryRunner } from 'typeorm';
 import { Driver } from './../EASapp/src/app/core/models/driver.schema';
 import { Patient } from './../EASapp/src/app/core/models/patient.schema';
 import { Evenement } from './src/app/core/models/evenement.schema';
@@ -15,23 +15,33 @@ const args = process.argv.slice(1),
 async function createWindow(): Promise<BrowserWindow> {
 
   console.log("DIRNAME : " + __dirname)
-  const connection = await createConnection({
-    name: "connection",
-    type: 'sqlite',
-    synchronize: false,
-    logging: true,
-    logger: 'simple-console',
-    database: './src/assets/data/database.sqlite',
-    entities: [Evenement, Driver, Patient, Place],
-    // migrations: [
-    //   "../src/migration/*{.ts,.js}"
-    // ],
-    // cli: {
-    //   migrationsDir: "../src/migration"
-    // },
-    // migrationsRun: true,
-  });
- 
+  var connection = null
+  try {
+     connection = await createConnection({
+      name: "connection",
+      type: 'sqlite',
+      synchronize: false,
+      logging: true,
+      logger: 'simple-console',
+      database: './src/assets/data/database.sqlite',
+      entities: [Evenement, Driver, Patient, Place],
+      // migrations: [
+      //   "../src/migration/*{.ts,.js}"
+      // ],
+      // cli: {
+      //   migrationsDir: "../src/migration"
+      // },
+      // migrationsRun: true,
+    })
+  } catch (e) {
+    console.log('[EXCEPTION WHILE TERMINATING APPLICATION CONTEXT]', e);
+     // If AlreadyHasActiveConnectionError occurs, return already existent connection
+     if (e.name === "AlreadyHasActiveConnectionError") {
+      const existentConn = getConnectionManager().get("default");
+      connection = existentConn;
+   }
+  }
+    
     await connection.query('PRAGMA foreign_keys=OFF');
     await connection.synchronize();
     await connection.query('PRAGMA foreign_keys=ON');

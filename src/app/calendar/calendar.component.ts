@@ -11,7 +11,7 @@ import { PatientService } from '../core/services/app/patient.service';
 import { Patient } from '../core/models/patient.schema';
 import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
-import { COLORS, FORMAT_HH_mm, FORMAT_yyyy_MM_dd } from '../core/constants';
+import { COLORS, FORMAT_HH_mm, FORMAT_yyyy_dd_MM } from '../core/constants';
 import { DatePipe } from '@angular/common';
 import { AdvancedConsoleLogger } from 'typeorm';
 import { finalize } from 'rxjs/internal/operators/finalize';
@@ -317,7 +317,6 @@ export class CalendarComponent implements OnInit {
           eventToAddToDB.id = eventIdAdded //add id to the freshly added event to retrieve it after click
           this.alertWithSuccess('L\'évènement a été ajouté avec succès')
           this.clearEventForm()
-          this.displayForm = false;
           var eventInput = this.convertEventToEventCalendar(eventToAddToDB)
           this.calendarApi.addEvent(eventInput);
         },
@@ -361,7 +360,7 @@ export class CalendarComponent implements OnInit {
       this.eventChangesList = this.eventChangesList.filter(obj => obj !== eventFound);
 
       //Already in eventChangesList
-      eventFound.date = this.datePipe.transform(eventCalendar.start, FORMAT_yyyy_MM_dd)
+      eventFound.date = this.datePipe.transform(eventCalendar.start, FORMAT_yyyy_dd_MM)
       eventFound.startHour = this.datePipe.transform(eventCalendar.start, FORMAT_HH_mm)
       eventFound.endHour = this.datePipe.transform(eventCalendar.end, FORMAT_HH_mm)
       event = eventFound
@@ -370,7 +369,7 @@ export class CalendarComponent implements OnInit {
       //New change
       event.id = eventCalendar.extendedProps.eventId
       event.title = eventCalendar.title
-      event.date = this.datePipe.transform(eventCalendar.start, FORMAT_yyyy_MM_dd)
+      event.date = this.datePipe.transform(eventCalendar.start, FORMAT_yyyy_dd_MM)
       event.startHour = this.datePipe.transform(eventCalendar.start, FORMAT_HH_mm)
       event.endHour = this.datePipe.transform(eventCalendar.end, FORMAT_HH_mm)
 
