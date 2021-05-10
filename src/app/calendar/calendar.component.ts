@@ -208,6 +208,10 @@ export class CalendarComponent implements OnInit {
 
       eventDragStop: null,
       eventDrop: this.alertChangesEnd.bind(this),
+      eventResizeStop : function(info){
+        alert("Event resized : " + JSON.stringify(info.event))
+      },
+      eventResize: this.alertChangesEnd.bind(this),
       eventClick: this.displayEventInfoDialog.bind(this),
       dateClick: this.onDayClicked.bind(this),
       events: [
@@ -424,6 +428,7 @@ export class CalendarComponent implements OnInit {
 
   convertEventCalendarToEvent(eventCalendar): Evenement {
     var event = new Evenement();
+    console.log("CALENDAR EVENT : ", JSON.stringify(eventCalendar))
 
     //If event has already been changed and have been add to event list changes
     if (this.eventChangesList.some(e => e.id === eventCalendar.extendedProps.eventId)) {
@@ -432,18 +437,22 @@ export class CalendarComponent implements OnInit {
       this.eventChangesList = this.eventChangesList.filter(obj => obj !== eventFound);
 
       //Already in eventChangesList
-      eventFound.date = this.datePipe.transform(eventCalendar.start, FORMAT_yyyy_dd_MM)
+      eventFound.date = this.datePipe.transform(eventCalendar.start, FORMAT_yyyy_MM_dd)
       eventFound.startHour = this.datePipe.transform(eventCalendar.start, FORMAT_HH_mm)
       eventFound.endHour = this.datePipe.transform(eventCalendar.end, FORMAT_HH_mm)
+      console.log("NEW END CALENDAR: ", eventCalendar.end)
+      console.log("NEW END : ", eventFound.endHour)
       event = eventFound
 
     } else {
       //New change
       event.id = eventCalendar.extendedProps.eventId
       event.title = eventCalendar.title
-      event.date = this.datePipe.transform(eventCalendar.start, FORMAT_yyyy_dd_MM)
+      event.date = this.datePipe.transform(eventCalendar.start, FORMAT_yyyy_MM_dd)
       event.startHour = this.datePipe.transform(eventCalendar.start, FORMAT_HH_mm)
       event.endHour = this.datePipe.transform(eventCalendar.end, FORMAT_HH_mm)
+      console.log("NEW END CALENDAR: ", eventCalendar.end)
+      console.log("NEW END : ", event.endHour)
 
       //Driver
       this.driverService.getDriverById(parseInt(eventCalendar.extendedProps.driverId)).subscribe(
