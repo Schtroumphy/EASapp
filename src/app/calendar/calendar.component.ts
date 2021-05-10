@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CalendarOptions, FullCalendarComponent, Calendar } from '@fullcalendar/angular'; // useful for typechecking
 import { Evenement } from '../core/models/evenement.schema';
 import { EventService } from '../core/services/app/event.service';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Driver } from '../core/models/driver.schema';
 import { DriverService } from '../core/services/app/driver.service';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -11,18 +11,20 @@ import { PatientService } from '../core/services/app/patient.service';
 import { Patient } from '../core/models/patient.schema';
 import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
-import { COLORS, FORMAT_HH_mm, FORMAT_yyyy_dd_MM } from '../core/constants';
+import { COLORS, FORMAT_dd_MM_yyyy, FORMAT_HH_mm, FORMAT_yyyy_dd_MM, FORMAT_yyyy_MM_dd } from '../core/constants';
 import { DatePipe } from '@angular/common';
-import { AdvancedConsoleLogger } from 'typeorm';
-import { finalize } from 'rxjs/internal/operators/finalize';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ThrowStmt } from '@angular/compiler';
+import { TemplateRef } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ThirdPartyDraggable } from '@fullcalendar/interaction';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit {
+  @ViewChild('modalInfoContent', { static: true }) modalInfoContent: TemplateRef<any>;
+  @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
 
   eventList: Evenement[];
   driverList: Driver[];
@@ -41,7 +43,9 @@ export class CalendarComponent implements OnInit {
   //Form
   newEvent = false;
   updatingEvent = false;
+  eventIdSelected : string;
   startHourSelected: string;
+  endHourSelected: string;
 
   //drag drop variables
   displayChangesMsg = false;
@@ -59,6 +63,8 @@ export class CalendarComponent implements OnInit {
   dateSelected: string
   selectedJourneyId: string
   favoriteTimeView: string
+
+  // Filters
   selectedFilteredDriverId1: string
   selectedFilteredDriverId2: string
   startHourFilterSelected: string
@@ -72,6 +78,18 @@ export class CalendarComponent implements OnInit {
 
   //Map driver-color
   driverColorMap: Map<string, string> = new Map();
+
+  // Modal
+  modalReference: any;
+  modalInfoData: {
+    event: Evenement;
+  };
+  modalData: {
+    action: string;
+    event: Evenement;
+  };
+  pipe = new DatePipe('fr');
+
 
   eventPicked: string;
   calendarApi: Calendar;
@@ -97,7 +115,7 @@ export class CalendarComponent implements OnInit {
     }
   }
 
-  constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService,
+  constructor(private modal: NgbModal, private eventService: EventService, private driverService: DriverService, private patientService: PatientService,
     private placeService: PlaceService, private datePipe: DatePipe, private router: Router, private route: ActivatedRoute) {
     console.log()
     // Synchrone
@@ -190,7 +208,8 @@ export class CalendarComponent implements OnInit {
 
       eventDragStop: null,
       eventDrop: this.alertChangesEnd.bind(this),
-      eventClick: this.handleEventClick.bind(this),
+      eventClick: this.displayEventInfoDialog.bind(this),
+      dateClick: this.onDayClicked.bind(this),
       events: [
       ],
       views: {
@@ -221,6 +240,44 @@ export class CalendarComponent implements OnInit {
       (item) => {
         this.eventClicked = item;
       });
+  }
+
+  displayEventInfoDialog(event): void {
+    this.eventService.getEventById(event.event.extendedProps.eventId).subscribe(
+      (item) => {
+        this.eventClicked = item;
+      });
+    console.log("Event clicked : ", JSON.stringify(this.eventClicked))
+
+    this.modalReference = this.modal.open(this.modalInfoContent, { backdrop : 'static', size: 'lg', keyboard : false, centered : true });
+  }
+
+  closeModal(){
+    this.modalReference.close()
+  }
+
+  /** Add event on click on day */
+  onDayClicked(info){
+    // Add date and time selected to event
+    var eventToAdd = new Evenement()
+    eventToAdd.date = this.datePipe.transform(info.dateStr, FORMAT_dd_MM_yyyy)
+    eventToAdd.startHour = this.datePipe.transform(info.dateStr, FORMAT_HH_mm)
+    eventToAdd.endHour = this.pipe.transform(new Date(new Date(info.dateStr).getTime() + 15 * 60000), 'shortTime')
+
+    // Keep these information to add event on submit
+    this.dateSelected = eventToAdd.date
+    this.startHourSelected = eventToAdd.startHour
+    this.endHourSelected = eventToAdd.endHour
+
+    console.log("Event to add : ", JSON.stringify(eventToAdd))
+    this.modalData = { action : "Add new event", event : eventToAdd }
+    this.displayEventForm(true); //true = new event
+    this.displayEditEventModal("Add event", eventToAdd)
+  }
+
+  displayEditEventModal(action: string, event: Evenement): void {
+    this.modalData = { event, action };
+    this.modalReference = this.modal.open(this.modalContent, { size: 'lg' });
   }
 
   //Forms
@@ -285,56 +342,71 @@ export class CalendarComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.eventForm);
-
+    console.log("ON SUBMIT")
     this.driverService.getDriverById(parseInt(this.selectedDriverId)).subscribe(
       (item) => { this.selectedDriver = item });
+      console.log("Driver selected : ", JSON.stringify(this.selectedDriver))
 
     this.patientService.getPatientById(parseInt(this.selectedPatientId)).subscribe(
       (item) => { this.selectedPatient = item });
+      console.log("Patient selected : ", JSON.stringify(this.selectedPatient))
 
     this.placeService.getPlaceById(parseInt(this.selectedStartPointId)).subscribe(
       (item) => { this.selectedStarPoint = item });
+      console.log("StartPlace selected : ", JSON.stringify(this.selectedStarPoint))
 
     this.placeService.getPlaceById(parseInt(this.selectedEndPointId)).subscribe(
       (item) => { this.selectedEndPoint = item });
+      console.log("End point selected : ", JSON.stringify(this.selectedEndPoint))
 
     var eventToAddToDB = new Evenement();
-    eventToAddToDB.title = this.selectedPatient.firstname + " " + this.selectedPatient.lastname.toUpperCase();
+    eventToAddToDB.title = this.selectedPatient.firstname + " " + this.selectedPatient.lastname.toUpperCase(); 
     eventToAddToDB.patient = this.selectedPatient;
     eventToAddToDB.driver = this.selectedDriver
-    eventToAddToDB.date = this.eventForm.get('date').value
+    //new Date(year, month, day, hours, minutes, seconds, milliseconds)	
+    // CAREFUL : month are 0 based, so mins 1 to have the good date
+    console.log("DATE TO CONVERT ", JSON.stringify(this.dateSelected))
+    if(this.updatingEvent){
+      eventToAddToDB.date = this.dateSelected
+    } else {
+      eventToAddToDB.date = this.datePipe.transform(new Date(parseInt(this.dateSelected.split("-")[2]), parseInt(this.dateSelected.split("-")[1])-1, parseInt(this.dateSelected.split("-")[0])), FORMAT_yyyy_MM_dd) 
+    } 
+    console.log("DATE CONVERTED ", JSON.stringify(eventToAddToDB.date))
     eventToAddToDB.startPoint = this.selectedStarPoint
     eventToAddToDB.endPoint = this.selectedEndPoint
-    eventToAddToDB.startHour = this.eventForm.get('startHour').value
-    eventToAddToDB.endHour = this.eventForm.get('endHour').value
+    eventToAddToDB.startHour = this.startHourSelected
+    eventToAddToDB.endHour = this.endHourSelected
+    console.log("Event to save : ", JSON.stringify(eventToAddToDB))
 
     if (this.newEvent) {
+      console.log("IS NEW EVENT")
       this.eventService.addEventAndGetId(eventToAddToDB).subscribe(
-        (events) => {
-          this.eventList = events[1]
-          var eventIdAdded = events[0]
+        (pairEentIdEvents) => {
+          this.eventList = pairEentIdEvents[1]
+          var eventIdAdded = pairEentIdEvents[0]
           eventToAddToDB.id = eventIdAdded //add id to the freshly added event to retrieve it after click
           this.alertWithSuccess('L\'évènement a été ajouté avec succès')
-          this.clearEventForm()
+          
           var eventInput = this.convertEventToEventCalendar(eventToAddToDB)
           this.calendarApi.addEvent(eventInput);
+          this.updateCalendar();
         },
-        (error) => this.errorAlert()
+        (error) => this.errorAlert(error)
       );
     } else if (this.updatingEvent) {
-      eventToAddToDB.id = this.eventForm.get('id').value
+      console.log("IS UPDATING EVENT")
+      eventToAddToDB.id = parseInt(this.eventIdSelected)
       this.eventService.updateEvent(eventToAddToDB).subscribe(
         (events) => {
           this.eventList = events;
-          this.eventList.forEach(element => {
-          });
           this.updateCalendar();
           this.alertWithSuccess('L\'évènement a été modifié avec succès')
           this.clearEventForm()
         }
       )
     }
+    this.clearEventForm()
+    this.closeModal()
   }
 
   addToCalendar(event: Evenement) {
@@ -400,7 +472,7 @@ export class CalendarComponent implements OnInit {
     // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
     // January - 0, February - 1, etc.
     var eventInput = {
-      title: event.patient.firstname + " " + event.patient.lastname.toUpperCase() + "\n | " + event.driver.firstname + "\n | " + event.startPoint.label + " - " + event.endPoint.label,
+      title: event.patient.firstname + " " + event.patient.lastname.toUpperCase() + "\n | " + event.driver.firstname + "\n | ",
       start: dateEv + "T" + startTimeEv + ":00",
       end: dateEv + "T" + endTimeEv + ":00",
       backgroundColor: this.getColorFromId(event.driver.id),
@@ -424,11 +496,11 @@ export class CalendarComponent implements OnInit {
     Swal.fire('Ajout/Modification d\'évènement', message, 'success')
   }
 
-  errorAlert() {
+  errorAlert(error) {
     Swal.fire({
       icon: 'error',
       title: 'Echec de l\'ajout',
-      text: 'Quelque chose s\'est mal passé!',
+      text: 'Quelque chose s\'est mal passé! : ' + error,
       footer: '<a href>Contacter le service</a>'
     })
   }
@@ -465,8 +537,15 @@ export class CalendarComponent implements OnInit {
   }
 
   editEvent(event) {
+    this.closeModal()
+
     this.displayEventClickedDetails = false;
+    this.eventIdSelected = event.id
+    this.dateSelected = event.date
+    this.startHourSelected = event.startHour
+    this.endHourSelected = event.endHour
     this.displayEventForm(false); //false = not new event
+    this.displayEditEventModal("Edit event", event)
     this.eventForm.controls["id"].setValue(event.id);
     this.selectedDriverId = event.driver.id;
     this.selectedPatientId = event.patient.id;
@@ -536,6 +615,7 @@ export class CalendarComponent implements OnInit {
   }
 
   deleteEventById(eventId) {
+    this.closeModal()
     this.deleteEventBox(eventId);
   }
 

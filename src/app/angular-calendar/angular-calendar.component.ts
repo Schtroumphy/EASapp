@@ -4,12 +4,10 @@ import { isSameMonth, isSameDay, startOfDay, endOfDay, addDays, addMinutes, endO
 import { colors } from '../utils/colors';
 import { EventService } from '../core/services/app/event.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { fromEvent, Subject } from 'rxjs';
 import { CustomDateFormatter } from '../utils/customDateFormatter'
 import { WeekViewHourSegment } from 'calendar-utils';
 import { CustomEventTitleFormatter } from '../utils/customEventTitleFormatter'
 import { Evenement } from '../core/models/evenement.schema';
-import { finalize, map, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DriverService } from '../core/services/app/driver.service';
@@ -21,8 +19,8 @@ import { PlaceService } from '../core/services/app/place.service';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import Swal from 'sweetalert2';
-import { loadavg } from 'os';
 import { FORMAT_yyyy_dd_MM } from '../core/constants';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'app-angular-calendar',
   templateUrl: './angular-calendar.component.html',
@@ -244,7 +242,7 @@ export class AngularCalendarComponent implements OnInit {
   /** CRUD on events */
   eventClicked({ event }: { event: CalendarEvent }): void {
     console.log('Event clicked', event);
-    this.displayEventInfoDialog(event)
+    this.displayEventInfoDialog
   }
 
   deleteEvent(eventToDelete: CalendarEvent) {

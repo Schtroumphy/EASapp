@@ -13,4 +13,6 @@ export var DAYS=[
 ];
 
 export var FORMAT_yyyy_dd_MM = 'yyyy-dd-MM'
+export var FORMAT_yyyy_MM_dd = 'yyyy-MM-dd'
+export var FORMAT_dd_MM_yyyy = 'dd-MM-yyyy'
 export var FORMAT_HH_mm = 'HH:mm'
