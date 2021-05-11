@@ -90,7 +90,6 @@ export class CalendarComponent implements OnInit {
   };
   pipe = new DatePipe('fr');
 
-
   eventPicked: string;
   calendarApi: Calendar;
   eventToUpdate: Evenement
@@ -105,9 +104,7 @@ export class CalendarComponent implements OnInit {
     this.calendarApi = this.calendarComponent.getApi();
     this.getAllEvents();
 
-    this.eventList.forEach((item) => {
-      this.addToCalendar(item);
-    })
+    this.updateCalendar()
 
     if (this.filterAfterRedirectionFromdriverPage) {
       console.log("FILTER")
@@ -121,6 +118,7 @@ export class CalendarComponent implements OnInit {
     // Synchrone
     console.log("P1 Synchrone : " + this.route.snapshot.params['p1']);
 
+    // Filter the calendar if a driver is given in route parameter
     if (this.route.snapshot.params['p1'] !== null && this.route.snapshot.params['p1'] !== undefined) {
       this.filterAfterRedirectionFromdriverPage = true
       this.selectedFilteredDriverId1 = this.route.snapshot.params['p1']
@@ -128,8 +126,27 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initForm();
+    this.initForms(); // Event and filter forms
 
+    this.populateLists();
+    
+    this.createDriverColorMap(this.driverList.map(e => e.id), COLORS)
+
+    this.initCalendar()
+
+    //TODO Comment
+    this.hours_job = Array.from(Array(23).keys()).map(x => {
+      if (x < 10) {
+        return "0" + x
+      } else {
+        return "" + x
+      }
+    }).filter(x => parseInt(x) > 7 && parseInt(x) < 23)
+
+    this.frequencyArray = ["05", "10", "15", "30"]
+  }
+
+  populateLists() {
     this.driverService.getDrivers().subscribe((items) => {
       this.driverList = items,
         console.log(items);
@@ -142,16 +159,6 @@ export class CalendarComponent implements OnInit {
       this.placeList = items,
         console.log(items);
     });
-    this.createDriverColorMap(this.driverList.map(e => e.id), COLORS)
-    this.initCalendar()
-    this.hours_job = Array.from(Array(23).keys()).map(x => {
-      if (x < 10) {
-        return "0" + x
-      } else {
-        return "" + x
-      }
-    }).filter(x => parseInt(x) > 7 && parseInt(x) < 23)
-    this.frequencyArray = ["05", "10", "15", "30"]
   }
 
   createDriverColorMap(keys, vals) {
@@ -208,11 +215,8 @@ export class CalendarComponent implements OnInit {
 
       eventDragStop: null,
       eventDrop: this.alertChangesEnd.bind(this),
-      eventResizeStop : function(info){
-        alert("Event resized : " + JSON.stringify(info.event))
-      },
       eventResize: this.alertChangesEnd.bind(this),
-      eventClick: this.displayEventInfoDialog.bind(this),
+      eventClick: this.displayEventInfoModal.bind(this),
       dateClick: this.onDayClicked.bind(this),
       events: [
       ],
@@ -246,7 +250,8 @@ export class CalendarComponent implements OnInit {
       });
   }
 
-  displayEventInfoDialog(event): void {
+  /** Modals */
+  displayEventInfoModal(event): void {
     this.eventService.getEventById(event.event.extendedProps.eventId).subscribe(
       (item) => {
         this.eventClicked = item;
@@ -285,7 +290,7 @@ export class CalendarComponent implements OnInit {
   }
 
   //Forms
-  initForm() {
+  initForms() {
     this.eventForm = new FormGroup({
       id: new FormControl(),
       driver: new FormControl(null, Validators.required),
@@ -413,6 +418,39 @@ export class CalendarComponent implements OnInit {
     this.closeModal()
   }
 
+
+  clearEventForm() {
+    this.eventForm.reset();
+    this.displayForm = false;
+  }
+
+  clearFilterForm() {
+    this.filterForm.reset()
+    this.displayFilteredForm = false
+    this.filterForm.controls["driver1"].setValue("");
+    this.selectedFilteredDriverId1 = ""
+    this.calendarApi.setOption("slotMinTime", "08:00:00");
+    this.calendarApi.setOption("slotMaxTime", "22:00:00");
+    this.calendarApi.setOption("slotDuration", "00:15");
+  }
+
+  displayFilterForm(hideOrNot: boolean) {
+    (hideOrNot) ? this.displayFilteredForm = true : this.displayFilteredForm = false;
+  }
+
+  //Ajouter un evenement
+  displayEventForm(newEvent: boolean) {
+    this.displayForm = true;
+    if (newEvent) {
+      this.newEvent = true;
+      this.updatingEvent = false;
+    } else {
+      this.updatingEvent = true;
+      this.newEvent = false;
+    }
+  }
+
+  /** CALENDAR FUNCTIONS */
   addToCalendar(event: Evenement) {
     var eventInput = this.convertEventToEventCalendar(event)
     this.calendarApi.addEvent(eventInput);
@@ -497,9 +535,12 @@ export class CalendarComponent implements OnInit {
     return eventInput;
   }
 
+  /** OTHER FUNCTIONS */
   getColorFromId(id: number): string {
     return this.driverColorMap[id]
   }
+
+  /** ALERTS  */
 
   alertWithSuccess(message) {
     Swal.fire('Ajout/Modification d\'évènement', message, 'success')
@@ -512,37 +553,6 @@ export class CalendarComponent implements OnInit {
       text: 'Quelque chose s\'est mal passé! : ' + error,
       footer: '<a href>Contacter le service</a>'
     })
-  }
-
-  clearEventForm() {
-    this.eventForm.reset();
-    this.displayForm = false;
-  }
-
-  clearFilterForm() {
-    this.filterForm.reset()
-    this.displayFilteredForm = false
-    this.filterForm.controls["driver1"].setValue("");
-    this.selectedFilteredDriverId1 = ""
-    this.calendarApi.setOption("slotMinTime", "08:00:00");
-    this.calendarApi.setOption("slotMaxTime", "22:00:00");
-    this.calendarApi.setOption("slotDuration", "00:15");
-  }
-
-  displayFilterForm(hideOrNot: boolean) {
-    (hideOrNot) ? this.displayFilteredForm = true : this.displayFilteredForm = false;
-  }
-
-  //Ajouter un evenement
-  displayEventForm(newEvent: boolean) {
-    this.displayForm = true;
-    if (newEvent) {
-      this.newEvent = true;
-      this.updatingEvent = false;
-    } else {
-      this.updatingEvent = true;
-      this.newEvent = false;
-    }
   }
 
   editEvent(event) {
