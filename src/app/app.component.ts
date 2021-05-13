@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ElectronService } from './core/services';
 import { TranslateService } from '@ngx-translate/core';
 import { AppConfig } from '../environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -10,11 +11,15 @@ import { AppConfig } from '../environments/environment';
 })
 export class AppComponent {
   constructor(
+    private router : Router,
     private electronService: ElectronService,
     private translate: TranslateService
   ) {
     this.translate.setDefaultLang('en');
     console.log('AppConfig', AppConfig);
+
+    let currentUrl = this.router.url;
+    console.log("IN APP CURRENT URL : ", currentUrl )
 
     if (electronService.isElectron) {
       console.log(process.env);

@@ -15,11 +15,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HomeModule } from './home/home.module';
 
 import { AppComponent } from './app.component';
-import { NavigationComponent } from './navigation/navigation/navigation.component';
-import { DriversComponent } from './drivers/drivers.component';
-import { PatientsComponent } from './patients/patients.component';
-import { CalendarHeaderComponent } from './angular-calendar/header/calendar-header.component';
-
 
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -36,9 +31,6 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule} from '@angular/material/expansion';
 import { MatRadioModule} from '@angular/material/radio';
-
-//Ng Bootstrap modules
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 //Full calendar
 import { FullCalendarModule } from '@fullcalendar/angular'; // the main connector. must go first
@@ -66,15 +58,10 @@ import { DriverService } from '../app/core/services/app/driver.service'
 import { PatientService } from '../app/core/services/app/patient.service'
 import { PlaceService } from '../app/core/services/app/place.service'
 import { ElectronService } from 'ngx-electron';
-import { CalendarComponent } from './calendar/calendar.component';
 import { EventService } from './core/services/app/event.service';
-import { PlacesComponent } from './places/places.component';
-import { EventComponent } from './event/event.component';
-import { AdvancedComponent } from './advanced/advanced.component';
 import { DatePipe } from '@angular/common';
-import { UserGuideComponent } from './user-guide/user-guide.component';
-import { AngularCalendarComponent } from './angular-calendar/angular-calendar.component';
-
+import { BottomNavComponent } from './bottom-nav/bottom-nav.component';
+import { AuthComponent } from './auth/auth.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -86,7 +73,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 ]);
 
 @NgModule({
-  declarations: [AppComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarHeaderComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, AngularCalendarComponent],
+  declarations: [AppComponent, BottomNavComponent, AuthComponent],
   imports: [
     BrowserModule, BrowserAnimationsModule,
     FormsModule,

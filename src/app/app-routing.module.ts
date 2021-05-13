@@ -2,45 +2,17 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './shared/components';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
-
-import { HomeRoutingModule } from './home/home-routing.module';
-import { NavigationRoutingModule } from './navigation/navigation/navigation-routing.module';
-import { DriversRoutingModule } from './drivers/drivers-routing.module';
-import { PatientsComponent } from './patients/patients.component';
-import { CalendarComponent } from './calendar/calendar.component';
-import { PlacesComponent } from './places/places.component';
-import { AdvancedComponent } from './advanced/advanced.component';
-import { UserGuideComponent } from './user-guide/user-guide.component';
+import { AuthComponent } from './auth/auth.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    redirectTo: '/auth', 
+    pathMatch: 'full' 
   },
   {
-    path: 'patients',
-    component: PatientsComponent
-  },
-  {
-    path: 'places',
-    component: PlacesComponent
-  },
-  {
-    path: 'calendar',
-    component: CalendarComponent
-  },
-  {
-    path: 'calendar/:p1',
-    component: CalendarComponent
-  },
-  {
-    path: 'advanced',
-    component: AdvancedComponent
-  },
-  {
-    path: 'guide',
-    component: UserGuideComponent
+    path: 'auth',
+    component : AuthComponent
   },
   {
     path: '**',
@@ -51,10 +23,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
-    HomeRoutingModule,
-    NavigationRoutingModule,
-    DriversRoutingModule
+    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy', enableTracing:true, useHash: true}),
   ],
   exports: [RouterModule]
 })

@@ -1,0 +1,23 @@
+<router-outlet></router-outlet>
+<div>
+    <img src="../../assets/planning_001.jpg">
+  </div>
+
+<form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+  
+    <div class="row">
+      <div class="col-sm">
+        <input type="text" id="identifiant" class="form-control" formControlName="identifiant">
+      </div>
+    <br> 
+    </div> 
+  
+    <div style="color:red" *ngIf="!authForm.valid && authForm.touched">
+      L'identifiant est inconnu. Veuillez réessayer ou contacter un administrateur.
+    </div>
+    <button type="submit" class="btn btn-info" [disabled]="!authForm.valid">Se connecter</button>
+  
+  </form>
+
+
+  <button type="button" (click)="btnClick()">Vers home</button>
