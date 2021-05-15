@@ -5,7 +5,9 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './user-guide.component.html',
   styleUrls: ['./user-guide.component.scss']
 })
-export class UserGuideComponent implements OnInit {
+export class UserGuideComponent{
+
+  panelOpenState = false;
 
   constructor() { }
 

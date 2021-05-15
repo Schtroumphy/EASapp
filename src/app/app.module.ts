@@ -73,7 +73,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 ]);
 
 @NgModule({
-  declarations: [AppComponent, BottomNavComponent, AuthComponent],
+  declarations: [AppComponent, AuthComponent],
   imports: [
     BrowserModule, BrowserAnimationsModule,
     FormsModule,
@@ -90,25 +90,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
       }
     }),
     LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
-    MatTableModule, 
-    MatInputModule,
-    MatPaginatorModule, 
-    MatSortModule, 
-    MatProgressSpinnerModule,
-    ReactiveFormsModule,
-    FullCalendarModule,
-    MatDialogModule,
-    MatExpansionModule,MatRadioModule,
-    FlatpickrModule.forRoot(),
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory,
-    }),
+    
     CommonModule
   ],
   providers: [DriverService, ElectronService, PatientService, EventService, PlaceService, DatePipe],

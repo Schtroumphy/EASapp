@@ -1,4 +1,12 @@
-h1{
-    text-align: center;
+h1, h2{
+    margin-left: 25px;
     color: rgba(218, 143, 5, 0.603);;
 }
+
+.mat-form-field + .mat-form-field {
+    margin-left: 8px;
+  }
+
+  .mat-accordion{
+      padding: 40px;
+  }

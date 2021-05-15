@@ -1,6 +1,4 @@
-<h1>Liste des lieux</h1>
-
-<button mat-raised-button (click)="displayPlaceForm(true)"> Ajouter un lieu </button>
+<button mat-raised-button class="btn btn-info" (click)="displayPlaceForm(true)"> Ajouter un lieu </button>
 
 <form [formGroup]="placeForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
   <div class="row">
@@ -34,7 +32,7 @@
   <div style="color:red" *ngIf="!placeForm.valid && placeForm.touched">
     Veuillez rentrer des valeurs valides.
   </div>
-  <button type="submit" class="btn btn-info" [disabled]="!placeForm.valid">Valider</button>
+  <button mat-raised-button type="submit" class="btn btn-info" [disabled]="!placeForm.valid">Valider</button>
 
 </form>
 

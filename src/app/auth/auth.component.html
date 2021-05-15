@@ -15,9 +15,13 @@
     <div style="color:red" *ngIf="!authForm.valid && authForm.touched">
       L'identifiant est inconnu. Veuillez réessayer ou contacter un administrateur.
     </div>
-    <button type="submit" class="btn btn-info" [disabled]="!authForm.valid">Se connecter</button>
+    <div style="justify-content: center;">
+      <button type="submit" class="btn btn-info" [disabled]="!authForm.valid" (click)="btnClick()" >Se connecter</button>
+    </div>
   
   </form>
 
+  <a style="justify-content: center;"> Se connecter en tant que maître ? </a>
 
-  <button type="button" (click)="btnClick()">Vers home</button>
+
+  <button style="justify-content: center;" type="button" (click)="btnClick()" >Vers home</button>

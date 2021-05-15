@@ -1,0 +1,50 @@
+.myToolbar {
+    position: sticky;
+    position: -webkit-sticky; /* For macOS/iOS Safari */
+    top: 0; /* Sets the sticky toolbar to be on top */
+    z-index: 1000; /* Ensure that your app's content doesn't overlap the toolbar */
+    background-color: #EAF3FA;
+    opacity: 0.7;
+    height: 7vh;
+}
+
+.mat-button-focus-overlay {
+  background-color: transparent!important;
+}
+
+.mat-button{
+  background-color:  transparent;
+}
+
+.active{
+  color: orange;
+}
+
+.logo{
+    max-width: 11%;
+    margin-right: 17%;
+    flex-grow: 1;
+
+  }
+
+  .logo:hover {
+    cursor: pointer;
+  }
+
+    /* Responsive toolbar */
+@media screen and (max-width: 600px) {
+    .logo{
+        margin-right: 3% !important;
+        flex-grow: 1;
+        max-width: 25%;
+      }
+  }
+
+    /* Responsive toolbar */
+    @media screen and (min-width: 1000px) {
+      .logo{
+          flex-grow: 1;
+          max-width: 8%;
+        }
+    }
+  

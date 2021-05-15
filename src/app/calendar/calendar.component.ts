@@ -429,9 +429,9 @@ export class CalendarComponent implements OnInit {
     this.displayFilteredForm = false
     this.filterForm.controls["driver1"].setValue("");
     this.selectedFilteredDriverId1 = ""
-    this.calendarApi.setOption("slotMinTime", "08:00:00");
-    this.calendarApi.setOption("slotMaxTime", "22:00:00");
-    this.calendarApi.setOption("slotDuration", "00:15");
+    //this.calendarApi.setOption("slotMinTime", "08:00:00");
+    //this.calendarApi.setOption("slotMaxTime", "22:00:00");
+    //this.calendarApi.setOption("slotDuration", "00:15");
   }
 
   displayFilterForm(hideOrNot: boolean) {

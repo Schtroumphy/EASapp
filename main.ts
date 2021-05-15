@@ -1,7 +1,7 @@
 import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { Connection, createConnection, getConnection, getConnectionManager, QueryRunner } from 'typeorm';
+import { Between, Connection, createConnection, getConnection, getConnectionManager, LessThan, MoreThan, QueryRunner } from 'typeorm';
 import { Driver } from './../EASapp/src/app/core/models/driver.schema';
 import { Patient } from './../EASapp/src/app/core/models/patient.schema';
 import { Evenement } from './src/app/core/models/evenement.schema';
@@ -220,7 +220,22 @@ async function createWindow(): Promise<BrowserWindow> {
     }
   });
 
-  ipcMain.on('get-events', async (event: any, ...args: any[]) => {
+  ipcMain.on('get-events-on-period', async (event: any, _startDate: string, _endDate : string) => {
+    try {
+      event.returnValue = await eventRepo.find({
+        relations: ["patient", "driver", "startPoint", "endPoint"],
+          where: [
+            { date: Between(_startDate , _endDate)},
+          ]
+      });
+
+    } catch (err) {
+      console.log("ERREUR " + err);
+      throw err;
+    }
+  });
+
+  ipcMain.on('get-events', async (event: any) => {
     try {
       event.returnValue = await eventRepo.find({
         relations: ["patient", "driver", "startPoint", "endPoint"]

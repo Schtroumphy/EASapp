@@ -13,7 +13,7 @@ import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import { DAYS, FORMAT_yyyy_dd_MM } from '../core/constants';
+import { DAYS, FORMAT_yyyy_dd_MM, FORMAT_yyyy_MM_dd } from '../core/constants';
 @Component({
   selector: 'app-advanced',
   templateUrl: './advanced.component.html',
@@ -30,6 +30,15 @@ export class AdvancedComponent implements OnInit {
   displayEventClickedDetails = false
   daysArray = []
   startHourSelected: string
+
+  duplicateForm : FormGroup
+  eventsToDuplicateForNextWeek : Evenement[]
+  eventsDuplicated: Evenement[]
+  maxDate : string
+  allowDuplication : boolean = false
+  showNoEventsError : boolean = false
+
+  planDriverForm : FormGroup
 
   //Form
   newEvent = false;
@@ -60,6 +69,8 @@ export class AdvancedComponent implements OnInit {
   // references the #calendar in the template
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
   displayForm: boolean;
+  displayDuplicateForm : boolean;
+
   //periodIdSelected: number;
   selectedPlanDriverId: string;
   intervalsHour = [];
@@ -86,8 +97,8 @@ export class AdvancedComponent implements OnInit {
 
   ngOnInit(): void {
     registerLocaleData(localeFr, 'fr');
-    this.initForm();
-    this.eventService.getEvents().subscribe((items) => (this.eventList = items));
+    this.initForms();
+    //this.eventService.getEvents().subscribe((items) => (this.eventList = items));
 
     this.driverService.getDrivers().subscribe((items) => {
       this.driverList = items
@@ -111,8 +122,78 @@ export class AdvancedComponent implements OnInit {
     window.print();
   }
 
+  getEventsBetweenTwoDates(){
+    this.eventService.getEventsBetweenTwoDates(this.duplicateForm.get('startDate').value, this.duplicateForm.get('endDate').value).subscribe(
+      (events) => {
+        //this.eventList = events
+        this.eventsToDuplicateForNextWeek = this.sortByDate(events, 'date')
+        this.eventsDuplicated = events
+        console.log("EVENT TO DUPLICATE BEfore sort by driver : ", JSON.stringify(this.eventsToDuplicateForNextWeek))
+        if(this.duplicateForm.get('driver').value != null){
+          console.log("SORT BY DRIVER : ", this.duplicateForm.get('driver').value)
+          this.driverService.getDriverById(parseInt(this.selectedDriverId)).subscribe(
+            (item) => { 
+              console.log("Selected driver ",JSON.stringify(item))
+              this.eventsToDuplicateForNextWeek = this.eventsToDuplicateForNextWeek.filter(
+                event => event.driver.id === item.id);
+              this.eventsDuplicated = this.eventsToDuplicateForNextWeek
+            });
+            console.log("EVENT TO DUPLIACTE : ", JSON.stringify(this.eventsToDuplicateForNextWeek))
+        }
+        //Display events
+      },
+      (error) => this.errorAlert()
+    );
+    this.allowDuplication = this.eventsToDuplicateForNextWeek.length > 0
+    this.showNoEventsError = this.eventsToDuplicateForNextWeek.length == 0
+  }
+
+  displayDuplicatePlanningForm(){
+    this.displayPlanningDuplicateForm()
+  }
+
+  onSubmitDuplicateForm(){
+    console.log("Submit duplicate")
+    if (this.eventsDuplicated != []) {
+      //Add each element to BDD
+      this.eventsDuplicated.forEach(element => {
+        element.id = 0 // For new id
+        element.date = this.datePipe.transform(this.addDays(new Date(element.date), 7), FORMAT_yyyy_MM_dd).toString()
+
+        //Add it to database
+        this.addEventToDB(element);
+      });
+      this.alertSuccessDuplication()
+    } else {
+      //Display an error message
+      this.errorAlert()
+    }
+    console.log("Event list duplicated : " + JSON.stringify(this.eventsDuplicated))
+    console.log("Event list  : " + JSON.stringify(this.eventsToDuplicateForNextWeek))
+  }
+  
+  clearPlanDriverForm(){
+    console.log("CLEAR PLAN DRIVER FORM")
+    this.planDriverForm.reset()
+    this.displaySaveButton = false
+    this.intervalsHour = []
+    this.displayPlanDriver = false
+  }
+
+  clearDuplicateForm(){
+    console.log("CLEAR DUPLICATE FORM")
+    this.duplicateForm.reset();
+    this.displayDuplicateForm = false;
+    this.eventsToDuplicateForNextWeek = []
+    this.eventsDuplicated = []
+  }
+
+  sortByDate(events : Evenement[], prop: string) : Evenement[]{
+    return events.sort((a, b) => a[prop] > b[prop] ? 1 : a[prop] === b[prop] ? 0 : -1);
+  }
+
   //Forms
-  initForm() {
+  initForms() {
     this.eventForm = new FormGroup({
       id: new FormControl(),
       driver: new FormControl(null, Validators.required),
@@ -123,7 +204,34 @@ export class AdvancedComponent implements OnInit {
       endPoint: new FormControl(null, Validators.required),
       endHour: new FormControl(null),
     })
+
+    this.duplicateForm = new FormGroup({
+      id: new FormControl(),
+      driver: new FormControl(null),
+      startDate: new FormControl(null),
+      endDate: new FormControl(null, Validators.required),
+    })
+
+    this.planDriverForm = new FormGroup({
+      id: new FormControl(),
+      driver: new FormControl(null, Validators.required),
+      date : new FormControl(null, Validators.required),
+      startHour: new FormControl(null, Validators.required),
+      endHour: new FormControl(null, Validators.required),
+    })
   }
+
+  startDatePeriodChanged(){
+    console.log("START DATE CHANGED : ", this.duplicateForm.get('startDate').value)
+    console.log(new Date(this.duplicateForm.get('startDate').value))
+    this.maxDate = this.datePipe.transform(this.addDays(new Date(this.duplicateForm.get('startDate').value), 6), FORMAT_yyyy_MM_dd).toString()
+    console.log("MAX DATE : ", this.maxDate)
+  }
+
+  addDays(date: Date, days: number): Date {
+    date.setDate(date.getDate() + days);
+    return date;
+}
 
   onSubmit() {
     console.log("Event list : " + JSON.stringify(this.eventListToDisplay))
@@ -131,6 +239,7 @@ export class AdvancedComponent implements OnInit {
     console.log("Submit NEW EVENt")
     if (this.eventListToDisplay != []) {
       //Add each element to BDD
+      this
       this.eventListToDisplay.forEach(element => {
         element.title = element.patient.firstname + " " + element.patient.lastname.toUpperCase();
 
@@ -193,7 +302,8 @@ export class AdvancedComponent implements OnInit {
   //Display form to add event
   displayEventForm() {
     this.displayForm = !this.displayForm;
-    this.displayPlanDriver = false
+    this.displayPlanDriver = false;
+    this.displayDuplicateForm = false;
   }
 
   updateRecurringEventList(){
@@ -319,6 +429,14 @@ export class AdvancedComponent implements OnInit {
     this.createHalfHourIntervals(8, 12) //Morning
     this.displayPlanDriver = !this.displayPlanDriver
     this.displayForm = false;
+    this.displayDuplicateForm = false
+  }
+
+  displayPlanningDuplicateForm() {
+    //console.log(" HOUR JOB " + JSON.stringify(this.hours_job))
+    this.displayPlanDriver = false
+    this.displayForm = false;
+    this.displayDuplicateForm = true
   }
 
   planDriver() {
@@ -455,7 +573,7 @@ export class AdvancedComponent implements OnInit {
     } else {
       //Sort complete event and remove incomplete
       console.log("Event plan list before sorting : " + JSON.stringify(this.eventPlanList))
-      this.eventPlanList = this.eventPlanList.filter(e => e.patient !== null && e.startPointId !== null && e.endPoint !== null)
+      this.eventPlanList = this.eventPlanList.filter(e => e.patient !== null && e.startPoint !== null && e.endPoint !== null)
       console.log("Event plan list after sorting : " + JSON.stringify(this.eventPlanList))
 
       if (!this.eventPlanList.length) { // Check if array is empty
@@ -482,6 +600,20 @@ export class AdvancedComponent implements OnInit {
 
   }
 
+  alertSuccessDuplication() {
+    Swal.fire({
+      title: 'Duplication de planning',
+      text: 'La duplication a été effectuée. Vous retrouverez votre nouveau planning duppliqué dans l\'onglet "PLanning".',
+      icon: 'success',
+      showCancelButton: false,
+      confirmButtonText: 'Ok',
+    }).then((result) => {
+      if (result.value) {
+        this.clearDuplicateForm()
+      }
+    })
+  }
+
   clearRecurrence() {
     this.recurringValues = []
   }
@@ -494,3 +626,4 @@ export class AdvancedComponent implements OnInit {
     })
   }
 }
+

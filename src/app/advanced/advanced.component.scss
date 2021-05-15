@@ -1,3 +1,12 @@
+div {
+}
+
+img {
+  display: flex;
+  text-align: center;
+  width: 100%;
+}
+
 .col-3{
     justify-content: center;
   }
@@ -33,7 +42,7 @@
       margin: 2%;
   }
   
-  form{
+  form, .planDriverClass{
       margin: 2%;
       box-sizing: border-box;
       border: solid rgba(218, 143, 5, 0.603) 3px;
@@ -41,7 +50,13 @@
   }
 
   .row {
+    justify-content: center;
     margin-right: 0px; 
     margin-left: 0px;
+  }
+
+  h3, .text{
+    margin-bottom: 45px; 
+    margin-left: 50px;
   }
   

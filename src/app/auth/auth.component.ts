@@ -31,7 +31,7 @@ constructor(private router: Router) {}
 
   btnClick() {
     console.log("CLICK ON VERS HOME")
-    this.router.navigateByUrl('/home');
+    this.router.navigateByUrl('/bottom-nav/home');
     //this.router.navigate(['/home']);
   }
 

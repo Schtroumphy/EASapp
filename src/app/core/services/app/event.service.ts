@@ -23,6 +23,12 @@ export class EventService {
     );
   }
 
+  getEventsBetweenTwoDates(startDate : String, endDate : String): Observable<Evenement[]> {
+    return of(this._electronService.ipcRenderer.sendSync('get-events-on-period', startDate, endDate)).pipe(
+      catchError((error: any) => throwError(error.json))
+    );
+  }
+
   addEvent(event: Evenement): Observable<Evenement[]> {
     return of(
       this._electronService.ipcRenderer.sendSync('add-event', event)

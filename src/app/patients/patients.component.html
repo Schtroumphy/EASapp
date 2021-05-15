@@ -1,6 +1,4 @@
-<h1>Liste des patients</h1>
-
-<button mat-raised-button (click)="displayPatientForm(true)"> Ajouter un patient </button>
+<button mat-raised-button class="btn btn-info" (click)="displayPatientForm(true)"> Ajouter un patient </button>
 
 <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
   <div class="row">
@@ -47,7 +45,7 @@
   <div style="color:red" *ngIf="!patientForm.valid && patientForm.touched">
     Veuillez rentrer des valeurs valides.
   </div>
-  <button type="submit" class="btn btn-info" [disabled]="!patientForm.valid">Valider</button>
+  <button mat-raised-button type="submit" class="btn btn-info" [disabled]="!patientForm.valid">Valider</button>
 
 </form>
 

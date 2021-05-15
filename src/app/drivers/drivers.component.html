@@ -1,6 +1,4 @@
-<h1>Liste des conducteurs</h1>
-
-<button mat-raised-button (click)="displayDriverForm(true)"> Ajouter un conducteur </button>
+<button mat-raised-button class="btn btn-info" (click)="displayDriverForm(true)"> Ajouter un conducteur </button>
 
 <form [formGroup]="driverForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
   <div class="row">
@@ -42,7 +40,7 @@
   <div style="color:red" *ngIf="!driverForm.valid && driverForm.touched">
     Veuillez rentrer des valeurs valides.
   </div>
-  <button type="submit" class="btn btn-info" [disabled]="!driverForm.valid">Valider</button>
+  <button mat-raised-button type="submit" class="btn btn-info" [disabled]="!driverForm.valid">Valider</button>
 
 </form>
 

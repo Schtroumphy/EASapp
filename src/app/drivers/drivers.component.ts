@@ -183,7 +183,7 @@ export class DriversComponent implements OnInit {
 
   planning(event) {
     console.log("PLanning : " + event)
-    this._router.navigate(['calendar', {p1: event}]);
+    this._router.navigate(['/bottom-nav/calendar', {p1: event}]);
   }
 
   removeColumn() {

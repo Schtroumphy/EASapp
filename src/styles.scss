@@ -1,7 +1,8 @@
 
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.css";
-@import '@fortawesome/fontawesome-free/css/all.css'; // needs additional webpack config!
+@import "~@ng-select/ng-select/themes/material.theme.css";
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300&display=swap');
 
 *,
 *::before,
@@ -16,15 +17,22 @@ html, body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.modal-title{
+  color : cadetblue;
+  font-size: 20px;
+}
+
+.mat-button-focus-overlay {
+  background-color: transparent!important;
+}
+
 /* CAN (MUST) BE REMOVED ! Sample Global style */
 .container {
-  height: 100%;
+  height: 95vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  background: #f8f5f5;
   -webkit-background-size: cover; /* pour anciens Chrome et Safari */
   background-size: cover; /* version standardisée */
 
@@ -39,7 +47,7 @@ html, body {
     text-transform: uppercase;
     text-decoration: none;
     background: #f8f5f5;
-    padding: 20px;
+    padding: 10px;
     border-radius: 5px;
     display: inline-block;
     border: none;
@@ -55,6 +63,21 @@ html, body {
       transition: all 0.4s ease 0s;
     }
   }
+}
+
+
+.error-div{
+  background-color: #F5AD6E;
+  color: rgb(49, 48, 48);
+  text-align: center;
+}
+
+.btn-info{
+  border-radius: 20px;
+}
+
+:not(i){
+  font-family: 'Nunito', sans-serif;
 }
 
 body app-root app-navigation mat-sidenav-container mat-sidenav{

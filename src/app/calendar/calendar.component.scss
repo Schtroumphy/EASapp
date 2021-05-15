@@ -1,5 +1,15 @@
+.fc {
+  height: 80vh;
+}
+
 .col-3{
   justify-content: center;
+}
+
+.error-div{
+  background-color: #F5AD6E;
+  color: rgb(49, 48, 48);
+  text-align: center;
 }
 .alert-change{
   color: white;
@@ -33,7 +43,7 @@
 }
 
 button {
-    margin: 2%;
+    margin: 1%;
 }
 
 .filterForm{

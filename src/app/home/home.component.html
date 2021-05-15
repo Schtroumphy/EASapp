@@ -1,14 +1,23 @@
 <div class="container">
+
+  <div>
+    <img src="../../assets/planning_001.jpg">
+  </div>
+
   <h1 class="title">
-    Accueil
+    Bienvenue sur votre gestionnaire de planning
   </h1>
 
-  <a routerLink="/drivers">Liste des conducteurs</a>
+  <div style="text-align: center; max-width: max-content;">
+    Pour plannifier vos chauffeurs, vous devez d’abord remplir les données nécessaires dans les onglets "Conducteurs", "Patients", et "Lieux". 
+
+Par la suite, ces données seront accessibles lors de l’ajout de trajet (au clic sur une plage horaire du planning).
+
+Pas de panique, les trajets sont modifiable via un "drag and drop". Ils peuvent également être modifiés ou supprimés en cliquant dessus.
+
+Pour plus de détails sur la marche à suivre, veuillez consulter le guide utilisteur et/ou visualiser la vidéo explicative dans l'onglet "Guide utilisateur".
+  </div>
   <br>
-  <a routerLink="/patients">Liste des patients</a>
-  <br>
-  <a routerLink="/places">Liste des lieux</a>
-  <br>
-  <a routerLink="/calendar">Gestion du calendrier</a>
+  <button type="button" class="btn btn-info" routerLink="/bottom-nav/guide">Guide utilisateur</button>
 
 </div>

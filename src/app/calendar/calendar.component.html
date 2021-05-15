@@ -1,5 +1,3 @@
-<h1 class="hideForPrint"> Planning </h1>
-
 <div class="alert-changes" *ngIf="displayChangesMsg">Des modifications ont été détecté. Voulez-vous les sauvegarder ?
     <button type="button" class="btn btn-link" (click)="saveChanges()">Oui</button>
     ou
@@ -15,8 +13,8 @@
 <div class="row" style="margin-bottom: 2%;">
     <div class="col hideForPrint">
         <div class="row">
-            <button type="button" class="btn btn-info" (click)="displayFilterForm(true)"> Filtrer</button>
-            <button type="button" class="btn btn-info" (click)="print()"> Imprimer</button>
+            <button mat-raised-button type="button" class="btn btn-info" (click)="displayFilterForm(true)"> Filtrer</button>
+            <button mat-raised-button type="button" class="btn btn-info" (click)="print()"> Imprimer</button>
         </div>
     </div>
 </div>
@@ -152,8 +150,8 @@
 <!-- Modal add/edit event implementation -->
 <ng-template #modalContent let-close="close">
     <div class="modal-header">
-      <h5 *ngIf="!updatingEvent" class="modal-title">Ajouter un évènement pour le {{modalData.event.date }} de 
-        {{modalData.event.startHour}} à {{modalData.event.endHour}}
+      <h5 *ngIf="!updatingEvent" class="modal-title">Ajouter un évènement pour le  <strong>{{modalData.event.date }} </strong>de 
+        <strong>{{modalData.event.startHour}} </strong> à <strong>{{modalData.event.endHour}}</strong>
       </h5>
       <h5 *ngIf="updatingEvent" class="modal-title">Editer un évènement</h5>
       <button type="button" class="close" (click)="close()">
@@ -164,42 +162,31 @@
       <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
         <div class="row">
           <div class="col-6">
-            <label for="driver">Conducteur : </label>
-            <select formControlName="driver" id="driver" [(ngModel)]="selectedDriverId">
-              <option *ngFor="let driver of driverList" [value]="driver.id">
-                {{driver.firstname | lowercase }} {{driver.lastname | uppercase }}
-              </option>
-            </select>
+            <ng-select appearance="outline" formControlName="driver" id="driver"  [(ngModel)]="selectedDriverId" placeholder="Conducteur">
+              <ng-option *ngFor="let driver of driverList" [value]="driver.id">{{driver.firstname | lowercase }} {{driver.lastname | uppercase }}</ng-option>
+           </ng-select>
+           
           </div>
           <div class="col-6">
-            <label for="patient">Patient : </label>
-            <select formControlName="patient" id="patient" [(ngModel)]="selectedPatientId">
-              <option *ngFor="let patient of patientList" [value]="patient.id">
-                {{patient.firstname | lowercase }} {{patient.lastname | uppercase }}
-              </option>
-            </select>
+            <ng-select appearance="outline" formControlName="patient" id="patient"  [(ngModel)]="selectedPatientId" placeholder="Patient">
+              <ng-option *ngFor="let patient of patientList" [value]="patient.id">{{patient.firstname | lowercase }} {{patient.lastname | uppercase }}</ng-option>
+           </ng-select>
           </div>
         </div>
         <div class="row">
-          <div class="col-5">
-            <label for="startPoint">De : </label>
-            <select formControlName="startPoint" id="startPoint" [(ngModel)]="selectedStartPointId">
-              <option *ngFor="let place of placeList" [value]="place.id">
-                {{place.label | uppercase }}
-              </option>
-            </select>
+          <div class="col-6">
+            <ng-select appearance="outline" formControlName="startPoint" id="startPoint"  [(ngModel)]="selectedStartPointId" placeholder="Origine">
+              <ng-option *ngFor="let place of placeList" [value]="place.id">{{place.label | uppercase }}</ng-option>
+           </ng-select>
           </div>
-          <div class="col-5">
-            <label for="startPoint">Vers : </label>
-            <select formControlName="endPoint" id="endPoint" [(ngModel)]="selectedEndPointId">
-              <option *ngFor="let place of placeList" [value]="place.id">
-                {{place.label | uppercase }}
-              </option>
-            </select>
+          <div class="col-6">
+            <ng-select appearance="outline" formControlName="endPoint" id="endPoint"  [(ngModel)]="selectedEndPointId" placeholder="Destination">
+              <ng-option *ngFor="let place of placeList" [value]="place.id">{{place.label | uppercase }}</ng-option>
+           </ng-select>
           </div>
         </div>
   
-        <div style="color:red" *ngIf="!eventForm.valid && eventForm.touched">
+        <div class="error-div" *ngIf="!eventForm.valid && eventForm.touched">
           Veuillez rentrer des valeurs valides.
         </div>
   
