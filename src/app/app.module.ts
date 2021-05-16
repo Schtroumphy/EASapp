@@ -62,6 +62,7 @@ import { EventService } from './core/services/app/event.service';
 import { DatePipe } from '@angular/common';
 import { BottomNavComponent } from './bottom-nav/bottom-nav.component';
 import { AuthComponent } from './auth/auth.component';
+import { AuthentificationService } from './core/services/app/auth.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -93,7 +94,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     
     CommonModule
   ],
-  providers: [DriverService, ElectronService, PatientService, EventService, PlaceService, DatePipe],
+  providers: [AuthentificationService, DriverService, ElectronService, PatientService, EventService, PlaceService, DatePipe],
   bootstrap: [AppComponent],
   entryComponents: [ ]
 })

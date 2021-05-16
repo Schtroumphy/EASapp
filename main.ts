@@ -2,6 +2,7 @@ import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import { Between, Connection, createConnection, getConnection, getConnectionManager, LessThan, MoreThan, QueryRunner } from 'typeorm';
+import { Authentification } from './../EASapp/src/app/core/models/auth.schema';
 import { Driver } from './../EASapp/src/app/core/models/driver.schema';
 import { Patient } from './../EASapp/src/app/core/models/patient.schema';
 import { Evenement } from './src/app/core/models/evenement.schema';
@@ -24,7 +25,7 @@ async function createWindow(): Promise<BrowserWindow> {
       logging: true,
       logger: 'simple-console',
       database: './src/assets/data/database.sqlite',
-      entities: [Evenement, Driver, Patient, Place],
+      entities: [Authentification, Evenement, Driver, Patient, Place],
       // migrations: [
       //   "../src/migration/*{.ts,.js}"
       // ],
@@ -37,15 +38,16 @@ async function createWindow(): Promise<BrowserWindow> {
     console.log('[EXCEPTION WHILE TERMINATING APPLICATION CONTEXT]', e);
      // If AlreadyHasActiveConnectionError occurs, return already existent connection
      if (e.name === "AlreadyHasActiveConnectionError") {
-      const existentConn = getConnectionManager().get("default");
+      const existentConn = getConnectionManager().get("connection");
       connection = existentConn;
    }
   }
-    
+  
     await connection.query('PRAGMA foreign_keys=OFF');
     await connection.synchronize();
     await connection.query('PRAGMA foreign_keys=ON');
  
+  const authRepo = connection.getRepository(Authentification);
   const eventRepo = connection.getRepository(Evenement);
   const driverRepo = connection.getRepository(Driver);
   const patientRepo = connection.getRepository(Patient);
@@ -85,6 +87,27 @@ async function createWindow(): Promise<BrowserWindow> {
       slashes: true
     }));
   }
+
+
+  // -------------------------- AUTHENTIFICATION --------------------------
+  ipcMain.on('get-auth-by-identifiant', async (event: any, _identifiant: string) => {
+    try {
+      event.returnValue = await authRepo.findOne({ where: { identifiant: _identifiant } });
+
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('add-authentification', async (event: any, _authentification : Authentification) => {
+    try {
+      const item = await authRepo.create(_authentification);
+      await authRepo.save(item);
+      event.returnValue = await authRepo.find();
+    } catch (err) {
+      throw err;
+    }
+  });
 
   // -------------------------- DRIVER --------------------------
   ipcMain.on('add-driver', async (event: any, _driver: Driver) => {
