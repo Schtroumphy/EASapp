@@ -4,6 +4,7 @@ import { Driver } from '../core/models/driver.schema';
 import { DriverService } from '../core/services/app/driver.service';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Router } from '@angular/router';
+import { RandomColor } from 'angular-randomcolor';
 
 @Component({
   selector: 'app-drivers',
@@ -17,10 +18,11 @@ export class DriversComponent implements OnInit {
   displayForm = false;
   newDriver = false;
   updatingDriver = false;
+  formDriverColor : string
 
   driverList: Driver[] = [];
 
-  displayedColumns = ['id', 'firstname', 'lastname', 'phoneNumber', 'email', 'comment', 'actions', 'planning'];
+  displayedColumns = ['id', 'firstname', 'lastname', 'phoneNumber', 'email', 'comment', 'color', 'actions', 'planning'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
   dataSource: Driver[];
 
@@ -29,7 +31,10 @@ export class DriversComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.driverService.getDrivers().subscribe((drivers) => (this.driverList = drivers));
+    console.log("DRIVER LIST : ", JSON.stringify(this.driverList))
     this.updateDatasource();
+    this.formDriverColor = RandomColor.generateColor()
+    console.log("GENERATED COLOR : ", this.formDriverColor)
   }
 
   //Forms
@@ -58,6 +63,7 @@ export class DriversComponent implements OnInit {
     driver.email = this.driverForm.get('email').value;
     driver.phoneNumber = this.driverForm.get('phoneNumber').value;
     driver.comment = this.driverForm.get('comment').value;
+    driver.color = this.driverForm.get('color').value;
 
     if(this.newDriver){
       console.log("Submit NEW")
@@ -70,9 +76,8 @@ export class DriversComponent implements OnInit {
           this.newDriver=false;
         },
         (error) => this.errorAlert()
-  
-  
       );
+      console.log("DRIVER TO ADD ", JSON.stringify(driver))
     } else if(this.updatingDriver){
       console.log("Submit UPDATE")
       this.driverService.updateDriver(driver).subscribe(
@@ -86,6 +91,11 @@ export class DriversComponent implements OnInit {
     
     this.updateDatasource();
   }
+
+  updateGeneratedColor(){
+    this.formDriverColor = RandomColor.generateColor()
+  }
+
   alertWithSuccess(message) {
     Swal.fire('Ajout/Modification de conducteur', message, 'success')
   }
@@ -106,6 +116,7 @@ export class DriversComponent implements OnInit {
 
   //Ajouter un conducteur
   displayDriverForm(newDriver : boolean) {
+    this.driverForm.controls["color"].setValue(RandomColor.generateColor());  
     if(newDriver){
       this.newDriver=true;
       this.updatingDriver = false;
@@ -128,6 +139,7 @@ export class DriversComponent implements OnInit {
     this.driverForm.controls["lastname"].setValue(driver.lastname);
     this.driverForm.controls["email"].setValue(driver.email);
     this.driverForm.controls["phoneNumber"].setValue(driver.phoneNumber);  
+    this.driverForm.controls["color"].setValue(driver.color);  
   }
 
   deleteDriver(driver): void {

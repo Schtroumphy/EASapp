@@ -3,8 +3,7 @@
 <form [formGroup]="driverForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
   <div class="row">
     <div class="col-10">
-      <h2 *ngIf="newDriver">Ajouter un conducteur</h2>
-      <h2 *ngIf="updatingDriver">Modifier un conducteur</h2>
+      <h4 *ngIf="updatingDriver">Modifier un conducteur</h4>
     </div>
     <div class="col-2">
       <button type="button" class="btn btn-link" (click)="clearDriverForm()">Fermer</button>
@@ -19,6 +18,13 @@
     <div class="col-sm">
       <label for="lastname">Nom : </label>
       <input type="text" id="lastname" class="form-control" formControlName="lastname">
+    </div>
+    <div class="col-2">
+      <label for="color">Couleur : </label>
+      <input type="color" class="form-control"  id="color" formControlName="color" [value]="formDriverColor">
+    </div>
+    <div class="col-1 refresh-img-div" style="justify-content: flex-end;">
+      <i class="material-icons refresh-img" (click)="updateGeneratedColor()">refresh</i>
     </div>
   </div>
   <br>
@@ -54,13 +60,13 @@
       <td mat-cell *matCellDef="let element"> {{element.id}} </td>
     </ng-container>
 
-    <!-- Name Column -->
+    <!-- Firstname Column -->
     <ng-container matColumnDef="firstname">
       <th mat-header-cell *matHeaderCellDef> Prénom </th>
       <td mat-cell *matCellDef="let element"> {{element.firstname}} </td>
     </ng-container>
 
-    <!-- Weight Column -->
+    <!-- Lastname Column -->
     <ng-container matColumnDef="lastname">
       <th mat-header-cell *matHeaderCellDef> Nom </th>
       <td mat-cell *matCellDef="let element"> {{element.lastname}} </td>
@@ -84,21 +90,27 @@
       <td mat-cell *matCellDef="let element"> {{element.comment}} </td>
     </ng-container>
 
+    <!-- Color Column -->
+    <ng-container matColumnDef="color">
+      <th mat-header-cell *matHeaderCellDef> Couleur </th>
+      <td mat-cell *matCellDef="let element"> <div class="color-div" style.background-color="{{element.color}}"></div></td>
+    </ng-container>
+
     <!-- Planning Column -->
     <ng-container matColumnDef="planning">
       <th mat-header-cell *matHeaderCellDef> Plannings </th>
       <td mat-cell *matCellDef="let element">
-        <button type="button" class="btn btn-info" (click)="planning(element.id)"><mat-icon aria-hidden="false" aria-label="Example home icon">date_range</mat-icon></button>
+        <button mat-flat-button (click)="planning(element.id)"><mat-icon [ngStyle]="{'color':'#0b891a'}">date_range</mat-icon></button>
       </td>
     </ng-container>
 
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions" style="min-width: 60px;">
-      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <th mat-header-cell *matHeaderCellDef>Editer / Supprimer</th>
       <td mat-cell *matCellDef="let element">
-        <button type="button" class="btn btn-primary" (click)="editDriver(element)"> <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon></button>
-        <button type="button" class="btn btn-danger" (click)="deleteDriver(element)"><mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon></button>
+        <button mat-flat-button (click)="editDriver(element)"> <mat-icon color="transparent" [ngStyle]="{'color':'#1e90ff'}">edit</mat-icon></button>
+        <button mat-flat-button (click)="deleteDriver(element)"><mat-icon [ngStyle]="{'color':'red'}">delete</mat-icon></button>
       </td>
     </ng-container>
 

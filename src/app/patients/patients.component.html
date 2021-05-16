@@ -3,8 +3,7 @@
 <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
   <div class="row">
     <div class="col-10">
-      <h2 *ngIf="newPatient">Ajouter un patient</h2>
-      <h2 *ngIf="updatingPatient">Modifier un patient</h2>
+      <h4 *ngIf="updatingPatient">Modifier un patient</h4>
     </div>
     <div class="col-2">
       <button type="button" class="btn btn-link" (click)="clearPatientForm()">Fermer</button>
@@ -32,15 +31,19 @@
       <input type="text" id="email" class="form-control" formControlName="email">
     </div>
   </div>
-  <div class="col-sm">
-    <label for="address">Adresse : </label>
-    <input type="text" id="address" class="form-control" formControlName="address">
-  </div>
-  <div class="col-sm">
-    <label for="comment">Pathologie / Caractéristiques physiques : </label>
-    <input type="text" id="firstname" class="form-control" formControlName="comment">
-  </div>
+  <br>
+  <div class="row">
+    <div class="col">
+      <label for="address">Adresse : </label>
+      <input type="text" id="address" class="form-control" formControlName="address">
+    </div>
+    <div class="col">
+      <label for="comment">Pathologie / Caractéristiques physiques : </label>
+      <input type="text" id="firstname" class="form-control" formControlName="comment">
+    </div>  
 
+  </div>
+  
 
   <div style="color:red" *ngIf="!patientForm.valid && patientForm.touched">
     Veuillez rentrer des valeurs valides.
@@ -97,14 +100,10 @@
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions" style="min-width: 60px;">
-      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <th mat-header-cell *matHeaderCellDef>Editer / Supprimer</th>
       <td mat-cell *matCellDef="let element">
-        <button type="button" class="btn btn-primary" (click)="editPatient(element)">
-          <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
-        </button>
-        <button type="button" class="btn btn-danger" (click)="deletePatient(element)">
-          <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
-        </button>
+        <button mat-flat-button (click)="editPatient(element)"> <mat-icon color="transparent" [ngStyle]="{'color':'#1e90ff'}">edit</mat-icon></button>`
+        <button mat-flat-button (click)="deletePatient(element)"><mat-icon [ngStyle]="{'color':'red'}">delete</mat-icon></button>
       </td>
     </ng-container>
 

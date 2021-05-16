@@ -3,6 +3,21 @@ h1{
     color: rgba(218, 143, 5, 0.603);;
 }
 
+.refresh-img-div{
+    margin-top: 3%;
+    text-align: center;
+}
+
+.refresh-img:hover{
+    color: #1e90ff;
+    cursor: pointer;
+}
+
+.color-div{
+	height: 15px;
+    width: 60px;
+}
+
 .example-container {
     display: flex;
     flex-direction: column;
@@ -53,12 +68,11 @@ h1{
   
 
 button {
-    margin: 2%;
+    margin-top: 2%;
+    margin-left: 2%;
+    margin-right: 2%;
 }
 
 form{
-    margin: 2%;
-    box-sizing: border-box;
-    border: solid rgba(218, 143, 5, 0.603) 3px;
-    padding: 3%;
+   padding: 3%;
 }

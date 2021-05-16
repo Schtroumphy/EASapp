@@ -37,6 +37,7 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { RandomcolorModule } from 'angular-randomcolor';
 
 @NgModule({
   declarations: [HomeComponent, BottomNavComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent],
@@ -67,6 +68,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
       useFactory: adapterFactory,
     }),
     NgSelectModule,
+    RandomcolorModule
     
   ],
   exports: [ReactiveFormsModule]

@@ -11,7 +11,7 @@ import { PatientService } from '../core/services/app/patient.service';
 import { Patient } from '../core/models/patient.schema';
 import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
-import { COLORS, FORMAT_dd_MM_yyyy, FORMAT_HH_mm, FORMAT_yyyy_dd_MM, FORMAT_yyyy_MM_dd } from '../core/constants';
+import { FORMAT_dd_MM_yyyy, FORMAT_HH_mm, FORMAT_yyyy_dd_MM, FORMAT_yyyy_MM_dd } from '../core/constants';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TemplateRef } from '@angular/core';
@@ -76,9 +76,6 @@ export class CalendarComponent implements OnInit {
   frequencyArray: string[] = [];
   filterAfterRedirectionFromdriverPage: boolean = false
 
-  //Map driver-color
-  driverColorMap: Map<string, string> = new Map();
-
   // Modal
   modalReference: any;
   modalInfoData: {
@@ -130,8 +127,6 @@ export class CalendarComponent implements OnInit {
 
     this.populateLists();
     
-    this.createDriverColorMap(this.driverList.map(e => e.id), COLORS)
-
     this.initCalendar()
 
     //TODO Comment
@@ -161,15 +156,6 @@ export class CalendarComponent implements OnInit {
     });
   }
 
-  createDriverColorMap(keys, vals) {
-    var map = new Map()
-    keys.forEach(function (key, index) {
-      map[key] = vals[index];
-    });
-    this.driverColorMap = map;
-    console.log("Driver-Color MAP : " + JSON.stringify(this.driverColorMap))
-  }
-
   getAllEvents() {
     this.eventService.getEvents().subscribe((items) => (this.eventList = items));
   }
@@ -187,7 +173,7 @@ export class CalendarComponent implements OnInit {
       themeSystem: 'bootstrap',
       initialView: 'timeGridWeek',
       timeZone: 'local',
-      eventTextColor: 'white',
+      eventTextColor: 'black',
       editable: true,
       droppable: true,
       slotDuration: '00:15',
@@ -522,7 +508,7 @@ export class CalendarComponent implements OnInit {
       title: event.patient.firstname + " " + event.patient.lastname.toUpperCase() + "\n | " + event.driver.firstname + "\n | ",
       start: dateEv + "T" + startTimeEv + ":00",
       end: dateEv + "T" + endTimeEv + ":00",
-      backgroundColor: this.getColorFromId(event.driver.id),
+      backgroundColor: event.driver.color,
       extendedProps: {
         eventId: event.id,
         driverId: event.driver.id,
@@ -536,9 +522,6 @@ export class CalendarComponent implements OnInit {
   }
 
   /** OTHER FUNCTIONS */
-  getColorFromId(id: number): string {
-    return this.driverColorMap[id]
-  }
 
   /** ALERTS  */
 

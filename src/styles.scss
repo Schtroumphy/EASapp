@@ -17,6 +17,10 @@ html, body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.mat-flat-button{
+  background-color: transparent;
+}
+
 .modal-title{
   color : cadetblue;
   font-size: 20px;
@@ -86,6 +90,7 @@ html, body {
 
 
 .error-div{
+  margin-top: 2%;
   background-color: #F5AD6E;
   color: rgb(49, 48, 48);
   text-align: center;

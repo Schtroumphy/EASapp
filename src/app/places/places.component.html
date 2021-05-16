@@ -3,8 +3,7 @@
 <form [formGroup]="placeForm" (ngSubmit)="onSubmit()" *ngIf="displayForm">
   <div class="row">
     <div class="col-10">
-      <h2 *ngIf="newPlace">Ajouter un lieu</h2>
-      <h2 *ngIf="updatingPlace">Modifier un lieu</h2>
+      <h4 *ngIf="updatingPlace">Modifier un lieu</h4>
     </div>
     <div class="col-2">
       <button type="button" class="btn btn-link" (click)="clearPlaceForm()">Fermer</button>
@@ -16,9 +15,6 @@
       <label for="label">Label : </label>
       <input type="text" id="label" class="form-control" formControlName="label">
     </div>
-  </div>
-  <br>
-  <div class="row">
     <div class="col-sm">
       <label for="postCode">Code postal : </label>
       <input type="number" id="postCode" class="form-control" formControlName="postCode">
@@ -66,10 +62,10 @@
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions" style="min-width: 60px;">
-      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <th mat-header-cell *matHeaderCellDef>Editer / Supprimer</th>
       <td mat-cell *matCellDef="let element">
-        <button type="button" class="btn btn-primary" (click)="editPlace(element)"> <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon></button>
-        <button type="button" class="btn btn-danger" (click)="deletePlace(element)"><mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon></button>
+        <button mat-flat-button (click)="editPlace(element)"> <mat-icon color="transparent" [ngStyle]="{'color':'#1e90ff'}">edit</mat-icon></button>`
+        <button mat-flat-button (click)="deletePlace(element)"><mat-icon [ngStyle]="{'color':'red'}">delete</mat-icon></button>
       </td>
     </ng-container>
 

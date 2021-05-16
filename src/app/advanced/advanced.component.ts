@@ -77,11 +77,6 @@ export class AdvancedComponent implements OnInit {
   hours_job: string[] = [];
   hours_job_from: string[] = [];
 
-  ngAfterViewInit(): void {
-    this.eventList.forEach((item) => {
-    })
-  }
-
   constructor(private eventService: EventService, private driverService: DriverService, private patientService: PatientService, private placeService: PlaceService, private datePipe: DatePipe) {
     this.checklist = [
       { id: 1, label: 'Lundi', isSelected: false },
@@ -198,11 +193,11 @@ export class AdvancedComponent implements OnInit {
       id: new FormControl(),
       driver: new FormControl(null, Validators.required),
       patient: new FormControl(null, Validators.required),
-      date: new FormControl(null),
+      date: new FormControl(null, Validators.required),
       startPoint: new FormControl(null, Validators.required),
-      startHour: new FormControl(null),
+      startHour: new FormControl(null, Validators.required),
       endPoint: new FormControl(null, Validators.required),
-      endHour: new FormControl(null),
+      endHour: new FormControl(null, Validators.required),
     })
 
     this.duplicateForm = new FormGroup({
@@ -282,6 +277,7 @@ export class AdvancedComponent implements OnInit {
     console.log("CLEAR EVENT FORM")
     this.eventForm.reset();
     this.displayForm = false;
+    this.checkedlist = []
   }
 
   updateCheckedList(event) {
@@ -603,7 +599,7 @@ export class AdvancedComponent implements OnInit {
   alertSuccessDuplication() {
     Swal.fire({
       title: 'Duplication de planning',
-      text: 'La duplication a été effectuée. Vous retrouverez votre nouveau planning duppliqué dans l\'onglet "PLanning".',
+      text: 'La duplication a été effectuée. Vous retrouverez votre nouveau planning duppliqué dans l\'onglet "Planning".',
       icon: 'success',
       showCancelButton: false,
       confirmButtonText: 'Ok',

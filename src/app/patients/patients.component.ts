@@ -185,10 +185,6 @@ export class PatientsComponent implements OnInit {
     this.dataSource = this.patientList;
   }
 
-  planning() {
-    console.log("PLanning")
-  }
-
   removeColumn() {
     if (this.columnsToDisplay.length) {
       this.columnsToDisplay.pop();

@@ -19,6 +19,9 @@ export class Driver{
     @Column({default: null, nullable: true})
     email: string;
 
+    @Column({nullable: false})
+    color: string;
+
     @OneToMany(type => Evenement, event => event.driver)
     @JoinColumn({name : 'event_id'})
     evenements: Evenement[];

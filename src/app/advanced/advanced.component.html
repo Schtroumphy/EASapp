@@ -181,7 +181,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" *ngIf="eventForm.valid">
         <div class="col">
             <label> Récurrence : </label>
             <div class="form-check form-check-inline" *ngFor="let day of checklist">
@@ -193,18 +193,18 @@
         </div>
     </div>
 
-    <p *ngIf="checkedlist.length > 0"> Cet évènement sera ajouté tous les <i
+    <p *ngIf="eventForm.valid && checkedlist.length > 0"> Cet évènement sera ajouté tous les <i
             *ngFor="let day of checkedlist">{{day.label}}, </i> à compter du
         {{eventForm.get('date').value | date: 'dd/MM/yyyy'}} pendant 2 semaines.</p>
 
-    <p *ngIf="checkedlist.length > 0">Evènements à ajouter</p>
+    <p *ngIf="eventForm.valid && checkedlist.length > 0">Evènements à ajouter</p>
     <p *ngFor="let event of eventListToDisplay">
         {{event.date | date:"dd/MM/yyyy" }} | De {{event.startHour}} à {{event.endHour}}
     </p>
 
 
     <div class="error-div" *ngIf="!eventForm.valid && eventForm.touched">
-        Veuillez rentrer des valeurs valides.
+        Veuillez remplir otus les champs.
     </div>
     <div class="col">
         <button type="submit" class="btn btn-info" [disabled]="!eventForm.valid">Valider</button>

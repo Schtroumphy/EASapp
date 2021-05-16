@@ -129,6 +129,7 @@ async function createWindow(): Promise<BrowserWindow> {
       driverToUpdate.email = _driver.email;
       driverToUpdate.phoneNumber = _driver.phoneNumber;
       driverToUpdate.comment = _driver.comment;
+      driverToUpdate.color = _driver.color
       await driverRepo.save(driverToUpdate);
       event.returnValue = await driverRepo.find();
     } catch (err) {
