@@ -7,7 +7,7 @@
             <ol>
                 <li>Créer des évènements récurrents</li>
                 <li>Plannifier un conducteur pour une date et une période donnée</li>
-                <li>Dupliquer des semaines afin d'éviter les saisies multiples</li>
+                <li>Dupliquer ou supprimer tous les évènements sur (au plus) une semaine</li>
             </ol>
         </div>
     </div>
@@ -20,8 +20,7 @@
     <div class="row" style="text-align: center;">
         <button type="button" class="btn btn-info" (click)="displayEventForm()"> Ajouter un évènement récurrent</button>
         <button type="button" class="btn btn-info" (click)="displayPlanForm()"> Planifier un conducteur</button>
-        <button type="button" class="btn btn-info" (click)="displayDuplicatePlanningForm()"> Dupliquer un
-            planning</button>
+        <button type="button" class="btn btn-info" (click)="displayDuplicatePlanningForm()"> Dupliquer / Supprimer un planning</button>
     </div>
 </div>
 
@@ -263,6 +262,7 @@
             <button type="button" class="btn btn-info" [disabled]="!duplicateForm.valid"
                 (click)="getEventsBetweenTwoDates()">Voir les évènements à dupliquer</button>
             <button type="submit" class="btn btn-info" [disabled]="!allowDuplication">Dupliquer</button>
+            <button type="button" class="btn btn-info" [disabled]="!allowDuplication" (click)="deleteEventBox()">Supprimer</button>
         </div>
 
     </form>

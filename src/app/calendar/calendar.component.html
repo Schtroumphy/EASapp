@@ -10,9 +10,9 @@
     </p>
 </div>
 
-<div class="row" style="margin-bottom: 2%;">
-    <div class="col hideForPrint">
-        <div class="row">
+<div class="row">
+    <div class="col hideForPrint"> 
+        <div class="row" style="padding-left: 1%;">
             <button mat-raised-button type="button" class="btn btn-info" (click)="displayFilterForm(true)"> Filtrer</button>
             <button mat-raised-button type="button" class="btn btn-info" (click)="print()"> Imprimer</button>
         </div>
@@ -20,11 +20,8 @@
 </div>
 
 <form class="filterForm" [formGroup]="filterForm" (ngSubmit)="onFilterSubmit()" *ngIf="displayFilteredForm">
-    <div class="row">
-        <div class="col-10">
-            <h3>Filtrer le planning</h3>
-        </div>
-        <div class="col-2">
+    <div class="row" style="justify-content: flex-end;">
+        <div class="col-2" style="text-align: end;">
             <button type="button" class="btn btn-link" (click)="clearFilterForm()">Fermer</button>
         </div>
     </div>
@@ -76,14 +73,14 @@
         <div style="color:red" *ngIf="!filterForm.valid && filterForm.touched">
             Veuillez rentrer des valeurs valides.
         </div>
-        <button type="submit" class="btn btn-info" [disabled]="!filterForm.valid">Filtrer</button>
-        <button type="button" class="btn btn-warning" (click)="clearFilter()">Effacer les filtres</button>
+        <button mat-raised-button type="submit" class="btn btn-info" [disabled]="!filterForm.valid">Filtrer</button>
+        <button mat-raised-button type="button" class="btn btn-warning" (click)="clearFilter()">Effacer les filtres</button>
 
     </div>
 </form>
 
 <div class="printMe">
-    <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+    <full-calendar #calendar [options]="calendarOptions" style="padding: 1%;"></full-calendar>
 </div>
 
 

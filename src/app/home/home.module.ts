@@ -14,7 +14,7 @@ import { UserGuideComponent } from '../user-guide/user-guide.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { BottomNavComponent } from '../bottom-nav/bottom-nav.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -38,6 +38,11 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { RandomcolorModule } from 'angular-randomcolor';
+import { ElectronService } from 'ngx-electron';
+import { DriverService } from '../core/services/app/driver.service';
+import { EventService } from '../core/services/app/event.service';
+import { PatientService } from '../core/services/app/patient.service';
+import { PlaceService } from '../core/services/app/place.service';
 
 @NgModule({
   declarations: [HomeComponent, BottomNavComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent],
@@ -71,6 +76,8 @@ import { RandomcolorModule } from 'angular-randomcolor';
     RandomcolorModule
     
   ],
+  providers: [DriverService, PatientService, EventService, PlaceService, DatePipe],
+
   exports: [ReactiveFormsModule]
 })
 export class HomeModule {}

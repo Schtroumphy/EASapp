@@ -31,14 +31,14 @@ export class AdvancedComponent implements OnInit {
   daysArray = []
   startHourSelected: string
 
-  duplicateForm : FormGroup
-  eventsToDuplicateForNextWeek : Evenement[]
+  duplicateForm: FormGroup
+  eventsToDuplicateForNextWeek: Evenement[]
   eventsDuplicated: Evenement[]
-  maxDate : string
-  allowDuplication : boolean = false
-  showNoEventsError : boolean = false
+  maxDate: string
+  allowDuplication: boolean = false
+  showNoEventsError: boolean = false
 
-  planDriverForm : FormGroup
+  planDriverForm: FormGroup
 
   //Form
   newEvent = false;
@@ -69,7 +69,7 @@ export class AdvancedComponent implements OnInit {
   // references the #calendar in the template
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
   displayForm: boolean;
-  displayDuplicateForm : boolean;
+  displayDuplicateForm: boolean;
 
   //periodIdSelected: number;
   selectedPlanDriverId: string;
@@ -117,23 +117,23 @@ export class AdvancedComponent implements OnInit {
     window.print();
   }
 
-  getEventsBetweenTwoDates(){
+  getEventsBetweenTwoDates() {
     this.eventService.getEventsBetweenTwoDates(this.duplicateForm.get('startDate').value, this.duplicateForm.get('endDate').value).subscribe(
       (events) => {
         //this.eventList = events
         this.eventsToDuplicateForNextWeek = this.sortByDate(events, 'date')
         this.eventsDuplicated = events
         console.log("EVENT TO DUPLICATE BEfore sort by driver : ", JSON.stringify(this.eventsToDuplicateForNextWeek))
-        if(this.duplicateForm.get('driver').value != null){
+        if (this.duplicateForm.get('driver').value != null) {
           console.log("SORT BY DRIVER : ", this.duplicateForm.get('driver').value)
           this.driverService.getDriverById(parseInt(this.selectedDriverId)).subscribe(
-            (item) => { 
-              console.log("Selected driver ",JSON.stringify(item))
+            (item) => {
+              console.log("Selected driver ", JSON.stringify(item))
               this.eventsToDuplicateForNextWeek = this.eventsToDuplicateForNextWeek.filter(
                 event => event.driver.id === item.id);
               this.eventsDuplicated = this.eventsToDuplicateForNextWeek
             });
-            console.log("EVENT TO DUPLIACTE : ", JSON.stringify(this.eventsToDuplicateForNextWeek))
+          console.log("EVENT TO DUPLIACTE : ", JSON.stringify(this.eventsToDuplicateForNextWeek))
         }
         //Display events
       },
@@ -143,11 +143,11 @@ export class AdvancedComponent implements OnInit {
     this.showNoEventsError = this.eventsToDuplicateForNextWeek.length == 0
   }
 
-  displayDuplicatePlanningForm(){
+  displayDuplicatePlanningForm() {
     this.displayPlanningDuplicateForm()
   }
 
-  onSubmitDuplicateForm(){
+  onSubmitDuplicateForm() {
     console.log("Submit duplicate")
     if (this.eventsDuplicated != []) {
       //Add each element to BDD
@@ -163,11 +163,12 @@ export class AdvancedComponent implements OnInit {
       //Display an error message
       this.errorAlert()
     }
+    this.clearDuplicateForm()
     console.log("Event list duplicated : " + JSON.stringify(this.eventsDuplicated))
     console.log("Event list  : " + JSON.stringify(this.eventsToDuplicateForNextWeek))
   }
-  
-  clearPlanDriverForm(){
+
+  clearPlanDriverForm() {
     console.log("CLEAR PLAN DRIVER FORM")
     this.planDriverForm.reset()
     this.displaySaveButton = false
@@ -175,7 +176,7 @@ export class AdvancedComponent implements OnInit {
     this.displayPlanDriver = false
   }
 
-  clearDuplicateForm(){
+  clearDuplicateForm() {
     console.log("CLEAR DUPLICATE FORM")
     this.duplicateForm.reset();
     this.displayDuplicateForm = false;
@@ -183,7 +184,7 @@ export class AdvancedComponent implements OnInit {
     this.eventsDuplicated = []
   }
 
-  sortByDate(events : Evenement[], prop: string) : Evenement[]{
+  sortByDate(events: Evenement[], prop: string): Evenement[] {
     return events.sort((a, b) => a[prop] > b[prop] ? 1 : a[prop] === b[prop] ? 0 : -1);
   }
 
@@ -210,13 +211,13 @@ export class AdvancedComponent implements OnInit {
     this.planDriverForm = new FormGroup({
       id: new FormControl(),
       driver: new FormControl(null, Validators.required),
-      date : new FormControl(null, Validators.required),
+      date: new FormControl(null, Validators.required),
       startHour: new FormControl(null, Validators.required),
       endHour: new FormControl(null, Validators.required),
     })
   }
 
-  startDatePeriodChanged(){
+  startDatePeriodChanged() {
     console.log("START DATE CHANGED : ", this.duplicateForm.get('startDate').value)
     console.log(new Date(this.duplicateForm.get('startDate').value))
     this.maxDate = this.datePipe.transform(this.addDays(new Date(this.duplicateForm.get('startDate').value), 6), FORMAT_yyyy_MM_dd).toString()
@@ -226,7 +227,7 @@ export class AdvancedComponent implements OnInit {
   addDays(date: Date, days: number): Date {
     date.setDate(date.getDate() + days);
     return date;
-}
+  }
 
   onSubmit() {
     console.log("Event list : " + JSON.stringify(this.eventListToDisplay))
@@ -285,7 +286,7 @@ export class AdvancedComponent implements OnInit {
     if (event.target.value == 7) {
       console.log("uncheck all ")
 
-      this.checklist.filter(check => check.id != 7).forEach(check =>{ check.isSelected = event.target.checked ? true : false})
+      this.checklist.filter(check => check.id != 7).forEach(check => { check.isSelected = event.target.checked ? true : false })
     } else {
       this.checklist[this.checklist.findIndex(check => check.id == event.target.value)].isSelected = event.target.checked ? true : false
       console.log("New checklist " + JSON.stringify(this.checklist))
@@ -302,9 +303,9 @@ export class AdvancedComponent implements OnInit {
     this.displayDuplicateForm = false;
   }
 
-  updateRecurringEventList(){
+  updateRecurringEventList() {
     this.eventListToDisplay = []
-    this.checkedlist.forEach((day) =>{
+    this.checkedlist.forEach((day) => {
       this.getNextDayDateForRecurrence(this.eventForm.get("date").value, day.id).forEach(date => {
 
         var eventToAddToDB = new Evenement();
@@ -614,10 +615,47 @@ export class AdvancedComponent implements OnInit {
     this.recurringValues = []
   }
 
+  deleteEventBox() {
+    Swal.fire({
+      title: 'Etes-vous sûr de vouloir supprimer ces évènements ?',
+      text: 'La suppression est irréversible.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, sûr',
+      cancelButtonText: 'Non, je le garde'
+    }).then((result) => {
+      if (result.value) {
+
+        this.eventsToDuplicateForNextWeek.forEach(element => {
+          this.eventService
+            .deleteEvent(element.id)
+            .subscribe(
+              (events) => {
+                this.eventList = events
+              })
+        });
+
+        Swal.fire(
+          'Supprimé!',
+          'Les évènements ont bien été supprimés.',
+          'success'
+        )
+        
+
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Annulé',
+          'Suppression annulée',
+          'error'
+        )
+      }
+    })
+    this.clearDuplicateForm()
+  }
 
   uncheckAllCheckbox() {
     this.checklist.forEach(check => {
-      if(check.id != 7)
+      if (check.id != 7)
         check.isSelected = false;
     })
   }

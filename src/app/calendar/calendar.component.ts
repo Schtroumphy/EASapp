@@ -610,6 +610,7 @@ export class CalendarComponent implements OnInit {
   clearFilter() {
     this.getAllEvents()
     this.updateCalendar()
+    this.filterForm.reset()
   }
 
   displayEventClicked(hideOrNot) {

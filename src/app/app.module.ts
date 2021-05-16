@@ -17,20 +17,6 @@ import { HomeModule } from './home/home.module';
 import { AppComponent } from './app.component';
 
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatTableModule } from '@angular/material/table';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ReactiveFormsModule } from '@angular/forms'
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatExpansionModule} from '@angular/material/expansion';
-import { MatRadioModule} from '@angular/material/radio';
 
 //Full calendar
 import { FullCalendarModule } from '@fullcalendar/angular'; // the main connector. must go first
@@ -45,10 +31,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 ]);
 
 // Angular Calendar
-import { CalendarModule, DateAdapter } from 'angular-calendar';
-import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { FlatpickrModule } from 'angularx-flatpickr';
 import localeFr from '@angular/common/locales/fr';
 
 registerLocaleData(localeFr);
@@ -60,7 +43,6 @@ import { PlaceService } from '../app/core/services/app/place.service'
 import { ElectronService } from 'ngx-electron';
 import { EventService } from './core/services/app/event.service';
 import { DatePipe } from '@angular/common';
-import { BottomNavComponent } from './bottom-nav/bottom-nav.component';
 import { AuthComponent } from './auth/auth.component';
 import { AuthentificationService } from './core/services/app/auth.service';
 
@@ -94,7 +76,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     
     CommonModule
   ],
-  providers: [AuthentificationService, DriverService, ElectronService, PatientService, EventService, PlaceService, DatePipe],
+  providers: [AuthentificationService, ElectronService, DatePipe],
   bootstrap: [AppComponent],
   entryComponents: [ ]
 })
