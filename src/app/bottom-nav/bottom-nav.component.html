@@ -1,10 +1,8 @@
   <div style="height: 100vh;">
 
     <mat-toolbar class="myToolbar hideForPrint" fxLayout="row" color="primary" 
-    fxLayoutAlign="space-between center" fxLayoutAlign.xs="end center">
-        <img fxFlex class="logo" src={{logoPath}} (click)="redirectToHome()"/>
-    
-        <button mat-button onclick="this.blur()"  [routerLink]="item.redirection" routerLinkActive="active" *ngFor="let item of menuItems">
+    fxLayoutAlign="space-between center" fxLayoutAlign.xs="end center">    
+        <button mat-button  [routerLink]="item.redirection" routerLinkActive="active" *ngFor="let item of menuItems">
           <mat-icon color="warn">{{item.icon}}</mat-icon>
             <!-- <mat-icon class="mr">{{item.icon}}</mat-icon> -->
             {{item.label}}

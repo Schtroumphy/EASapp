@@ -37,7 +37,7 @@ export class BottomNavComponent implements OnInit {
       redirection : './calendar'
     },
     {
-      label: 'Paramètres',
+      label: 'Avancés',
       icon: 'settings',
       redirection : './advanced'
     }

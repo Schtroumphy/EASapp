@@ -11,12 +11,13 @@ import { PatientService } from '../core/services/app/patient.service';
 import { Patient } from '../core/models/patient.schema';
 import { PlaceService } from '../core/services/app/place.service';
 import { Place } from '../core/models/place.schema';
-import { FORMAT_dd_MM_yyyy, FORMAT_HH_mm, FORMAT_yyyy_dd_MM, FORMAT_yyyy_MM_dd } from '../core/constants';
+import { FORMAT_dd_MM_yyyy, FORMAT_HH_mm, FORMAT_yyyy_MM_dd } from '../core/constants';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ThirdPartyDraggable } from '@fullcalendar/interaction';
+import jsPDF  from "jspdf";
+import html2canvas from 'html2canvas'
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -415,9 +416,6 @@ export class CalendarComponent implements OnInit {
     this.displayFilteredForm = false
     this.filterForm.controls["driver1"].setValue("");
     this.selectedFilteredDriverId1 = ""
-    //this.calendarApi.setOption("slotMinTime", "08:00:00");
-    //this.calendarApi.setOption("slotMaxTime", "22:00:00");
-    //this.calendarApi.setOption("slotDuration", "00:15");
   }
 
   displayFilterForm(hideOrNot: boolean) {
@@ -563,7 +561,6 @@ export class CalendarComponent implements OnInit {
     this.eventService.getEventById(eventId).subscribe((eventFound) => {
       this.eventToUpdate = eventFound;
     })
-
   }
 
   deleteEventBox(eventId) {
@@ -648,9 +645,19 @@ export class CalendarComponent implements OnInit {
     this.hours_job_from = this.hours_job.filter(e => parseInt(e) > parseInt(this.startHourFilterSelected))
   }
 
-  print() {
-    window.print()
-  }
+  downloadCalendar(){
+    var element = document.getElementById('full-calendar')
+
+    html2canvas(element).then((canvas) => {
+      console.log(canvas)
+      var doc = new jsPDF({ orientation: 'landscape',format: 'a4' });
+      
+      var imgData = canvas.toDataURL("image/png");
+      doc.addImage(imgData, 'png', 0, 0, 300, 200);
+      doc.save("img.pdf");
+    })
+ 
+  };
 
 }
 

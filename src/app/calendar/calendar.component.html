@@ -14,7 +14,7 @@
     <div class="col hideForPrint"> 
         <div class="row" style="padding-left: 1%;">
             <button mat-raised-button type="button" class="btn btn-info" (click)="displayFilterForm(true)"> Filtrer</button>
-            <button mat-raised-button type="button" class="btn btn-info" (click)="print()"> Imprimer</button>
+            <button mat-raised-button type="button" class="btn btn-info" (click)="downloadCalendar()">Exporter</button>
         </div>
     </div>
 </div>
@@ -80,9 +80,8 @@
 </form>
 
 <div class="printMe">
-    <full-calendar #calendar [options]="calendarOptions" style="padding: 1%;"></full-calendar>
+    <full-calendar #calendar id="full-calendar" [options]="calendarOptions" style="padding: 1%;"></full-calendar>
 </div>
-
 
 <!-- Event info modal implementation -->
 <ng-template #modalInfoContent let-close="close">
