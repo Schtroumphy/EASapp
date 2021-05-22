@@ -1,13 +1,12 @@
 import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { Between, Connection, createConnection, getConnection, getConnectionManager, LessThan, MoreThan, QueryRunner } from 'typeorm';
-import { Authentification } from './../EASapp/src/app/core/models/auth.schema';
-import { Driver } from './../EASapp/src/app/core/models/driver.schema';
-import { Patient } from './../EASapp/src/app/core/models/patient.schema';
+import { Between, createConnection, getConnectionManager } from 'typeorm';
+import { Authentification } from './src/app/core/models/auth.schema.js';
+import { Driver } from './src/app/core/models/driver.schema.js';
+import { Patient } from './src/app/core/models/patient.schema';
 import { Evenement } from './src/app/core/models/evenement.schema';
 import { Place } from './src/app/core/models/place.schema';
-import { join } from 'path';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
