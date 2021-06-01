@@ -2,7 +2,7 @@ import { last } from 'rxjs/operators';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from 'typeorm';
 import { Evenement } from './evenement.schema';
 
-@Entity()
+@Entity("driver")
 export class Driver{
     @PrimaryGeneratedColumn()
     id: number;

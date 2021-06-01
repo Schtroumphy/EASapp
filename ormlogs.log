@@ -1,0 +1,30 @@
+[2021-05-31T18:24:29.043Z][QUERY]: PRAGMA foreign_keys=OFF
+[2021-05-31T18:24:29.044Z][QUERY]: BEGIN TRANSACTION
+[2021-05-31T18:24:29.045Z][QUERY]: SELECT * FROM "sqlite_master" WHERE "type" = 'table' AND "name" IN ('authentification', 'patient', 'place', 'evenement', 'driver')
+[2021-05-31T18:24:29.046Z][QUERY]: SELECT * FROM "sqlite_master" WHERE "type" = 'index' AND "tbl_name" IN ('authentification', 'patient', 'place', 'evenement', 'driver')
+[2021-05-31T18:24:29.047Z][QUERY]: PRAGMA table_info("authentification")
+[2021-05-31T18:24:29.047Z][QUERY]: PRAGMA index_list("authentification")
+[2021-05-31T18:24:29.047Z][QUERY]: PRAGMA foreign_key_list("authentification")
+[2021-05-31T18:24:29.047Z][QUERY]: PRAGMA table_info("place")
+[2021-05-31T18:24:29.047Z][QUERY]: PRAGMA index_list("place")
+[2021-05-31T18:24:29.047Z][QUERY]: PRAGMA foreign_key_list("place")
+[2021-05-31T18:24:29.048Z][QUERY]: PRAGMA table_info("evenement")
+[2021-05-31T18:24:29.048Z][QUERY]: PRAGMA index_list("evenement")
+[2021-05-31T18:24:29.048Z][QUERY]: PRAGMA foreign_key_list("evenement")
+[2021-05-31T18:24:29.048Z][QUERY]: PRAGMA table_info("patient")
+[2021-05-31T18:24:29.048Z][QUERY]: PRAGMA index_list("patient")
+[2021-05-31T18:24:29.048Z][QUERY]: PRAGMA foreign_key_list("patient")
+[2021-05-31T18:24:29.048Z][QUERY]: PRAGMA table_info("driver")
+[2021-05-31T18:24:29.048Z][QUERY]: PRAGMA index_list("driver")
+[2021-05-31T18:24:29.049Z][QUERY]: PRAGMA foreign_key_list("driver")
+[2021-05-31T18:24:29.052Z][QUERY]: SELECT * FROM "sqlite_master" WHERE "type" = 'table' AND "name" = 'typeorm_metadata'
+[2021-05-31T18:24:29.056Z][QUERY]: CREATE TABLE "temporary_patient" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "firstname" varchar NOT NULL, "lastname" varchar NOT NULL, "phoneNumber" varchar, "email" varchar, "address" varchar, "comment" varchar)
+[2021-05-31T18:24:29.058Z][QUERY]: INSERT INTO "temporary_patient"("id", "firstname", "lastname", "phoneNumber", "email", "address", "comment") SELECT "id", "firstname", "lastname", "phoneNumber", "email", "address", "comment" FROM "patient"
+[2021-05-31T18:24:29.058Z][QUERY]: DROP TABLE "patient"
+[2021-05-31T18:24:29.058Z][QUERY]: ALTER TABLE "temporary_patient" RENAME TO "patient"
+[2021-05-31T18:24:29.060Z][QUERY]: CREATE TABLE "temporary_driver" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "firstname" varchar NOT NULL, "lastname" varchar NOT NULL, "phoneNumber" varchar, "email" varchar, "color" varchar NOT NULL, "comment" varchar)
+[2021-05-31T18:24:29.060Z][QUERY]: INSERT INTO "temporary_driver"("id", "firstname", "lastname", "phoneNumber", "email", "color", "comment") SELECT "id", "firstname", "lastname", "phoneNumber", "email", "color", "comment" FROM "driver"
+[2021-05-31T18:24:29.060Z][QUERY]: DROP TABLE "driver"
+[2021-05-31T18:24:29.061Z][QUERY]: ALTER TABLE "temporary_driver" RENAME TO "driver"
+[2021-05-31T18:24:29.063Z][QUERY]: COMMIT
+[2021-05-31T18:24:29.064Z][QUERY]: PRAGMA foreign_keys=ON

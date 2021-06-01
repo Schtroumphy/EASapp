@@ -19,6 +19,16 @@
     "!tsconfig.json",  
     "!tslint.json"  
 ],
+"extraResources": [
+  {
+    "from": "src/app/core/models",
+    "to": "app/src/app/core/models",
+    "filter": [
+      "**/*.js"
+    ]
+  }
+],
+"asar" : false,
   "win": {
     "icon": "dist/assets/icons",
     "target": [
@@ -28,7 +38,7 @@
   "mac": {
     "icon": "dist/assets/icons",
     "target": [
-      "dmg"
+      "dir"
     ]
   },
   "linux": {

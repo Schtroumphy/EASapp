@@ -4,7 +4,7 @@ import { PrimaryGeneratedColumn } from "typeorm/decorator/columns/PrimaryGenerat
 import { Entity } from "typeorm/decorator/entity/Entity";
 import { Evenement } from "./evenement.schema";
 
-@Entity()
+@Entity("place")
 export class Place {
 
     @PrimaryGeneratedColumn()

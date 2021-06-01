@@ -18,8 +18,8 @@ export class AppComponent {
     this.translate.setDefaultLang('en');
     console.log('AppConfig', AppConfig);
 
-    let currentUrl = this.router.url;
-    console.log("IN APP CURRENT URL : ", currentUrl )
+    //let currentUrl = this.router.url;
+    //console.log("IN APP CURRENT URL : ", currentUrl )
 
     if (electronService.isElectron) {
       console.log(process.env);

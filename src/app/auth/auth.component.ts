@@ -23,8 +23,8 @@ export class AuthComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    let currentUrl = this.router.url;
-    console.log("IN AUTH CURRENT URL : ", currentUrl)
+    //let currentUrl = this.router.url;
+    //console.log("IN AUTH CURRENT URL : ", currentUrl)
   }
 
   addAuthentification(identifiant: string, isMaster: boolean) {
@@ -41,8 +41,8 @@ export class AuthComponent implements OnInit {
   }
 
   createIdentifiant(){
-    this.addAuthentification("normal2", false)
-    this.addAuthentification("normal3", false)
+    this.addAuthentification("admin972", true)
+    this.addAuthentification("normal", false)
   }
 
   checkAsMaster() {

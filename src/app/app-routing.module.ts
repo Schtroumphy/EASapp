@@ -23,7 +23,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy', enableTracing:true, useHash: true}),
+    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy', /*enableTracing:true,*/ useHash: true}),
   ],
   exports: [RouterModule]
 })

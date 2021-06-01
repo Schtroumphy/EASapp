@@ -46,8 +46,8 @@ export class BottomNavComponent implements OnInit {
   constructor(private router : Router) { }
 
   ngOnInit(): void {
-    let currentUrl = this.router.url;
-    console.log("IN BOTTOM NAV CURRENT URL : ", currentUrl )
+    //let currentUrl = this.router.url;
+    //console.log("IN BOTTOM NAV CURRENT URL : ", currentUrl )
   }
 
   alertWithWarning() {

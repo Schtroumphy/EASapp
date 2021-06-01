@@ -7,7 +7,7 @@ import { Driver } from './driver.schema'
 import { Patient } from './patient.schema'
 import { Place } from "./place.schema";
 
-@Entity()
+@Entity("evenement")
 export class Evenement {
 
     @PrimaryGeneratedColumn()

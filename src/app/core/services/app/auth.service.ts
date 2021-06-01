@@ -18,7 +18,9 @@ export class AuthentificationService {
   addAuthentification(authentification: Authentification): Observable<Authentification[]> {
     return of(
       this._electronService.ipcRenderer.sendSync('add-authentification', authentification)
-    ).pipe(catchError((error: any) => throwError(error.json)));
+    ).pipe(catchError((error: any) => 
+      throwError("AUTH ERROR : ", error.json)
+    ));
   }
  
 }

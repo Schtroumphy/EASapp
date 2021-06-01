@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from 'typeorm';
 import { Evenement } from './evenement.schema';
-@Entity()
+@Entity("patient")
 export class Patient{
     @PrimaryGeneratedColumn()
     id: number;

@@ -4,11 +4,18 @@ import * as url from 'url';
 import { Between, createConnection, getConnectionManager } from 'typeorm';
 import { Authentification } from './src/app/core/models/auth.schema.js';
 import { Driver } from './src/app/core/models/driver.schema.js';
-import { Patient } from './src/app/core/models/patient.schema';
-import { Evenement } from './src/app/core/models/evenement.schema';
-import { Place } from './src/app/core/models/place.schema';
+import { Patient } from './src/app/core/models/patient.schema.js';
+import { Evenement } from './src/app/core/models/evenement.schema.js';
+import { Place } from './src/app/core/models/place.schema.js';
+
+const log = require('electron-log');
 
 let win: BrowserWindow = null;
+let authRepo = null
+let eventRepo = null
+let driverRepo = null
+let patientRepo = null
+let placeRepo = null
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
@@ -21,10 +28,12 @@ async function createWindow(): Promise<BrowserWindow> {
       name: "connection",
       type: 'sqlite',
       synchronize: false,
-      logging: true,
-      logger: 'simple-console',
-      database: './src/assets/data/database.sqlite',
+      logging: 'all',
+      logger: 'advanced-console',
+      // TODO if dev src else dist
+      database: './dist/assets/data/database.sqlite',
       entities: [Authentification, Evenement, Driver, Patient, Place],
+    
       // migrations: [
       //   "../src/migration/*{.ts,.js}"
       // ],
@@ -33,24 +42,31 @@ async function createWindow(): Promise<BrowserWindow> {
       // },
       // migrationsRun: true,
     })
+    log.info("DATABASE CONNECTION OK")
   } catch (e) {
+    log.warn('[EXCEPTION WHILE TERMINATING APPLICATION CONTEXT]', e);
     console.log('[EXCEPTION WHILE TERMINATING APPLICATION CONTEXT]', e);
-     // If AlreadyHasActiveConnectionError occurs, return already existent connection
+     // If AlreadyHasActiveConnectionError occurs, return already existing connection
      if (e.name === "AlreadyHasActiveConnectionError") {
       const existentConn = getConnectionManager().get("connection");
       connection = existentConn;
    }
   }
-  
+
+  try {
     await connection.query('PRAGMA foreign_keys=OFF');
     await connection.synchronize();
     await connection.query('PRAGMA foreign_keys=ON');
  
-  const authRepo = connection.getRepository(Authentification);
-  const eventRepo = connection.getRepository(Evenement);
-  const driverRepo = connection.getRepository(Driver);
-  const patientRepo = connection.getRepository(Patient);
-  const placeRepo = connection.getRepository(Place);
+   authRepo = connection.getRepository(Authentification);
+   eventRepo = connection.getRepository(Evenement);
+    driverRepo = connection.getRepository(Driver);
+    patientRepo = connection.getRepository(Patient);
+    placeRepo = connection.getRepository(Place);
+  } catch (e){
+    console.log("EXCEPTION : ", e)
+    log.warn("EXCEPTION : ", e.json)
+  }
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -71,7 +87,6 @@ async function createWindow(): Promise<BrowserWindow> {
   win.webContents.openDevTools();
 
   if (serve) {
-
     win.webContents.openDevTools();
 
     require('electron-reload')(__dirname, {
