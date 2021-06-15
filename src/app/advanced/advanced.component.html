@@ -192,13 +192,14 @@
         </div>
     </div>
 
+    <br>
     <p *ngIf="eventForm.valid && checkedlist.length > 0"> Cet évènement sera ajouté tous les <i
             *ngFor="let day of checkedlist">{{day.label}}, </i> à compter du
         {{eventForm.get('date').value | date: 'dd/MM/yyyy'}} pendant 2 semaines.</p>
 
     <p *ngIf="eventForm.valid && checkedlist.length > 0">Evènements à ajouter</p>
     <p *ngFor="let event of eventListToDisplay">
-        {{event.date | date:"dd/MM/yyyy" }} | De {{event.startHour}} à {{event.endHour}}
+        {{event.date |  date:"dd/MM/yyyy" }} | De {{event.startHour}} à {{event.endHour}}
     </p>
 
 

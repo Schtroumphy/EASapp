@@ -16,19 +16,19 @@ export class AuthComponent implements OnInit {
 
   //Form
   authForm: FormGroup;
-  authFailed: boolean;
+  showError: boolean;
   masterAddIdentifiant: boolean;
 
   constructor(private authService: AuthentificationService, private router: Router, private datePipe: DatePipe) { }
 
   ngOnInit(): void {
     this.initForm();
-    //let currentUrl = this.router.url;
-    //console.log("IN AUTH CURRENT URL : ", currentUrl)
+    this.createIdentifiant()
   }
 
-  addAuthentification(identifiant: string, isMaster: boolean) {
+  addAuthentification(identifiant: string, isMaster: boolean, id : number) {
     var newAuth = new Authentification()
+    newAuth.id = 1
     newAuth.identifiant = identifiant
     newAuth.isMaster = isMaster
     newAuth.creationDate = this.datePipe.transform(new Date(), FORMAT_yyyy_MM_dd)
@@ -41,8 +41,8 @@ export class AuthComponent implements OnInit {
   }
 
   createIdentifiant(){
-    this.addAuthentification("admin972", true)
-    this.addAuthentification("normal", false)
+    this.addAuthentification("admin972easapp", true, 1)
+    this.addAuthentification("normal972easapp", false, 2)
   }
 
   checkAsMaster() {
@@ -50,13 +50,13 @@ export class AuthComponent implements OnInit {
     var auth = this.checkAuth()
 
     if (auth == undefined) {
-      this.authFailed = true
+      this.showError = true
     } else {
       if (auth.isMaster) {
-        this.authFailed = false
+        this.showError = false
         this.displayAddIdentifiantForm()
       } else {
-        this.authFailed = true
+        this.showError = true
       }
     }
 
@@ -103,13 +103,13 @@ export class AuthComponent implements OnInit {
       console.log("ADD identifiant")
       if(this.authForm.get('identifiant').value != ""){
         console.log("Before adding")
-        this.addAuthentification(this.authForm.get('identifiant').value, false)
+        this.addAuthentification(this.authForm.get('identifiant').value, false, null)
         this.alertWithSuccess("Le nouvel identifiant a bien été créé.")
         this.masterAddIdentifiant = false
-        this.authFailed = false
+        this.showError = false
         this.authForm.reset()
       }else {
-        this.authFailed = true
+        this.showError = true
       }
     } else {
       console.log(this.authForm);
@@ -118,9 +118,9 @@ export class AuthComponent implements OnInit {
   
       if (auth === undefined) {
         console.log("IS UNDEFINED ")
-        this.authFailed = true
+        this.showError = true
       } else {
-        this.authFailed = false
+        this.showError = false
         this.goToHomePage()
       }
     }

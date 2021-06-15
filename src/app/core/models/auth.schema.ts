@@ -11,6 +11,6 @@ export class Authentification{
     @Column({default: false})
     isMaster: boolean;
 
-    @Column()
+    @Column({nullable: true})
     creationDate: string;
 }

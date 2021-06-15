@@ -13,10 +13,10 @@ export class Place {
     @Column()
     label: string;
 
-    @Column()
+    @Column({ nullable : true})
     postCode: number;
 
-    @Column()
+    @Column({ nullable : true})
     country: string;
 
     @OneToMany(type => Evenement, event => event.startPoint)

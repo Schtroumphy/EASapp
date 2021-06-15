@@ -39,11 +39,10 @@
         <button type="submit" class="btn btn-success" [disabled]="!authForm.valid" *ngIf="masterAddIdentifiant">Enregistrer le nouvel identifiant</button>
       </div>
       <button mat-button type="button" class="masterButton" style="justify-content: center;" (click)="checkAsMaster()" *ngIf="!masterAddIdentifiant"> Se connecter en tant que maître ? </button>
-
       
     </div>
 
-  <div class="error-div" *ngIf="authFailed">
+  <div class="error-div" *ngIf="showError && authForm.get('identifiant').value.length > 0">
     L'identifiant saisi n'est pas reconnu. Veuillez réessayer ou contacter un administrateur.
 </div>
     
@@ -54,4 +53,4 @@
 </div>
 
 
-  <button style="justify-content: center;" type="button" (click)="createIdentifiant()" >Vers home</button> 
+  <!-- <button style="justify-content: center;" type="button" (click)="createIdentifiant()" >Vers home</button> -->

@@ -313,7 +313,11 @@ export class AdvancedComponent implements OnInit {
         eventToAddToDB.startHour = this.eventForm.get('startHour').value
         eventToAddToDB.endHour = this.eventForm.get('endHour').value
         console.log("element : " + day.id)
-        eventToAddToDB.date = this.datePipe.transform(date, FORMAT_yyyy_dd_MM);
+        console.log("Date before transform : " + JSON.stringify(date))
+
+        eventToAddToDB.date = this.datePipe.transform(date, FORMAT_yyyy_MM_dd);
+        console.log("Date after transform : " + JSON.stringify(eventToAddToDB.date ))
+
         this.eventListToDisplay.push(eventToAddToDB)
         console.log("Event to display list : " + JSON.stringify(eventToAddToDB))
 
@@ -327,8 +331,6 @@ export class AdvancedComponent implements OnInit {
         this.placeService.getPlaceById(parseInt(this.selectedEndPointId)).subscribe(
           (item) => { eventToAddToDB.endPoint = item });
       });
-      //eventToAddToDB.date = this.getNextDayDateForRecurrence(element);
-
       console.log("liste : " + JSON.stringify(this.eventListToDisplay))
 
     })
@@ -380,7 +382,7 @@ export class AdvancedComponent implements OnInit {
     var d = new Date(firstDate);
     var d1 = new Date(firstDate);
     var zeroString = ""
-    console.log("Date selcted convert to date: " + JSON.stringify(d))
+    console.log("Date selected convert to date: " + JSON.stringify(d))
 
     console.log("Get date : " + JSON.stringify(d.getDate()))
     console.log("Day number : " + dayNumber)
@@ -389,11 +391,10 @@ export class AdvancedComponent implements OnInit {
 
     d.setDate(d.getDate() + (dayNumber + 7 - d.getDay()) % 7)
 
-    console.log("D after set date : " + d)
     console.log("D after set date : " + JSON.stringify(d))
 
     console.log("Date selcted convert w/ format: " + JSON.stringify(d))
-    var date = this.datePipe.transform(d, FORMAT_yyyy_dd_MM)
+    var date = this.datePipe.transform(d, FORMAT_yyyy_MM_dd)
     console.log("Date selcted convert w/ format: " + JSON.stringify(date))
 
     if (d.getMonth() < 10) {
