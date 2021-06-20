@@ -38,14 +38,14 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { RandomcolorModule } from 'angular-randomcolor';
-import { ElectronService } from 'ngx-electron';
+import { MatTabsModule } from '@angular/material/tabs';
 import { DriverService } from '../core/services/app/driver.service';
 import { EventService } from '../core/services/app/event.service';
 import { PatientService } from '../core/services/app/patient.service';
 import { PlaceService } from '../core/services/app/place.service';
 
 @NgModule({
-  declarations: [HomeComponent, BottomNavComponent, NavigationComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent],
+  declarations: [HomeComponent, BottomNavComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, ReportComponent,AbsenceComponent, DataComponent],
   imports: [
     CommonModule,
     HomeRoutingModule,
@@ -73,8 +73,8 @@ import { PlaceService } from '../core/services/app/place.service';
       useFactory: adapterFactory,
     }),
     NgSelectModule,
-    RandomcolorModule
-    
+    RandomcolorModule,
+    MatTabsModule
   ],
   providers: [DriverService, PatientService, EventService, PlaceService, DatePipe],
 

@@ -9,6 +9,7 @@ import { PlacesComponent } from '../places/places.component';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { BottomNavComponent } from '../bottom-nav/bottom-nav.component';
 import { DriversComponent } from '../drivers/drivers.component';
+import { DataComponent } from 'app/data/data.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
       {
         path: 'home',
         component: HomeComponent
+      },
+      {
+        path: 'data',
+        component: DataComponent
       },
       {
         path: 'patients',

@@ -37,14 +37,11 @@ import localeFr from '@angular/common/locales/fr';
 registerLocaleData(localeFr);
 
 //Services
-import { DriverService } from '../app/core/services/app/driver.service'
-import { PatientService } from '../app/core/services/app/patient.service'
-import { PlaceService } from '../app/core/services/app/place.service'
 import { ElectronService } from 'ngx-electron';
-import { EventService } from './core/services/app/event.service';
 import { DatePipe } from '@angular/common';
 import { AuthComponent } from './auth/auth.component';
 import { AuthentificationService } from './core/services/app/auth.service';
+import { LOCALE_ID } from '@angular/core';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -54,6 +51,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   dayGridPlugin, bootstrapPlugin, listPlugin,timeGridPlugin,interactionPlugin
 ]);
+
+
 
 @NgModule({
   declarations: [AppComponent, AuthComponent],
@@ -76,7 +75,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     
     CommonModule
   ],
-  providers: [AuthentificationService, ElectronService, DatePipe],
+  providers: [AuthentificationService, ElectronService, DatePipe, { provide: LOCALE_ID, useValue: "fr-FR" }],
   bootstrap: [AppComponent],
   entryComponents: [ ]
 })

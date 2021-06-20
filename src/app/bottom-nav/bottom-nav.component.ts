@@ -17,19 +17,9 @@ export class BottomNavComponent implements OnInit {
       redirection : './home'
     },
     {
-      label: 'Conducteurs',
-      icon: 'drive_eta',
-      redirection : './drivers'
-    },
-    {
-      label: 'Patients',
-      icon: 'person',
-      redirection : './patients'
-    },
-    {
-      label: 'Lieux',
-      icon: 'place',
-      redirection : './places'
+      label: 'Données',
+      icon: 'data_usage',
+      redirection : './data'
     },
     {
       label: 'Planning',

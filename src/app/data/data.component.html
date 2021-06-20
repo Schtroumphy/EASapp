@@ -1,0 +1,12 @@
+
+<mat-tab-group mat-stretch-tabs [disableRipple]=true #tabGroup>
+    <mat-tab class="col" label="Conducteurs">
+      <app-drivers *ngIf="tabGroup.selectedIndex === 0"></app-drivers>
+    </mat-tab>
+    <mat-tab class="col" label="Patients">
+      <app-patients *ngIf="tabGroup.selectedIndex === 1"></app-patients>
+    </mat-tab>
+    <mat-tab class="col" label="Lieux">
+      <app-places *ngIf="tabGroup.selectedIndex === 2"></app-places>
+    </mat-tab>
+</mat-tab-group>

@@ -97,7 +97,6 @@ export class CalendarComponent implements OnInit {
   // references the #calendar in the template
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
 
-
   ngAfterViewInit(): void {
     this.calendarApi = this.calendarComponent.getApi();
     this.getAllEvents();
@@ -112,7 +111,6 @@ export class CalendarComponent implements OnInit {
 
   constructor(private modal: NgbModal, private eventService: EventService, private driverService: DriverService, private patientService: PatientService,
     private placeService: PlaceService, private datePipe: DatePipe, private router: Router, private route: ActivatedRoute) {
-    console.log()
     // Synchrone
     console.log("P1 Synchrone : " + this.route.snapshot.params['p1']);
 
