@@ -1,0 +1,24 @@
+<div class="container">
+   
+    <table>
+      <thead>
+        <tr class="col-12">
+            <mat-icon class="col-1 icon-absence">chevron_left</mat-icon>  
+            <th *ngIf="dayOfMonth.length > 8" [attr.colspan]="dayOfMonth.length "><h3 class="col">Juin 2021</h3> </th>
+            <th *ngIf="dayOfMonth.length < 8" [attr.colspan]="dayOfMonth.length - 1"><h3 class="col">Semaine du .... a ....</h3> </th>
+            <mat-icon class="col-1 icon-absence">chevron_right</mat-icon>
+        </tr>
+        <tr>  
+            <th data-selectable="all">Employés</th>  
+            <th *ngFor="let day of dayOfMonth">{{day}}</th>
+        </tr> 
+      </thead>
+      <tbody>
+        <tr *ngFor="let employee of employeeList; let i = index;">    
+            <td class="employee-cell" data-selectable="row">{{employee}}</td>
+            <td class="selectable absence-cell" *ngFor="let day of dayOfMonth"></td>
+            <td><mat-icon>close</mat-icon></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

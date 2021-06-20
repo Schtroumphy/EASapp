@@ -26,6 +26,16 @@ export class BottomNavComponent implements OnInit {
       icon: 'calendar_today',
       redirection : './calendar'
     },
+    /*{
+      label: 'Report',
+      icon: 'poll',
+      redirection : './report'
+    },*/
+    {
+      label: 'Absence',
+      icon: 'perm_contact_calendar',
+      redirection : './absence'
+    },
     {
       label: 'Avancés',
       icon: 'settings',

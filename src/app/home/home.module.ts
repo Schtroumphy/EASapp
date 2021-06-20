@@ -38,11 +38,14 @@ import { FlatpickrModule } from 'angularx-flatpickr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { RandomcolorModule } from 'angular-randomcolor';
 import { MatTabsModule } from '@angular/material/tabs';
+
+
 import { DriverService } from '../core/services/app/driver.service';
 import { EventService } from '../core/services/app/event.service';
 import { PatientService } from '../core/services/app/patient.service';
 import { PlaceService } from '../core/services/app/place.service';
 import { ReportComponent } from 'app/report/report.component';
+import { AbsenceComponent } from 'app/absence/absence.component';
 import { DataComponent } from 'app/data/data.component';
 
 @NgModule({

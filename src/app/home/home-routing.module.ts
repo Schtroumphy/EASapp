@@ -9,6 +9,8 @@ import { PlacesComponent } from '../places/places.component';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { BottomNavComponent } from '../bottom-nav/bottom-nav.component';
 import { DriversComponent } from '../drivers/drivers.component';
+import { ReportComponent } from 'app/report/report.component';
+import { AbsenceComponent } from 'app/absence/absence.component';
 import { DataComponent } from 'app/data/data.component';
 
 const routes: Routes = [
@@ -48,6 +50,10 @@ const routes: Routes = [
       {
         path: 'calendar/:p1',
         component: CalendarComponent
+      },
+      {
+        path: 'absence',
+        component: AbsenceComponent
       },
       {
         path: 'report',
