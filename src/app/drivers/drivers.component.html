@@ -104,6 +104,14 @@
       </td>
     </ng-container>
 
+    <!-- Planning Column -->
+    <ng-container matColumnDef="report">
+      <th mat-header-cell *matHeaderCellDef> Rapport </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-flat-button (click)="report(element.id)"><mat-icon [ngStyle]="{'color':'#1e90ff'}">poll</mat-icon></button>
+      </td>
+    </ng-container>
+
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions" style="min-width: 60px;">

@@ -7,7 +7,6 @@ import { AdvancedComponent } from '../advanced/advanced.component';
 import { CalendarComponent } from '../calendar/calendar.component';
 import { DriversComponent } from '../drivers/drivers.component';
 import { EventComponent } from '../event/event.component';
-import { NavigationComponent } from '../navigation/navigation/navigation.component';
 import { PatientsComponent } from '../patients/patients.component';
 import { PlacesComponent } from '../places/places.component';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
@@ -43,6 +42,8 @@ import { DriverService } from '../core/services/app/driver.service';
 import { EventService } from '../core/services/app/event.service';
 import { PatientService } from '../core/services/app/patient.service';
 import { PlaceService } from '../core/services/app/place.service';
+import { ReportComponent } from 'app/report/report.component';
+import { DataComponent } from 'app/data/data.component';
 
 @NgModule({
   declarations: [HomeComponent, BottomNavComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, ReportComponent,AbsenceComponent, DataComponent],

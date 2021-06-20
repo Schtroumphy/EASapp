@@ -120,7 +120,6 @@ export class AdvancedComponent implements OnInit {
   getEventsBetweenTwoDates() {
     this.eventService.getEventsBetweenTwoDates(this.duplicateForm.get('startDate').value, this.duplicateForm.get('endDate').value).subscribe(
       (events) => {
-        //this.eventList = events
         this.eventsToDuplicateForNextWeek = this.sortByDate(events, 'date')
         this.eventsDuplicated = events
         console.log("EVENT TO DUPLICATE BEfore sort by driver : ", JSON.stringify(this.eventsToDuplicateForNextWeek))
@@ -626,7 +625,7 @@ export class AdvancedComponent implements OnInit {
       cancelButtonText: 'Non, je le garde'
     }).then((result) => {
       if (result.value) {
-
+        console.log("Events to delete :", JSON.stringify(this.eventsToDuplicateForNextWeek))
         this.eventsToDuplicateForNextWeek.forEach(element => {
           this.eventService
             .deleteEvent(element.id)
@@ -641,8 +640,8 @@ export class AdvancedComponent implements OnInit {
           'Les évènements ont bien été supprimés.',
           'success'
         )
-        
-
+        this.clearDuplicateForm()
+  
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
           'Annulé',
@@ -651,7 +650,6 @@ export class AdvancedComponent implements OnInit {
         )
       }
     })
-    this.clearDuplicateForm()
   }
 
   uncheckAllCheckbox() {

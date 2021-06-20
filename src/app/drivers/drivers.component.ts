@@ -22,7 +22,7 @@ export class DriversComponent implements OnInit {
 
   driverList: Driver[] = [];
 
-  displayedColumns = ['id', 'firstname', 'lastname', 'phoneNumber', 'email', 'comment', 'color', 'actions', 'planning'];
+  displayedColumns = ['id', 'firstname', 'lastname', 'phoneNumber', 'email', 'comment', 'color', 'actions', 'planning', 'report'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
   dataSource: Driver[];
 
@@ -196,6 +196,11 @@ export class DriversComponent implements OnInit {
   planning(event) {
     console.log("PLanning : " + event)
     this._router.navigate(['/bottom-nav/calendar', {p1: event}]);
+  }
+
+  report(event) {
+    console.log("Report : " + event)
+    this._router.navigate(['/bottom-nav/report', {p1: event}]);
   }
 
   removeColumn() {

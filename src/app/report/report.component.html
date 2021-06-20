@@ -1,0 +1,54 @@
+
+<div class="row">
+    <div class="col-1">
+        <mat-icon (click)="getPreviousWeek()">chevron_left</mat-icon>
+    </div>
+    <h2 class="col"> Semaine du {{currentWeekStartDate | date:'dd/MM/yyyy'}} au {{currentWeekEndDate | date:'dd/MM/yyyy'}}</h2>
+    <div class="col-1">
+        <mat-icon (click)="getNextWeek()">chevron_right</mat-icon>
+    </div>
+
+</div>
+<h4 *ngIf="driverSelected != null"> {{driverSelected.lastname | uppercase }} {{driverSelected.firstname | lowercase }}</h4>
+
+<form class="filterForm" [formGroup]="filterForm" (ngSubmit)="onFilterSubmit()" *ngIf="displayFilteredForm">
+
+<div class="col-3" *ngIf="driverSelected == null">
+    <label for="driver">Conducteur : </label>
+    <select>
+        <option *ngFor="let driver of driverList" [value]="driver.id">
+            {{driver.firstname | lowercase }} {{driver.lastname | uppercase }}
+        </option>
+    </select>
+    <button mat-raised-button type="button" class="btn btn-warning" (click)="selectDriver()">Valider</button>
+</div>
+
+</form>
+
+<h6 style="color: orangered; text-align: center; margin-top: 10%;" *ngIf="eventsGroupByDate.length == 0 && !displayDriverError"> Aucun évènement pour cette semaine.</h6>
+<h6 style="color: orangered; text-align: center; margin-top: 10%;" *ngIf="displayDriverError"> Veuillez sélectionner un conducteur.</h6>
+
+<form class="driverForm" [formGroup]="driverForm" (ngSubmit)="onFDriverFormSubmit()" *ngIf="displayDriverError">
+    <div class="col-3">
+        <label for="driver">Conducteur : </label>
+        <select>
+            <option *ngFor="let driver of driverList" [value]="driver.id">
+                {{driver.firstname | lowercase }} {{driver.lastname | uppercase }}
+            </option>
+        </select>
+    </div>
+</form>
+
+<div *ngIf="eventsGroupByDate.length != 0">
+    <div class="report-div" *ngFor="let eventGroup of eventsGroupByDate" [style.display]="eventGroup.events.length != 0 ? 'block' : 'none'">
+        <h5>{{eventGroup.date | date :'EEEE d' | uppercase}}</h5> <br>
+        <!-- <h5 *ngIf="eventGroup.events.length == 0" ><del>{{eventGroup.date | date :'EEEE d' | uppercase}}</del></h5> <br> -->
+        <div class="wrapper">
+            <div *ngFor="let event of eventGroup.events">
+                <strong>{{event.startHour}} - {{event.endHour}} </strong><br>
+                {{event.patient.firstname | lowercase}} {{event.patient.lastname | uppercase}} <br>
+                {{event.startPoint.label}} -> {{event.endPoint.label}} <br>
+            </div>
+        </div>
+    </div>
+</div>

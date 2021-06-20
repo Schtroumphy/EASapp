@@ -50,6 +50,14 @@ const routes: Routes = [
         component: CalendarComponent
       },
       {
+        path: 'report',
+        component: ReportComponent
+      },
+      {
+        path: 'report/:p1',
+        component: ReportComponent
+      },
+      {
         path: 'advanced',
         component: AdvancedComponent
       },
