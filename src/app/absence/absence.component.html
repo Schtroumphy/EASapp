@@ -1,24 +1,61 @@
 <div class="container">
-   
+  <p> Selection {{selections | json }}</p>
     <table>
       <thead>
         <tr class="col-12">
-            <mat-icon class="col-1 icon-absence">chevron_left</mat-icon>  
-            <th *ngIf="dayOfMonth.length > 8" [attr.colspan]="dayOfMonth.length "><h3 class="col">Juin 2021</h3> </th>
+            <mat-icon class="col-1 icon-absence" (click)="getPreviousMonth()">chevron_left</mat-icon>  
+            <th *ngIf="dayOfMonth.length > 8" [attr.colspan]="dayOfMonth.length " ><h3 class="col">{{currentDate | date:'MMMM yyyy'}}</h3> </th>
             <th *ngIf="dayOfMonth.length < 8" [attr.colspan]="dayOfMonth.length - 1"><h3 class="col">Semaine du .... a ....</h3> </th>
-            <mat-icon class="col-1 icon-absence">chevron_right</mat-icon>
+            <mat-icon class="col-1 icon-absence" (click)="getNextMonth()">chevron_right</mat-icon>
         </tr>
         <tr>  
             <th data-selectable="all">Employés</th>  
-            <th *ngFor="let day of dayOfMonth">{{day}}</th>
+            <th *ngFor="let day of dayOfMonth">{{day | date: 'dd'}}</th>
         </tr> 
       </thead>
       <tbody>
         <tr *ngFor="let employee of employeeList; let i = index;">    
-            <td class="employee-cell" data-selectable="row">{{employee}}</td>
-            <td class="selectable absence-cell" *ngFor="let day of dayOfMonth"></td>
-            <td><mat-icon>close</mat-icon></td>
+            <td class="employee-cell">{{employee.firstname}}</td>
+            <td class="selectable absence-cell" *ngFor="let day of dayOfMonth" (contextmenu)="onRightClick($event)" [attr.id]="employee.id + '|' + day "></td>
+            
         </tr>
       </tbody>
     </table>
+
+  
   </div>
+
+
+<!-- Modal add/edit event implementation -->
+<ng-template #modalContent let-close="close">
+    <div class="modal-header">
+      <h5 class="modal-title">Absence du ... - Chauffeur : xxxx</h5>
+      <button type="button" class="close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="absenceForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-6">
+                <input type="radio" name="absenceRadio" value="all_day"> <label for="all_day">Journée entière</label> 
+                <input type="radio" name="absenceRadio" value="semi"><label for="semi">Demi journée</label>       
+          </div>
+          <div class="col-6">
+            <input appearance="outline" formControlName="reason" id="reason"  [(ngModel)]="absenceReason" placeholder="Motif"/>
+          </div>
+        </div>
+  
+        <div class="error-div" *ngIf="!absenceForm.valid && absenceForm.touched">
+          Veuillez rentrer des valeurs valides.
+        </div>
+  
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-info" data-dismiss="modal" [disabled]="!absenceForm.valid">Valider</button>
+        </div>
+      </form>
+    </div>
+  
+  </ng-template>
+
+ 

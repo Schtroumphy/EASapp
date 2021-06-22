@@ -38,6 +38,7 @@ import { FlatpickrModule } from 'angularx-flatpickr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { RandomcolorModule } from 'angular-randomcolor';
 import { MatTabsModule } from '@angular/material/tabs';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 
 import { DriverService } from '../core/services/app/driver.service';
@@ -78,7 +79,8 @@ import { DataComponent } from 'app/data/data.component';
     }),
     NgSelectModule,
     RandomcolorModule,
-    MatTabsModule
+    MatTabsModule,
+    DragDropModule
   ],
   providers: [DriverService, PatientService, EventService, PlaceService, DatePipe],
 

@@ -32,7 +32,7 @@ export class BottomNavComponent implements OnInit {
       redirection : './report'
     },*/
     {
-      label: 'Absence',
+      label: 'Absences',
       icon: 'perm_contact_calendar',
       redirection : './absence'
     },
