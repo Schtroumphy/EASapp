@@ -136,8 +136,8 @@ export class AbsenceComponent implements OnInit {
   }
 
   updateDaysInMonth() {
-    //this.currentMonthStartDate = this.datePipe.transform(startOfMonth(this.currentMonth), FORMAT_yyyy_MM_dd);
-    //this.currentMonthEndDate = this.datePipe.transform(endOfMonth(this.currentMonth), FORMAT_yyyy_MM_dd);
+    this.currentMonthStartDate = this.datePipe.transform(startOfMonth(this.currentDate), FORMAT_yyyy_MM_dd);
+    this.currentMonthEndDate = this.datePipe.transform(endOfMonth(this.currentDate), FORMAT_yyyy_MM_dd);
 
     var i = 0
     this.dayOfMonth = []
