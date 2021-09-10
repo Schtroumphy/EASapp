@@ -16,6 +16,16 @@ body {
 	line-height: 16px;
 }
 
+  td:not(.testClass):not(.absence-cell){
+	padding: 10px;
+	background-color: $light;
+	border-top: solid 1px darken($darker, 5);
+	border-left: solid 1px darken($darker, 5);
+	border-bottom: solid 1px darken($darker, 5);
+	border-right: solid 1px darken($darker, 5);		
+  }
+
+
 table {
 	width: 100%;
 	border-collapse: collapse;
@@ -28,7 +38,7 @@ table {
 	}
 
 	
-	th, td:not(.absence-cell)  {
+	th, td:not(.absence-cell):not(.testClass){
 		background-color: $light;
 		border-top: solid 1px darken($darker, 5);
 		border-left: solid 1px darken($darker, 5);
@@ -52,7 +62,7 @@ table {
 		font-weight: 700;
 	}
 	
-	td {
+	td:not(.testClass) {
 
 		&:hover, &.hover {
       cursor: pointer;
@@ -72,3 +82,16 @@ table {
 		}		
 	}
 }
+
+.testClass{
+	background-color: rgb(27, 71, 214);
+	-webkit-user-select: none; /* Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+/Edge */
+	user-select: none; /* Standard */
+	&:hover, &.hover {
+		cursor: no-drop;
+  	}
+}
+
+

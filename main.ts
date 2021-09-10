@@ -58,8 +58,8 @@ async function createWindow(): Promise<BrowserWindow> {
     await connection.synchronize();
     await connection.query('PRAGMA foreign_keys=ON');
  
-   authRepo = connection.getRepository(Authentification);
-   eventRepo = connection.getRepository(Evenement);
+    authRepo = connection.getRepository(Authentification);
+    eventRepo = connection.getRepository(Evenement);
     driverRepo = connection.getRepository(Driver);
     patientRepo = connection.getRepository(Patient);
     placeRepo = connection.getRepository(Place);

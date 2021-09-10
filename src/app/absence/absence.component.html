@@ -1,5 +1,4 @@
 <div class="container">
-  <p> Selection {{selections | json }}</p>
     <table>
       <thead>
         <tr class="col-12">
@@ -16,14 +15,42 @@
       <tbody>
         <tr *ngFor="let employee of employeeList; let i = index;">    
             <td class="employee-cell">{{employee.firstname}}</td>
-            <td class="selectable absence-cell" *ngFor="let day of dayOfMonth" (contextmenu)="onRightClick($event)" [attr.id]="employee.id + '|' + day "></td>
+            <td [ngClass]="cellIds.includes(employee.id + '|' + day) ? unselectableClass : selectableClass" *ngFor="let day of dayOfMonth" (contextmenu)="onRightClick($event)" [attr.id]="employee.id + '|' + day"></td>
             
         </tr>
       </tbody>
     </table>
 
+    <div>
+      <button type="button" class="btn btn-danger" *ngIf="selections.length > 0" (click)="destroySelection()">Effacer la sélection</button>
+      <button type="button" class="btn btn-info" *ngIf="selections.length > 0" (click)="validateAbsences()">Valider</button>
+    </div>
+
+    <div>
+      <p [ngClass]="myClass2" id="testId"> TEST CLASSE</p>
+      <p [ngClass]="myClass2" id="testId2"> TEST CLASSE 2</p>
+
+    </div>
+
+    <h4> Nouvelles absences à valider </h4>
+    <p *ngFor="let selection of selections">
+      {{selection | json }}
+    </p>
+
+    <ng-container *ngFor="let selection of selections"> 
+      <ng-container *ngFor="let absence of selection.absences; let $index = index">
+        <tr>
+          <td *ngIf="$index===0;" [attr.rowspan]="selection.absences.length">Conducteur {{ selection.driverId }}</td>
+          <td>
+            {{ absence.date}}
+          </td>
+        </tr>
+      </ng-container>
+    </ng-container>
   
+    
   </div>
+
 
 
 <!-- Modal add/edit event implementation -->

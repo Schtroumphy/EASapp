@@ -1,6 +1,7 @@
 import { last } from 'rxjs/operators';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from 'typeorm';
 import { Evenement } from './evenement.schema';
+import { Absence } from './absence.schema';
 
 @Entity("driver")
 export class Driver{
@@ -25,6 +26,11 @@ export class Driver{
     @OneToMany(type => Evenement, event => event.driver)
     @JoinColumn({name : 'event_id'})
     evenements: Evenement[];
+
+    @OneToMany(type => Absence, absence => absence.driver)
+    @JoinColumn({name : 'event_id'})
+    @Column({default: null, nullable : true})
+    absences: Absence[];
 
     @Column({default: null, nullable: true})
     comment: string;
