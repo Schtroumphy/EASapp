@@ -1,3 +1,53 @@
+$light: #ece9e9;
+$dark: #7e7e7e;
+$darker: #666565;
+$primary: #c73612;
+$secondary: #e68365;
+
+th,
+td {
+  padding: 3px 12px;
+  text-align: center;
+}
+
+th,
+td:not(.absence-cell):not(.no-absence) {
+  border-left: solid 1px darken($darker, 5);
+  border-top: solid 1px darken($darker, 5);
+  border-right: solid 1px darken($darker, 5);
+  text-align: center;
+}
+
+td.absence-cell {
+  width: 60px;
+  height: 50px;
+  padding: 1%;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #fff;
+  border: solid 1px grey;
+  width: 12.5%;
+}
+
+td.no-absence {
+  background-color: rgb(27, 71, 214);
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+  width: 12.5%;
+  &:hover,
+  &.hover {
+    cursor: no-drop;
+  }
+}
+
+th,
+td:nth-child(1) {
+  vertical-align: middle;
+  font-weight: 700;
+}
+
 h1 {
   text-align: center;
   color: rgba(218, 143, 5, 0.603);

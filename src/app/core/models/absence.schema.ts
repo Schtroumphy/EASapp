@@ -18,8 +18,9 @@ export class Absence{
     @JoinTable()
     driver: Driver;
 
-    constructor(startDate, endDate) {
+    constructor(startDate, endDate, reason) {
         this.startDate= startDate;
         this.endDate= endDate;
+        this.reason = reason
       }
 }

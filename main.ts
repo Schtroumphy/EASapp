@@ -208,9 +208,9 @@ async function createWindow(): Promise<BrowserWindow> {
 
   ipcMain.on('add-absence', async (event: any, _absence: Absence) => {
     try {
-      const absence = new Absence( _absence.startDate,  _absence.endDate);
+      const absence = new Absence( _absence.startDate,  _absence.endDate, _absence.reason);
       absence.driver = _absence.driver;
-      absence.reason = _absence.reason;
+      //absence.reason = _absence.reason;
       //absence.driverId = _absence.driver.id
       await absenceRepo.save(absence);
 

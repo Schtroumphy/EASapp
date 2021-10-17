@@ -1,6 +1,34 @@
-<button mat-raised-button class="btn btn-info"> Ajouter un lieu </button>
-
 <div class="example-container mat-elevation-z8">
+
+    <table style="margin-top: 5%;">
+        <thead>
+            <tr class="col-12">
+                <mat-icon class="col-1 icon-absence" (click)="getPreviousMonth()">chevron_left</mat-icon>
+                <th *ngIf="dayOfMonth.length > 8" [attr.colspan]="dayOfMonth.length ">
+                    <h3 class="col">{{currentDate | date:'MMMM yyyy'}}</h3>
+                </th>
+                <th *ngIf="dayOfMonth.length < 8" [attr.colspan]="dayOfMonth.length - 1">
+                    <h3 class="col">Semaine du .... a ....</h3>
+                </th>
+                <mat-icon class="col-1 icon-absence" (click)="getNextMonth()">chevron_right</mat-icon>
+            </tr>
+            <tr>
+                <th data-selectable="all">Employés</th>
+                <th *ngFor="let day of dayOfMonth">{{day | date: 'dd'}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let employee of employeeList; let i = index;">
+                <td class="employee-cell">{{employee.firstname}}</td>
+                <td [ngClass]="cellIds.includes(employee.id + '|' + day) ? unselectableClass : selectableClass"
+                    *ngFor="let day of dayOfMonth" (contextmenu)="onRightClick($event)"
+                    [attr.id]="employee.id + '|' + day"></td>
+
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br><br>
 
     <table mat-table [dataSource]="dataSource" class="lessons-table mat-elevation-z8">
 

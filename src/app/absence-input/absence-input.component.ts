@@ -76,12 +76,16 @@ export class AbsenceInputComponent implements OnInit {
     this.fromDateString = this.formatDate(this.fromDate)
     this.toDateString = this.formatDate(endDate)
 
+    let reason = this.absenceForm.get('reason').value
+    console.log("RAISON : " + reason)
+
     var absenceToAdd = new Absence(
       this.fromDateString,
-      this.toDateString
+      this.toDateString,
+      reason
     )
 
-    console.log("Absence : " + JSON.stringify(absenceToAdd))
+    //console.log("Absence : " + JSON.stringify(absenceToAdd))
 
     this.driverService.getDriverById(parseInt(this.selectedDriverId)).subscribe(
       (item) => { 
