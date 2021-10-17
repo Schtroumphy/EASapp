@@ -196,6 +196,16 @@ async function createWindow(): Promise<BrowserWindow> {
 
   // -------------------------- ABSENCES --------------------------
 
+  ipcMain.on('get-all-absences', async (event: any, ...args: any[]) => {
+    try {
+      event.returnValue = await absenceRepo.find({
+        relations: ['driver']
+      })
+    } catch (err) {
+      throw err;
+    }
+  });
+
   ipcMain.on('add-absence', async (event: any, _absence: Absence) => {
     try {
       const absence = new Absence( _absence.startDate,  _absence.endDate);

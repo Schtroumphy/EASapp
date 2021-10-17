@@ -9,6 +9,11 @@ import { Absence } from '../../models/absence.schema';
 export class AbsenceService {
   constructor(private _electronService: ElectronService) {}
 
+  getAllAbsences(): Observable<Absence[]> {
+    return of(
+      this._electronService.ipcRenderer.sendSync('get-all-absences')
+    ).pipe(catchError((error: any) => throwError(error.json)));
+  }
 
   addAbsence(absence: Absence): Observable<Absence[]> {
     return of(

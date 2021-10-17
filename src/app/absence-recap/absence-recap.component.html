@@ -1,0 +1,77 @@
+<button mat-raised-button class="btn btn-info"> Ajouter un lieu </button>
+
+<div class="example-container mat-elevation-z8">
+
+    <table mat-table [dataSource]="dataSource" class="lessons-table mat-elevation-z8">
+
+        <!-- Id Column -->
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> No. </th>
+            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="driver">
+            <th mat-header-cell *matHeaderCellDef> Chauffeur </th>
+            <td mat-cell *matCellDef="let element"> {{element.driver.lastname | uppercase}} {{element.driver.firstname}}
+            </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="startDate">
+            <th mat-header-cell *matHeaderCellDef> Début </th>
+            <td mat-cell *matCellDef="let element"> {{element.startDate | date:"dd/MM/yyyy" }} </td>
+        </ng-container>
+
+        <!-- Lastname Column -->
+        <ng-container matColumnDef="endDate">
+            <th mat-header-cell *matHeaderCellDef> Fin </th>
+            <td mat-cell *matCellDef="let element"> {{element.endDate | date:"dd/MM/yyyy" }} </td>
+        </ng-container>
+
+        <!-- Address Column -->
+        <ng-container matColumnDef="reason">
+            <th mat-header-cell *matHeaderCellDef> Motif </th>
+            <td mat-cell *matCellDef="let element"> {{element.reason}} </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions" style="min-width: 60px;">
+            <th mat-header-cell *matHeaderCellDef>Editer / Supprimer</th>
+            <td mat-cell *matCellDef="let element">
+                <button mat-flat-button (click)="editPlace(element)">
+                    <mat-icon color="transparent" [ngStyle]="{'color':'#1e90ff'}">edit</mat-icon>
+                </button>`
+                <button mat-flat-button (click)="deletePlace(element)">
+                    <mat-icon [ngStyle]="{'color':'red'}">delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+
+    </table>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Supprimer un lieu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Etes-vous sûr de vouloir supprimer le lieu ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-prim" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-danger">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>

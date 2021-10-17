@@ -55,10 +55,11 @@ import { DataComponent } from 'app/data/data.component';
 import { AbsenceTabsComponent } from 'app/absence-tabs/absence-tabs.component';
 import { AbsenceInputComponent } from 'app/absence-input/absence-input.component';
 import { AbsenceStatsComponent } from 'app/absence-stats/absence-stats.component';
+import { AbsenceRecapComponent } from 'app/absence-recap/absence-recap.component';
 
 @NgModule({
   declarations: [HomeComponent, BottomNavComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, ReportComponent,
-    AbsenceComponent, DataComponent, AbsenceTabsComponent, AbsenceInputComponent, AbsenceStatsComponent],
+    AbsenceComponent, DataComponent, AbsenceTabsComponent, AbsenceInputComponent, AbsenceStatsComponent, AbsenceRecapComponent],
   imports: [
     CommonModule,
     HomeRoutingModule,
