@@ -16,8 +16,7 @@ body {
 	line-height: 16px;
 }
 
-  td:not(.testClass):not(.absence-cell){
-	padding: 10px;
+  td:not(.absence-cell){
 	background-color: $light;
 	border-top: solid 1px darken($darker, 5);
 	border-left: solid 1px darken($darker, 5);

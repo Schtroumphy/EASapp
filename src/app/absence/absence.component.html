@@ -21,12 +21,18 @@
       </tbody>
     </table>
 
-    <div>
-    </div>
-
-    <p *ngFor="let employee of employeeList; let i = index;">
-      Employé {{employee.firstname}} | Absences : {{employee.absences | json}}
-    </p>
+    <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+      <p *ngFor="let employee of employeeList; let i = index;">
+        Employé {{employee.firstname}} | Absences : {{employee.absences | json}}
+      </p>
   
+      <p *ngFor="let employee of employeeList; let i = index;">
+        Employé {{employee.firstname}} | Absences : {{employee.absences | json}}
+      </p>
+  
+      <p *ngFor="let employee of employeeList; let i = index;">
+        Employé {{employee.firstname}} | Absences : {{employee.absences | json}}
+      </p>
+    </cdk-virtual-scroll-viewport>
 
   </div>

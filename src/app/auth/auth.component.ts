@@ -6,6 +6,7 @@ import { AuthentificationService } from '../core/services/app/auth.service';
 import { Authentification } from '../core/models/auth.schema';
 import { DatePipe } from '@angular/common';
 import { FORMAT_yyyy_MM_dd } from '../core/constants';
+import { getMatFormFieldDuplicatedHintError } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-auth',
@@ -24,11 +25,12 @@ export class AuthComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.createIdentifiant()
+    this.getAllAUth()
   }
 
   addAuthentification(identifiant: string, isMaster: boolean, id : number) {
     var newAuth = new Authentification()
-    newAuth.id = 1
+    newAuth.id = id
     newAuth.identifiant = identifiant
     newAuth.isMaster = isMaster
     newAuth.creationDate = this.datePipe.transform(new Date(), FORMAT_yyyy_MM_dd)
@@ -63,6 +65,12 @@ export class AuthComponent implements OnInit {
   }
   showAuthError() {
     throw new Error('Method not implemented.');
+  }
+
+  getAllAUth() {
+    this.authService.getAllAuth().subscribe((authRetrieved) => {
+      console.log("ALL AUTH : ", authRetrieved)
+    });
   }
 
   checkAuth(): Authentification {
@@ -139,6 +147,7 @@ export class AuthComponent implements OnInit {
     this.authService.addAuthentification(authToAdd).subscribe(
       (auth) => {
         console.log("AUTH ADDED ", JSON.stringify(auth))
+        this.getAllAUth()
       },
       (error) => this.errorAlert()
     );
@@ -156,3 +165,5 @@ export class AuthComponent implements OnInit {
 
 
 }
+
+

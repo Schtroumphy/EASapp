@@ -14,6 +14,7 @@ import { AbsenceComponent } from 'app/absence/absence.component';
 import { DataComponent } from 'app/data/data.component';
 import { AbsenceTabsComponent } from 'app/absence-tabs/absence-tabs.component';
 import { AbsenceInputComponent } from 'app/absence-input/absence-input.component';
+import { AbsenceStatsComponent } from 'app/absence-stats/absence-stats.component';
 
 const routes: Routes = [
   {
@@ -40,6 +41,10 @@ const routes: Routes = [
       {
         path: 'absence-input',
         component: AbsenceInputComponent
+      },
+      {
+        path: 'absence-stats',
+        component: AbsenceStatsComponent
       },
       {
         path: 'patients',

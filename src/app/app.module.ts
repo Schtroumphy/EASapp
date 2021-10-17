@@ -42,6 +42,7 @@ import { DatePipe } from '@angular/common';
 import { AuthComponent } from './auth/auth.component';
 import { AuthentificationService } from './core/services/app/auth.service';
 import { LOCALE_ID } from '@angular/core';
+import { AbsenceStatsComponent } from './absence-stats/absence-stats.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {

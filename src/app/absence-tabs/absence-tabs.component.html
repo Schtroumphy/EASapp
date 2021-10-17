@@ -1,11 +1,11 @@
 <mat-tab-group mat-stretch-tabs [disableRipple]=true #tabGroup>
-    <mat-tab class="col" label="Saisie des absences">
-      <app-absences-input *ngIf="tabGroup.selectedIndex === 0"></app-absences-input>
-    </mat-tab>
-    <mat-tab class="col" label="Récapitulatif">
-      <app-absence *ngIf="tabGroup.selectedIndex === 1"></app-absence>
-    </mat-tab>
-    <mat-tab class="col" label="Statistiques">
-      <app-places *ngIf="tabGroup.selectedIndex === 2"></app-places>
-    </mat-tab>
+  <mat-tab class="col" label="Saisie des absences">
+    <app-absences-input *ngIf="tabGroup.selectedIndex === 0"></app-absences-input>
+  </mat-tab>
+  <mat-tab class="col" label="Récapitulatif">
+    <app-places *ngIf="tabGroup.selectedIndex === 1"></app-places>
+  </mat-tab>
+  <mat-tab class="col" label="Statistiques">
+    <app-absence-stats *ngIf="tabGroup.selectedIndex === 2"></app-absence-stats>
+  </mat-tab>
 </mat-tab-group>

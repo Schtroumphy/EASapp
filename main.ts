@@ -107,6 +107,15 @@ async function createWindow(): Promise<BrowserWindow> {
 
 
   // -------------------------- AUTHENTIFICATION --------------------------
+  ipcMain.on('get-all-auth', async (event: any) => {
+    try {
+      event.returnValue = await authRepo.find();
+
+    } catch (err) {
+      throw err;
+    }
+  });
+
   ipcMain.on('get-auth-by-identifiant', async (event: any, _identifiant: string) => {
     try {
       event.returnValue = await authRepo.findOne({ where: { identifiant: _identifiant } });

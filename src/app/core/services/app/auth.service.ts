@@ -9,6 +9,12 @@ import { Authentification } from '../../models/auth.schema';
 export class AuthentificationService {
   constructor(private _electronService: ElectronService) {}
 
+  getAllAuth(): Observable<Authentification> {
+    return of(this._electronService.ipcRenderer.sendSync('get-all-auth')).pipe(
+      catchError((error: any) => throwError(error.json))
+    );
+  }
+
   getAuthByIdentifiant(identifiant : string): Observable<Authentification> {
     return of(this._electronService.ipcRenderer.sendSync('get-auth-by-identifiant', identifiant)).pipe(
       catchError((error: any) => throwError(error.json))

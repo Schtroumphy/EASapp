@@ -40,6 +40,8 @@ import { RandomcolorModule } from 'angular-randomcolor';
 import { MatTabsModule } from '@angular/material/tabs';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import { ChartsModule } from 'ng2-charts';
 
 import { DriverService } from '../core/services/app/driver.service';
 import { EventService } from '../core/services/app/event.service';
@@ -52,9 +54,11 @@ import { AbsenceComponent } from 'app/absence/absence.component';
 import { DataComponent } from 'app/data/data.component';
 import { AbsenceTabsComponent } from 'app/absence-tabs/absence-tabs.component';
 import { AbsenceInputComponent } from 'app/absence-input/absence-input.component';
+import { AbsenceStatsComponent } from 'app/absence-stats/absence-stats.component';
 
 @NgModule({
-  declarations: [HomeComponent, BottomNavComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, ReportComponent,AbsenceComponent, DataComponent, AbsenceTabsComponent, AbsenceInputComponent],
+  declarations: [HomeComponent, BottomNavComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, ReportComponent,
+    AbsenceComponent, DataComponent, AbsenceTabsComponent, AbsenceInputComponent, AbsenceStatsComponent],
   imports: [
     CommonModule,
     HomeRoutingModule,
@@ -85,8 +89,9 @@ import { AbsenceInputComponent } from 'app/absence-input/absence-input.component
     RandomcolorModule,
     MatTabsModule,
     DragDropModule,
-    NgbModule
-    
+    NgbModule,
+    ScrollingModule,
+    ChartsModule
   ],
   providers: [DriverService, PatientService, EventService, PlaceService, AbsenceService, DatePipe],
 
