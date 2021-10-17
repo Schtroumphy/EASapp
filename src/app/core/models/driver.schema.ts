@@ -29,7 +29,6 @@ export class Driver{
 
     @OneToMany(type => Absence, absence => absence.driver)
     @JoinColumn({name : 'event_id'})
-    @Column({default: null, nullable : true})
     absences: Absence[];
 
     @Column({default: null, nullable: true})

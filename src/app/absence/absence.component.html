@@ -22,67 +22,11 @@
     </table>
 
     <div>
-      <button type="button" class="btn btn-danger" *ngIf="selections.length > 0" (click)="destroySelection()">Effacer la sélection</button>
-      <button type="button" class="btn btn-info" *ngIf="selections.length > 0" (click)="validateAbsences()">Valider</button>
     </div>
 
-    <div>
-      <p [ngClass]="myClass2" id="testId"> TEST CLASSE</p>
-      <p [ngClass]="myClass2" id="testId2"> TEST CLASSE 2</p>
-
-    </div>
-
-    <h4> Nouvelles absences à valider </h4>
-    <p *ngFor="let selection of selections">
-      {{selection | json }}
+    <p *ngFor="let employee of employeeList; let i = index;">
+      Employé {{employee.firstname}} | Absences : {{employee.absences | json}}
     </p>
-
-    <ng-container *ngFor="let selection of selections"> 
-      <ng-container *ngFor="let absence of selection.absences; let $index = index">
-        <tr>
-          <td *ngIf="$index===0;" [attr.rowspan]="selection.absences.length">Conducteur {{ selection.driverId }}</td>
-          <td>
-            {{ absence.date}}
-          </td>
-        </tr>
-      </ng-container>
-    </ng-container>
   
-    
+
   </div>
-
-
-
-<!-- Modal add/edit event implementation -->
-<ng-template #modalContent let-close="close">
-    <div class="modal-header">
-      <h5 class="modal-title">Absence du ... - Chauffeur : xxxx</h5>
-      <button type="button" class="close" (click)="close()">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <form [formGroup]="absenceForm" (ngSubmit)="onSubmit()">
-        <div class="row">
-          <div class="col-6">
-                <input type="radio" name="absenceRadio" value="all_day"> <label for="all_day">Journée entière</label> 
-                <input type="radio" name="absenceRadio" value="semi"><label for="semi">Demi journée</label>       
-          </div>
-          <div class="col-6">
-            <input appearance="outline" formControlName="reason" id="reason"  [(ngModel)]="absenceReason" placeholder="Motif"/>
-          </div>
-        </div>
-  
-        <div class="error-div" *ngIf="!absenceForm.valid && absenceForm.touched">
-          Veuillez rentrer des valeurs valides.
-        </div>
-  
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-info" data-dismiss="modal" [disabled]="!absenceForm.valid">Valider</button>
-        </div>
-      </form>
-    </div>
-  
-  </ng-template>
-
- 

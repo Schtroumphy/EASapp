@@ -1,0 +1,46 @@
+<div class="example-container">
+
+
+<form [formGroup]="absenceForm" (ngSubmit)="onSubmit()">
+
+    <div class="row" style="margin-top: 50px;">
+
+      <div class="col-6">
+          
+        <div class="col centered" style="margin-top: 25px;">
+            <ng-select appearance="outline" formControlName="driver" id="driver"  [(ngModel)]="selectedDriverId" placeholder="Conducteur">
+                <ng-option *ngFor="let driver of driverList" [value]="driver.id">{{driver.firstname | lowercase }} {{driver.lastname | uppercase }}</ng-option>
+             </ng-select>
+        </div> 
+        <div class="col input-group centered" style="margin-top: 40px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Motif de l'absence</span>
+            </div>
+            <textarea class="form-control" aria-label="With textarea"></textarea>
+        </div>
+      </div>
+
+      <div class="col-6 centered">
+          <div>
+            <ngb-datepicker #dp style="margin-top: 25px;" formControlName="daterange" (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden">
+            </ngb-datepicker>
+            
+            <ng-template #t let-date let-focused="focused">
+                <span class="custom-day"
+                    [class.focused]="focused"
+                    [class.range]="isRange(date)"
+                    [class.faded]="isHovered(date) || isInside(date)"
+                    (mouseenter)="hoveredDate = date"
+                    (mouseleave)="hoveredDate = null">
+                {{ date.day }}
+                </span>
+            </ng-template>
+        </div>
+        </div>
+        <button mat-raised-button type="submit" class="btn btn-info centered" [disabled]="!absenceForm.valid">Enregistrer</button>
+
+        </div>
+    
+
+        <pre>From: {{ fromDate | json }} </pre>
+        <pre>To: {{ toDate | json }} </pre>

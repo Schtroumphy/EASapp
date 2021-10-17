@@ -38,7 +38,7 @@ table {
 	}
 
 	
-	th, td:not(.absence-cell):not(.testClass){
+	th, td:not(.absence-cell):not(.no-absence){
 		background-color: $light;
 		border-top: solid 1px darken($darker, 5);
 		border-left: solid 1px darken($darker, 5);
@@ -54,6 +54,18 @@ table {
 		vertical-align:middle;
 		background-color: #fff;
 		border: solid 1px rgba(204, 204, 204, 0.753);
+	}
+
+
+	td.no-absence{
+		background-color: rgb(27, 71, 214);
+		-webkit-user-select: none; /* Safari */        
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* IE10+/Edge */
+		user-select: none; /* Standard */
+		&:hover, &.hover {
+			cursor: no-drop;
+		}
 	}
   
 	
@@ -83,15 +95,5 @@ table {
 	}
 }
 
-.testClass{
-	background-color: rgb(27, 71, 214);
-	-webkit-user-select: none; /* Safari */        
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* IE10+/Edge */
-	user-select: none; /* Standard */
-	&:hover, &.hover {
-		cursor: no-drop;
-  	}
-}
 
 

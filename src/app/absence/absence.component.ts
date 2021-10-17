@@ -9,21 +9,10 @@ import { endOfWeek, startOfWeek, getDaysInMonth, startOfMonth, endOfMonth, addDa
 import { FORMAT_dd_MM_yyyy, FORMAT_yyyy_MM_dd } from 'app/core/constants';
 import { Absence } from 'app/core/models/absence.schema';
 import { PrimaryGeneratedColumn } from 'typeorm';
-export class Selection {
-  driverId: string
-  absences: Absence[]
-
-  constructor(driverId, absences = []) {
-    this.driverId = driverId;
-    this.absences = absences;
-  }
-}
-
 enum AbsenceType {
   ALL_DAY,
   SEMI
 }
-
 @Component({
   selector: 'app-absence',
   templateUrl: './absence.component.html',
@@ -40,11 +29,10 @@ export class AbsenceComponent implements OnInit {
 
   employeeList: Driver[] = []
   dayOfMonth: string[] = []
-  selections: Selection[] = []
-  absenceForm: FormGroup
-  selectableClass = "selectable absence-cell"
-  unselectableClass = "testClass"
+  selectableClass = "absence-cell"
+  unselectableClass = "no-absence"
   cellIds = Array()
+
 
   // Dates
   currentWeekStartDate = null
@@ -53,8 +41,6 @@ export class AbsenceComponent implements OnInit {
   currentMonthStartDate = null
   currentMonthEndDate = null
 
-  // Selectable
-  selectable : Selectable = null
 
   // Modal
   modalReference: any;
@@ -66,37 +52,11 @@ export class AbsenceComponent implements OnInit {
   constructor(private modal: NgbModal, private driverService: DriverService, private datePipe: DatePipe) { }
 
   ngAfterViewInit() {
-    this.getDriverList()
-
-    this.selectable = new Selectable({
-      filter: ".selectable",
-      toggle: true,  // Enable multiple selection
-    });
-
-    this.selectable.on("end", (e, selected, unselected) => {
-      console.log("Selected list : ", selected)
-
-      // If selected -> Add to db else remove
-      let selectedIds = selected.map(it => it.node.attributes["id"].value)
-      console.log("Selected list : ", selectedIds)
-      selectedIds.forEach(element => {
-        this.addToSelect(element, true)
-      });
-      console.log("Deselected list : ", unselected.map(it => it.node.attributes["id"].value))
-      let unselectedIds = unselected.map(it => it.node.attributes["id"].value)
-      unselectedIds.forEach(element => {
-        this.addToSelect(element, false)
-      });
-
-    });
-
-    // enable table plugin
-    //selectable.table();
-
-    console.log("Selectable items : ", this.selectable.getItems())
   }
 
   ngOnInit(): void {
+
+    this.getDriverList()
 
     this.currentDate = new Date()
     console.log("Current date : ", JSON.stringify(this.currentDate))
@@ -109,8 +69,6 @@ export class AbsenceComponent implements OnInit {
 
     this.updateDaysInMonth()
 
-    this.initForms()
-
   }
   getDriverList() {
     this.driverService.getDrivers().subscribe((items) => {
@@ -121,38 +79,39 @@ export class AbsenceComponent implements OnInit {
             console.log("DRIVER : "+ JSON.stringify(driver))
           })
     });
-
-    // Update absence array
-
   }
 
-  validateAbsences(){
-    console.log("Submit UPDATE")
-    this.selections.forEach( item => {
+  getDatesBetween(startDate, endDate){
+    const listDate = [];
+    const dateMove = new Date(startDate);
+    let strDate = startDate;
 
-      this.driverService.getDriverById(parseInt(item.driverId)).subscribe(
-        (driver) => {
-          console.log("Driver :", JSON.stringify(driver))
-          driver.absences = item.absences
-
-          this.driverService.updateDriver(driver).subscribe(
-            (driverUpdated) => {
-              console.log("Driver updated:", JSON.stringify(driver))
-              //this.alertWithSuccess('Les absences ont bien été notées')
-              //this.clearSelection)
-              this.destroySelection()
-              //this.updateAbsenceCells(driver.id.toString(), item.absences)
-            }
-          )
-        });
-    }
-    )
+    while (strDate < endDate) {
+      strDate = dateMove.toISOString().slice(0, 10);
+      console.log("STR DATE : ", strDate)
+      listDate.push(strDate);
+      dateMove.setDate(dateMove.getDate() + 1);
+      console.log("STR DATE + 1 : ", dateMove)
+    };
+    console.log("List dates : ", listDate)
+    return listDate
   }
+
   updateAbsenceCells(driverId: String, absences: Absence[]) {
-    if(absences != null)
-    absences.forEach( absence =>
-        this.cellIds.push(driverId + "|"+ absence.date)
+    if(absences.length > 0){
+       absences.forEach( absence => {
+         if(absence.startDate == absence.endDate){
+          this.cellIds.push(driverId + "|"+ absence.startDate);
+         } else {
+          this.getDatesBetween(absence.startDate, absence.endDate).forEach( date => {
+            this.cellIds.push(driverId + "|"+ date);
+          })
+          console.log("Dates between " + absence.startDate + " et " + absence.endDate + " : " + this.getDatesBetween(absence.startDate, absence.endDate))
+         }
+        
+       }
       )
+    }
     console.log("Cell ids concerned :" + this.cellIds)
   }
 
@@ -181,8 +140,8 @@ export class AbsenceComponent implements OnInit {
     this.dayOfMonth = []
     while (i < getDaysInMonth(this.currentDate)) {
 
-      console.log("Current start month date ADD DAYS ", i, " : ", new Date(currentMonthStartDate))
-      console.log("ADD DAYS ", i, " : ", (addDays(new Date(currentMonthStartDate), i)))
+      //console.log("Current start month date ADD DAYS ", i, " : ", new Date(currentMonthStartDate))
+      //console.log("ADD DAYS ", i, " : ", (addDays(new Date(currentMonthStartDate), i)))
 
       this.dayOfMonth.push(
         this.datePipe.transform(addDays(new Date(currentMonthStartDate), i), FORMAT_yyyy_MM_dd))
@@ -190,59 +149,6 @@ export class AbsenceComponent implements OnInit {
     }
   }
 
-  addToSelect(selectedId, isSelected) {
-
-    var driverId = this.getDriverFromCellId(selectedId)
-    console.log("Driver id from ", selectedId, " --> ", driverId)
-
-    var date = this.getDateFromId(selectedId)
-    console.log("Date from ", selectedId, " --> ", date)
-
-    var foundItem = this.selections.find(i => i.driverId == driverId)
-    console.log("Found item in selection list : ", JSON.stringify(foundItem))
-    if (foundItem === undefined) {
-      // Not exist yet in selection list
-      this.selections.push(
-        new Selection(
-          driverId,
-          [
-            new Absence(
-              date,
-              isSelected
-            )
-          ]
-        )
-      )
-    } else {
-      // Already exist : check if date 
-
-      // Date not already exists
-      if (foundItem.absences.find(i => i.date == date) === undefined) {
-        foundItem.absences.push(
-          new Absence(
-            date,
-            isSelected
-          )
-        )
-      } else {
-        foundItem.absences.find(i => i.date == date).isSelected = isSelected
-      }
-    }
-    console.log("Selections : ", JSON.stringify(this.selections))
-
-    console.log("NEW Selection found : ", JSON.stringify(this.selections.find(i => i.driverId == driverId)))
-    console.log("NEW Selection found : ", JSON.stringify(this.selections))
-
-  }
-
-  addDateIfNotExist(foundItem, dateToAdd) {
-    if (foundItem.absences.find(it => it.date == dateToAdd) === undefined) {
-      foundItem.absences.push(new Absence(
-        dateToAdd
-      ))
-    }
-    //TODO Maybe juste change type of absence
-  }
 
   getDateFromId(selectedId: any) {
     return selectedId.split("|")[1]
@@ -265,8 +171,6 @@ export class AbsenceComponent implements OnInit {
     // preventDefault avoids to show the visualization of the right-click menu of the browser
     event.preventDefault();
 
-    this.displayAdbsenceModal("Test", "date")
-
   }
 
   getCurrentWeekPeriod(date: Date) {
@@ -275,29 +179,6 @@ export class AbsenceComponent implements OnInit {
     this.currentWeekEndDate = this.datePipe.transform(endOfWeek(date, { weekStartsOn: 1 }), FORMAT_dd_MM_yyyy);
     //console.log("End week date : ", this.currentWeekEndDate)
   }
-
-  //Forms
-  initForms() {
-    this.absenceForm = new FormGroup({
-      id: new FormControl(),
-      reason: new FormControl(null),
-
-    })
-
-  }
-
-  displayAdbsenceModal(action, date) {
-    this.modalData = { action, date };
-    this.modalReference = this.modal.open(this.modalContent, { size: 'lg' });
-  }
-
-  destroySelection(){
-    this.selectable.clear()
-    this.selections = []
-    //this.selectable.refresh()
-  }
-
-
 }
 
 

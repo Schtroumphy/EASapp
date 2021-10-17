@@ -39,18 +39,22 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { RandomcolorModule } from 'angular-randomcolor';
 import { MatTabsModule } from '@angular/material/tabs';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { DriverService } from '../core/services/app/driver.service';
 import { EventService } from '../core/services/app/event.service';
 import { PatientService } from '../core/services/app/patient.service';
 import { PlaceService } from '../core/services/app/place.service';
+import { AbsenceService } from 'app/core/services/app/absence.service';
+
 import { ReportComponent } from 'app/report/report.component';
 import { AbsenceComponent } from 'app/absence/absence.component';
 import { DataComponent } from 'app/data/data.component';
+import { AbsenceTabsComponent } from 'app/absence-tabs/absence-tabs.component';
+import { AbsenceInputComponent } from 'app/absence-input/absence-input.component';
 
 @NgModule({
-  declarations: [HomeComponent, BottomNavComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, ReportComponent,AbsenceComponent, DataComponent],
+  declarations: [HomeComponent, BottomNavComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, ReportComponent,AbsenceComponent, DataComponent, AbsenceTabsComponent, AbsenceInputComponent],
   imports: [
     CommonModule,
     HomeRoutingModule,
@@ -80,9 +84,11 @@ import { DataComponent } from 'app/data/data.component';
     NgSelectModule,
     RandomcolorModule,
     MatTabsModule,
-    DragDropModule
+    DragDropModule,
+    NgbModule
+    
   ],
-  providers: [DriverService, PatientService, EventService, PlaceService, DatePipe],
+  providers: [DriverService, PatientService, EventService, PlaceService, AbsenceService, DatePipe],
 
   exports: [ReactiveFormsModule]
 })

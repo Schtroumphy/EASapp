@@ -7,6 +7,7 @@ import { Driver } from './src/app/core/models/driver.schema.js';
 import { Patient } from './src/app/core/models/patient.schema.js';
 import { Evenement } from './src/app/core/models/evenement.schema.js';
 import { Place } from './src/app/core/models/place.schema.js';
+import { Absence } from './src/app/core/models/absence.schema.js';
 
 const log = require('electron-log');
 
@@ -16,6 +17,7 @@ let eventRepo = null
 let driverRepo = null
 let patientRepo = null
 let placeRepo = null
+let absenceRepo = null
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
@@ -32,7 +34,7 @@ async function createWindow(): Promise<BrowserWindow> {
       logger: 'advanced-console',
       // TODO if dev src else dist
       database: './dist/assets/data/database.sqlite',
-      entities: [Authentification, Evenement, Driver, Patient, Place],
+      entities: [Authentification, Evenement, Driver, Patient, Place, Absence],
     
       // migrations: [
       //   "../src/migration/*{.ts,.js}"
@@ -63,6 +65,7 @@ async function createWindow(): Promise<BrowserWindow> {
     driverRepo = connection.getRepository(Driver);
     patientRepo = connection.getRepository(Patient);
     placeRepo = connection.getRepository(Place);
+    absenceRepo = connection.getRepository(Absence);
   } catch (e){
     console.log("EXCEPTION : ", e)
     log.warn("EXCEPTION : ", e.json)
@@ -143,7 +146,9 @@ async function createWindow(): Promise<BrowserWindow> {
       driverToUpdate.email = _driver.email;
       driverToUpdate.phoneNumber = _driver.phoneNumber;
       driverToUpdate.comment = _driver.comment;
-      driverToUpdate.color = _driver.color
+      driverToUpdate.color = _driver.color;
+      driverToUpdate.absences = _driver.absences;
+      driverToUpdate.evenements = _driver.evenements;
       await driverRepo.save(driverToUpdate);
       event.returnValue = await driverRepo.find();
     } catch (err) {
@@ -163,7 +168,9 @@ async function createWindow(): Promise<BrowserWindow> {
 
   ipcMain.on('get-drivers', async (event: any, ...args: any[]) => {
     try {
-      event.returnValue = await driverRepo.find();
+      event.returnValue = await driverRepo.find({
+        relations: ['absences']
+      })
     } catch (err) {
       throw err;
     }
@@ -173,6 +180,28 @@ async function createWindow(): Promise<BrowserWindow> {
     try {
       event.returnValue = await driverRepo.findOne({ where: { id: _driverId } });
 
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  // -------------------------- ABSENCES --------------------------
+
+  ipcMain.on('add-absence', async (event: any, _absence: Absence) => {
+    try {
+      const absence = new Absence( _absence.startDate,  _absence.endDate);
+      absence.driver = _absence.driver;
+      absence.reason = _absence.reason;
+      //absence.driverId = _absence.driver.id
+      await absenceRepo.save(absence);
+
+      event.returnValue = await absenceRepo.find({
+        relations: ['driver'], where: {
+          driver: {
+            id: _absence.driver.id
+          }
+        }
+      });
     } catch (err) {
       throw err;
     }

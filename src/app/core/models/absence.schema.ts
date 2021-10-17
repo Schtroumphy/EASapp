@@ -6,26 +6,20 @@ export class Absence{
     id: number;
 
     @Column()
-    date: String
+    startDate: String
 
     @Column()
-    isSelected: boolean;
-
-    @Column()
-    driverId : number;
+    endDate: String
 
     @Column({nullable: true})
     reason: string;
 
-    @ManyToOne(type => Driver, driver => driver.absences, {
-        onDelete: "CASCADE"
-    })
+    @ManyToOne(type => Driver, driver => driver.absences, {onDelete: "CASCADE"})
     @JoinTable()
     driver: Driver;
 
-      
-    constructor(date, isSelected = false) {
-        this.date = date;
-        this.isSelected = isSelected;
+    constructor(startDate, endDate) {
+        this.startDate= startDate;
+        this.endDate= endDate;
       }
 }

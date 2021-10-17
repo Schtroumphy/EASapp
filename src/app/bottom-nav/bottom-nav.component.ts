@@ -34,7 +34,7 @@ export class BottomNavComponent implements OnInit {
     {
       label: 'Absences',
       icon: 'perm_contact_calendar',
-      redirection : './absence'
+      redirection : './absence-tabs'
     },
     {
       label: 'Avancés',

@@ -12,6 +12,8 @@ import { DriversComponent } from '../drivers/drivers.component';
 import { ReportComponent } from 'app/report/report.component';
 import { AbsenceComponent } from 'app/absence/absence.component';
 import { DataComponent } from 'app/data/data.component';
+import { AbsenceTabsComponent } from 'app/absence-tabs/absence-tabs.component';
+import { AbsenceInputComponent } from 'app/absence-input/absence-input.component';
 
 const routes: Routes = [
   {
@@ -30,6 +32,14 @@ const routes: Routes = [
       {
         path: 'data',
         component: DataComponent
+      },
+      {
+        path: 'absence-tabs',
+        component: AbsenceTabsComponent
+      },
+      {
+        path: 'absence-input',
+        component: AbsenceInputComponent
       },
       {
         path: 'patients',
