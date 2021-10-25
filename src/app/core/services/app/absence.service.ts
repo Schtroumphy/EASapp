@@ -21,4 +21,16 @@ export class AbsenceService {
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 
+  deleteAbsence(absenceId: number): Observable<Absence[]> {
+    return of(
+      this._electronService.ipcRenderer.sendSync('delete-absence', absenceId)
+    ).pipe(catchError((error: any) => throwError(error.json)));
+  }
+
+  updateAbsence(absence: Absence): Observable<Absence[]> {
+    return of(
+      this._electronService.ipcRenderer.sendSync('update-absence', absence)
+    ).pipe(catchError((error: any) => throwError(error.json)));
+  }
+
 }

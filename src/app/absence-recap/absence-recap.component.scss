@@ -4,18 +4,15 @@ $darker: #666565;
 $primary: #c73612;
 $secondary: #e68365;
 
-th,
-td {
-  padding: 3px 12px;
+th.mat-header-cell {
   text-align: center;
 }
 
 th,
-td:not(.absence-cell):not(.no-absence) {
-  border-left: solid 1px darken($darker, 5);
-  border-top: solid 1px darken($darker, 5);
-  border-right: solid 1px darken($darker, 5);
+td {
+  padding: 3px 12px;
   text-align: center;
+  justify-content: center;
 }
 
 td.absence-cell {
@@ -30,7 +27,7 @@ td.absence-cell {
 }
 
 td.no-absence {
-  background-color: rgb(27, 71, 214);
+  background-color: rgb(209, 85, 54);
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */

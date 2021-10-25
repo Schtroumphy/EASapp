@@ -18,7 +18,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let employee of employeeList; let i = index;">
+            <tr *ngFor="let employee of driverList; let i = index;">
                 <td class="employee-cell">{{employee.firstname}}</td>
                 <td [ngClass]="cellIds.includes(employee.id + '|' + day) ? unselectableClass : selectableClass"
                     *ngFor="let day of dayOfMonth" (contextmenu)="onRightClick($event)"
@@ -30,7 +30,7 @@
 
     <br><br><br>
 
-    <table mat-table [dataSource]="dataSource" class="lessons-table mat-elevation-z8">
+    <table mat-table [dataSource]="absenceList" class="lessons-table mat-elevation-z8">
 
         <!-- Id Column -->
         <ng-container matColumnDef="id">
@@ -67,10 +67,10 @@
         <ng-container matColumnDef="actions" style="min-width: 60px;">
             <th mat-header-cell *matHeaderCellDef>Editer / Supprimer</th>
             <td mat-cell *matCellDef="let element">
-                <button mat-flat-button (click)="editPlace(element)">
+                <button mat-flat-button (click)="displayEditAbsenceModal('Edit absence', element)">
                     <mat-icon color="transparent" [ngStyle]="{'color':'#1e90ff'}">edit</mat-icon>
                 </button>`
-                <button mat-flat-button (click)="deletePlace(element)">
+                <button mat-flat-button (click)="deleteAbsence(element.id)">
                     <mat-icon [ngStyle]="{'color':'red'}">delete</mat-icon>
                 </button>
             </td>
@@ -103,3 +103,60 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal edit event implementation -->
+<ng-template #modalContent let-close="close">
+    <div class="modal-header">
+        <h5 class="modal-title">Modifier l'absence de <strong>{{modalData.absence.driver.lastname | uppercase }} {{
+                modalData.absence.driver.firstname }}</strong> du <strong>{{modalData.absence.startDate |
+                date:"dd/MM/yyyy"}} </strong> au <strong>{{modalData.absence.endDate
+                | date:"dd/MM/yyyy"}}</strong>
+        </h5>
+        <button type="button" class="close" (click)="close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="editAbsenceForm" (ngSubmit)="onSubmit()">
+            <div class="row centered">
+                <ng-select class="col" style="padding: 1.8%; " appearance="outline" formControlName="driver" id="driver"
+                    [(ngModel)]="selectedDriverId" placeholder="Conducteur">
+                    <ng-option *ngFor="let driver of driverList" [value]="driver.id">{{driver.firstname | lowercase }}
+                        {{driver.lastname | uppercase }}</ng-option>
+                </ng-select>
+                <div class="col input-group centered" style="padding: 2%; ">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Motif de l'absence</span>
+                    </div>
+                    <textarea formControlName="reason" aria-label="With textarea"
+                        [(ngModel)]="selectedReason"></textarea>
+                </div>
+            </div>
+            <div class="row centered" style="margin-top: 2%;">
+                <div class="col-6">
+                    <label for="startDate">Date de début </label>
+                    <input type="date" appearance="outline" formControlName="startDate" id="startDate"
+                        [(ngModel)]="selectedStartDate">
+
+                </div>
+                <div class="col-6">
+                    <label for="endDate">Date de fin </label>
+                    <input type="date" appearance="outline" formControlName="endDate" id="endDate"
+                        [(ngModel)]="selectedEndDate">
+
+                </div>
+            </div>
+
+            <div class="error-div" *ngIf="!editAbsenceForm.valid && editAbsenceForm.touched">
+                Veuillez rentrer des valeurs valides.
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-info" data-dismiss="modal"
+                    [disabled]="!editAbsenceForm.valid">Valider</button>
+            </div>
+        </form>
+    </div>
+
+</ng-template>

@@ -226,6 +226,34 @@ async function createWindow(): Promise<BrowserWindow> {
     }
   });
 
+  ipcMain.on('update-absence', async (event: any, _absence: Absence) => {
+
+    try {
+      let absenceToUpdate = await absenceRepo.findOne(_absence.id);
+      absenceToUpdate.startDate = _absence.startDate;
+      absenceToUpdate.endDate = _absence.endDate;
+      absenceToUpdate.driver = _absence.driver;
+      absenceToUpdate.reason = _absence.reason;
+      await absenceRepo.save(absenceToUpdate);
+      event.returnValue = await absenceRepo.find({
+        relations: ["driver"]
+      });
+    } catch (err) {
+      throw err;
+    }
+  });
+
+  ipcMain.on('delete-absence', async (event: any, _absenceId: number) => {
+    try {
+      await absenceRepo.delete(_absenceId);
+      event.returnValue = await absenceRepo.find({
+        relations: ["driver"]
+      });
+    } catch (err) {
+      throw err;
+    }
+  });
+
   // -------------------------- EVENT --------------------------
 
   ipcMain.on('add-event', async (event: any, _evenement: Evenement) => {

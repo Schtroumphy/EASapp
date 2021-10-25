@@ -1,8 +1,7 @@
-
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~@ng-select/ng-select/themes/material.theme.css";
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300&display=swap");
 
 *,
 *::before,
@@ -10,24 +9,25 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.mat-flat-button{
+.mat-flat-button {
   background-color: transparent;
 }
 
-.modal-title{
-  color : cadetblue;
+.modal-title {
+  color: cadetblue;
   font-size: 20px;
 }
 
 .mat-button-focus-overlay {
-  background-color: transparent!important;
+  background-color: transparent !important;
 }
 
 /* CAN (MUST) BE REMOVED ! Sample Global style */
@@ -57,11 +57,11 @@ html, body {
     transition: all 0.4s ease 0s;
 
     &:hover {
-      color: #5388D8 !important;
+      color: #5388d8 !important;
       letter-spacing: 1px;
-      -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
-      -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
-      box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
+      -webkit-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+      -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+      box-shadow: 5px 40px -10px rgba(0, 0, 0, 0.57);
       transition: all 0.4s ease 0s;
     }
   }
@@ -78,33 +78,32 @@ html, body {
     transition: all 0.4s ease 0s;
 
     &:hover {
-      color: #5388D8 !important;
+      color: #5388d8 !important;
       letter-spacing: 1px;
-      -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
-      -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
-      box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
+      -webkit-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+      -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+      box-shadow: 5px 40px -10px rgba(0, 0, 0, 0.57);
       transition: all 0.4s ease 0s;
     }
   }
 }
 
-
-.error-div{
+.error-div {
   margin-top: 2%;
-  background-color: #F5AD6E;
+  background-color: #f5ad6e;
   color: rgb(49, 48, 48);
   text-align: center;
 }
 
-.btn-info{
+.btn-info {
   border-radius: 20px;
 }
 
-:not(i){
-  font-family: 'Nunito', sans-serif;
+:not(i) {
+  font-family: "Nunito", sans-serif;
 }
 
-body app-root app-navigation mat-sidenav-container mat-sidenav{
+body app-root app-navigation mat-sidenav-container mat-sidenav {
   visibility: hidden;
 }
 
@@ -121,12 +120,12 @@ body app-root app-navigation mat-sidenav-container mat-sidenav{
 
 //   }
 
-//   @page { 
-//   size: A4;   /* auto is the initial value */ 
+//   @page {
+//   size: A4;   /* auto is the initial value */
 
 //     /* Chrome sets own margins, we change these printer settings */
-//   margin: 0mm 0mm 0mm 0mm; 
-// } 
+//   margin: 0mm 0mm 0mm 0mm;
+// }
 //   .printMe {
 //     visibility: visible
 //   }
@@ -149,7 +148,7 @@ body app-root app-navigation mat-sidenav-container mat-sidenav{
 // }
 //}
 /* Importing Bootstrap SCSS file. */
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";
 
 /* Styles for tab labels */
 .mat-tab-label {

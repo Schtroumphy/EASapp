@@ -5,15 +5,17 @@
 </div>
 <div *ngIf="displayChangesMsg"> Modifications :
     <p *ngFor="let event of eventChangesList">
-        Evènement n°{{event.id}} - Le {{event.date | date: 'dd/MM/yyyy'}} - De {{event.startHour}} à {{event.endHour}} | Conducteur :
+        Evènement n°{{event.id}} - Le {{event.date | date: 'dd/MM/yyyy'}} - De {{event.startHour}} à {{event.endHour}} |
+        Conducteur :
         {{event.driver.firstname}}
     </p>
 </div>
 
 <div class="row">
-    <div class="col hideForPrint"> 
+    <div class="col hideForPrint">
         <div class="row" style="padding-left: 1%;">
-            <button mat-raised-button type="button" class="btn btn-info" (click)="displayFilterForm(true)"> Filtrer</button>
+            <button mat-raised-button type="button" class="btn btn-info" (click)="displayFilterForm(true)">
+                Filtrer</button>
             <button mat-raised-button type="button" class="btn btn-info" (click)="downloadCalendar()">Exporter</button>
         </div>
     </div>
@@ -45,7 +47,8 @@
         </div>
         <div class="col">
             <label for="startHourFilterSelected"> De : </label>
-            <select formControlName="startHourFilterSelected" id="startHourFilterSelected" [(ngModel)]="startHourFilterSelected" (change)="updateHoursJobFrom()">
+            <select formControlName="startHourFilterSelected" id="startHourFilterSelected"
+                [(ngModel)]="startHourFilterSelected" (change)="updateHoursJobFrom()">
                 <option *ngFor="let hour of hours_job" [value]="hour">
                     {{hour}} h 00
                 </option>
@@ -53,7 +56,8 @@
         </div>
         <div class="col">
             <label for="endHourFilterSelected"> A : </label>
-            <select formControlName="endHourFilterSelected" id="endHourFilterSelected" [(ngModel)]="endHourFilterSelected">
+            <select formControlName="endHourFilterSelected" id="endHourFilterSelected"
+                [(ngModel)]="endHourFilterSelected">
                 <option *ngFor="let hour of hours_job_from" [value]="hour">
                     {{hour}} h 00
                 </option>
@@ -74,7 +78,8 @@
             Veuillez rentrer des valeurs valides.
         </div>
         <button mat-raised-button type="submit" class="btn btn-info" [disabled]="!filterForm.valid">Filtrer</button>
-        <button mat-raised-button type="button" class="btn btn-warning" (click)="clearFilter()">Effacer les filtres</button>
+        <button mat-raised-button type="button" class="btn btn-warning" (click)="clearFilter()">Effacer les
+            filtres</button>
 
     </div>
 </form>
@@ -86,111 +91,120 @@
 <!-- Event info modal implementation -->
 <ng-template #modalInfoContent let-close="close">
     <div class="modal-header">
-      <h5>Détails du trajet</h5>
-      <button type="button" class="close" (click)="close()">
-        <span aria-hidden="true">&times;</span>
-      </button>
+        <h5>Détails du trajet</h5>
+        <button type="button" class="close" (click)="close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-    <div class="modal-body">      
-          <div class="row">
-              <div class="col-2">
-                  <strong>Conducteur : </strong>
-              </div>
-              <div class="col">
-                  <p> {{eventClicked.driver.lastname}} {{eventClicked.driver.firstname}}</p>
-              </div>
-              <div class="col-2">
-                  <strong>Patient : </strong>
-              </div>
-              <div class="col">
-                  <p> {{eventClicked.patient.lastname}} {{eventClicked.patient.firstname}}</p>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-2">
-                  <strong>De :</strong>
-              </div>
-              <div class="col">
-                  <p> {{eventClicked.startPoint.label }}</p>
-              </div>
-              <div class="col-2">
-                  <strong>Vers :</strong>
-              </div>
-              <div class="col">
-                  <p> {{eventClicked.endPoint.label }}</p>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-3">
-                  <strong *ngIf="eventClicked.driver.comment !== null">Détails conducteur : </strong>
-              </div>
-              <div class="col">
-                  <p> {{eventClicked.driver.comment}}</p>
-              </div>
-              <div class="col-2">
-                  <strong *ngIf="eventClicked.patient.comment !== null">Détails patient : </strong>
-              </div>
-              <div class="col">
-                  <p> {{eventClicked.patient.comment}}</p>
-              </div>
-          </div>
-      
-          <button class="btn btn-info" (click)="editEvent(eventClicked)">Modifier</button>
-          <button class="btn btn-danger" (click)="deleteEventById(eventClicked.id)">Supprimer</button>
-      
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-2">
+                <strong>Conducteur : </strong>
+            </div>
+            <div class="col">
+                <p> {{eventClicked.driver.lastname}} {{eventClicked.driver.firstname}}</p>
+            </div>
+            <div class="col-2">
+                <strong>Patient : </strong>
+            </div>
+            <div class="col">
+                <p> {{eventClicked.patient.lastname}} {{eventClicked.patient.firstname}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                <strong>De :</strong>
+            </div>
+            <div class="col">
+                <p> {{eventClicked.startPoint.label }}</p>
+            </div>
+            <div class="col-2">
+                <strong>Vers :</strong>
+            </div>
+            <div class="col">
+                <p> {{eventClicked.endPoint.label }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <strong *ngIf="eventClicked.driver.comment !== null">Détails conducteur : </strong>
+            </div>
+            <div class="col">
+                <p> {{eventClicked.driver.comment}}</p>
+            </div>
+            <div class="col-2">
+                <strong *ngIf="eventClicked.patient.comment !== null">Détails patient : </strong>
+            </div>
+            <div class="col">
+                <p> {{eventClicked.patient.comment}}</p>
+            </div>
+        </div>
+
+        <button class="btn btn-info" (click)="editEvent(eventClicked)">Modifier</button>
+        <button class="btn btn-danger" (click)="deleteEventById(eventClicked.id)">Supprimer</button>
+
     </div>
-  
-  </ng-template>
+
+</ng-template>
 
 
 <!-- Modal add/edit event implementation -->
 <ng-template #modalContent let-close="close">
     <div class="modal-header">
-      <h5 *ngIf="!updatingEvent" class="modal-title">Ajouter un évènement pour le  <strong>{{modalData.event.date }} </strong>de 
-        <strong>{{modalData.event.startHour}} </strong> à <strong>{{modalData.event.endHour}}</strong>
-      </h5>
-      <h5 *ngIf="updatingEvent" class="modal-title">Editer un évènement</h5>
-      <button type="button" class="close" (click)="close()">
-        <span aria-hidden="true">&times;</span>
-      </button>
+        <h5 *ngIf="!updatingEvent" class="modal-title">Ajouter un évènement pour le <strong>{{modalData.event.date }}
+            </strong>de
+            <strong>{{modalData.event.startHour}} </strong> à <strong>{{modalData.event.endHour}}</strong>
+        </h5>
+        <h5 *ngIf="updatingEvent" class="modal-title">Editer un évènement</h5>
+        <button type="button" class="close" (click)="close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
     <div class="modal-body">
-      <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
-        <div class="row">
-          <div class="col-6">
-            <ng-select appearance="outline" formControlName="driver" id="driver"  [(ngModel)]="selectedDriverId" placeholder="Conducteur">
-              <ng-option *ngFor="let driver of driverList" [value]="driver.id">{{driver.firstname | lowercase }} {{driver.lastname | uppercase }}</ng-option>
-           </ng-select>
-           
-          </div>
-          <div class="col-6">
-            <ng-select appearance="outline" formControlName="patient" id="patient"  [(ngModel)]="selectedPatientId" placeholder="Patient">
-              <ng-option *ngFor="let patient of patientList" [value]="patient.id">{{patient.firstname | lowercase }} {{patient.lastname | uppercase }}</ng-option>
-           </ng-select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-6">
-            <ng-select appearance="outline" formControlName="startPoint" id="startPoint"  [(ngModel)]="selectedStartPointId" placeholder="Origine">
-              <ng-option *ngFor="let place of placeList" [value]="place.id">{{place.label | uppercase }}</ng-option>
-           </ng-select>
-          </div>
-          <div class="col-6">
-            <ng-select appearance="outline" formControlName="endPoint" id="endPoint"  [(ngModel)]="selectedEndPointId" placeholder="Destination">
-              <ng-option *ngFor="let place of placeList" [value]="place.id">{{place.label | uppercase }}</ng-option>
-           </ng-select>
-          </div>
-        </div>
-  
-        <div class="error-div" *ngIf="!eventForm.valid && eventForm.touched">
-          Veuillez rentrer des valeurs valides.
-        </div>
-  
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-info" data-dismiss="modal" [disabled]="!eventForm.valid">Valider</button>
-        </div>
-      </form>
+        <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-6">
+                    <ng-select appearance="outline" formControlName="driver" id="driver" [(ngModel)]="selectedDriverId"
+                        placeholder="Conducteur">
+                        <ng-option *ngFor="let driver of driverList" [value]="driver.id">{{driver.firstname | lowercase
+                            }} {{driver.lastname | uppercase }}</ng-option>
+                    </ng-select>
+
+                </div>
+                <div class="col-6">
+                    <ng-select appearance="outline" formControlName="patient" id="patient"
+                        [(ngModel)]="selectedPatientId" placeholder="Patient">
+                        <ng-option *ngFor="let patient of patientList" [value]="patient.id">{{patient.firstname |
+                            lowercase }} {{patient.lastname | uppercase }}</ng-option>
+                    </ng-select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <ng-select appearance="outline" formControlName="startPoint" id="startPoint"
+                        [(ngModel)]="selectedStartPointId" placeholder="Origine">
+                        <ng-option *ngFor="let place of placeList" [value]="place.id">{{place.label | uppercase }}
+                        </ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-6">
+                    <ng-select appearance="outline" formControlName="endPoint" id="endPoint"
+                        [(ngModel)]="selectedEndPointId" placeholder="Destination">
+                        <ng-option *ngFor="let place of placeList" [value]="place.id">{{place.label | uppercase }}
+                        </ng-option>
+                    </ng-select>
+                </div>
+            </div>
+
+            <div class="error-div" *ngIf="!eventForm.valid && eventForm.touched">
+                Veuillez rentrer des valeurs valides.
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-info" data-dismiss="modal"
+                    [disabled]="!eventForm.valid">Valider</button>
+            </div>
+        </form>
     </div>
-  
-  </ng-template>
-  
+
+</ng-template>

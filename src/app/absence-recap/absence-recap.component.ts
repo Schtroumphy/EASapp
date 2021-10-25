@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Absence } from 'app/core/models/absence.schema';
 import { Driver } from 'app/core/models/driver.schema';
 import { AbsenceService } from 'app/core/services/app/absence.service';
@@ -6,18 +6,24 @@ import { endOfWeek, startOfWeek, getDaysInMonth, startOfMonth, endOfMonth, addDa
 import { FORMAT_dd_MM_yyyy, FORMAT_yyyy_MM_dd } from 'app/core/constants';
 import { DriverService } from 'app/core/services/app/driver.service';
 import { DatePipe } from '@angular/common';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import * as moment from 'moment';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-absence-recap',
   templateUrl: './absence-recap.component.html',
   styleUrls: ['./absence-recap.component.scss']
 })
 export class AbsenceRecapComponent implements OnInit {
+  @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
 
   displayedColumns = ['id', 'driver', 'startDate', 'endDate', 'reason', 'actions'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
-  dataSource: Absence[];
 
   absenceList: Absence[] = [];
+  driverList: Driver[] = [];
 
   // Absence array
   employeeList: Driver[] = []
@@ -26,6 +32,13 @@ export class AbsenceRecapComponent implements OnInit {
   unselectableClass = "no-absence"
   cellIds = Array()
 
+  // Form (edit absence) 
+  editAbsenceForm : FormGroup
+  selectedDriverId: number;
+  selectedStartDate: string;
+  selectedEndDate: string;
+  selectedReason: string;
+  selectedAbsenceId : number;
 
   // Dates
   currentWeekStartDate = null
@@ -34,10 +47,17 @@ export class AbsenceRecapComponent implements OnInit {
   currentMonthStartDate = null
   currentMonthEndDate = null
 
+  // Modal
+  modalReference: any;
+  modalData: {
+    action: string;
+    absence: Absence;
+  };
 
-  constructor(private absenceService : AbsenceService, private driverService: DriverService, private datePipe: DatePipe) { }
+  constructor(private modal: NgbModal, private absenceService : AbsenceService, private driverService: DriverService, private datePipe: DatePipe) { }
 
   ngOnInit(): void {
+    this.initForm()
     this.getDriverList()
 
     this.currentDate = new Date()
@@ -54,7 +74,6 @@ export class AbsenceRecapComponent implements OnInit {
     //this.initForm();
     this.absenceService.getAllAbsences().subscribe((absences) => {
       this.absenceList = absences
-      this.dataSource = this.absenceList
     });
     console.log("All absences : " + JSON.stringify(this.absenceList))
     //this.updateDatasource();
@@ -62,7 +81,7 @@ export class AbsenceRecapComponent implements OnInit {
 
   getDriverList() {
     this.driverService.getDrivers().subscribe((items) => {
-      this.employeeList = items,
+      this.driverList = items,
         console.log(items);
         items.forEach(driver => {
             this.updateAbsenceCells(driver.id.toString(), driver.absences)
@@ -70,6 +89,116 @@ export class AbsenceRecapComponent implements OnInit {
           })
     });
   }
+
+  // -------------- Absence edit form --------------
+
+  initForm() {
+    this.editAbsenceForm = new FormGroup({
+      id: new FormControl(),
+      driver: new FormControl('', Validators.required),
+      startDate: new FormControl('', [Validators.required]),
+      endDate:new FormControl('', Validators.required),
+      reason:new FormControl(''),
+    })
+  }
+
+  onSubmit(){
+    console.log("Submit UPDATE")
+    // Update absence
+    let absence = new Absence(
+      this.editAbsenceForm.get('startDate').value,
+      this.editAbsenceForm.get('endDate').value,
+      this.editAbsenceForm.get('reason').value
+    );
+    this.driverService.getDriverById(this.selectedDriverId).subscribe(
+      (item) => { 
+        absence.driver = item
+       });
+    absence.id = this.selectedAbsenceId
+    console.log("Absence to update : " + JSON.stringify(absence))
+    
+    this.absenceService.updateAbsence(absence).subscribe(
+      (absences) => {
+        console.log("Absence updated : " + JSON.stringify(absence))
+        // Update absences list 
+        this.absenceList = absences
+        this.alertWithSuccess("L'absence a été modifié avec succès")
+        this.clearEditAbsenceForm()
+      })
+  }
+  updateAbsenceInList(absence: Absence) {
+    console.log("Update absence list BEFORE : " + JSON.stringify(this.absenceList))
+    this.absenceList[this.absenceList.findIndex(abs => abs.id == absence.id)] = absence
+    console.log("Update absence list AFTER : " + JSON.stringify(this.absenceList))
+  }
+
+  fillEditAbsenceForm(absence : Absence) {
+    console.log("fillEditAbsenceForm with absence : " + JSON.stringify(absence))
+    this.selectedDriverId = absence.driver.id;
+    this.selectedStartDate = absence.startDate.toString();
+    this.selectedEndDate = absence.endDate.toString();
+    this.selectedReason = absence.reason;
+  }
+
+  displayEditAbsenceModal(action: string, absence: Absence): void {
+    console.log("Absence to edit : " + JSON.stringify(absence))
+    this.fillEditAbsenceForm(absence)
+    this.selectedAbsenceId = absence.id
+    this.modalData = { absence, action };
+    this.modalReference = this.modal.open(this.modalContent, { size: 'lg' });
+  }
+
+  clearEditAbsenceForm() { 
+    this.closeModal()
+    this.editAbsenceForm.reset();
+  }
+
+  deleteAbsence(absenceId) {
+    console.log("Absence id to delete : "+ absenceId)
+    Swal.fire({
+      title: 'Etes-vous sûr de vouloir supprimer cet absence ?',
+      text: 'La suppression est irréversible.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, sûr',
+      cancelButtonText: 'Non, je le garde'
+    }).then((result) => {
+      if (result.value) {
+        this.absenceService
+          .deleteAbsence(absenceId)
+          .subscribe(
+            (absences) => {
+              this.absenceList = absences
+
+              Swal.fire(
+                'Supprimé!',
+                'L\'absence a bien été supprimé.',
+                'success'
+              )
+            },
+            (error) => {
+              Swal.fire(
+                'Erreur',
+                'Echec de la suppression : ' + error,
+                'error'
+              )
+            }
+          );
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Annulé',
+          'Suppression annulée',
+          'error'
+        )
+      }
+    })
+  }
+
+  closeModal(){
+    this.modalReference.close()
+  }
+
+  // -------------- All for array recap ------------------
 
   getDatesBetween(startDate, endDate){
     const listDate = [];
@@ -160,7 +289,6 @@ export class AbsenceRecapComponent implements OnInit {
   onRightClick(event: MouseEvent) {
     // preventDefault avoids to show the visualization of the right-click menu of the browser
     event.preventDefault();
-
   }
 
   getCurrentWeekPeriod(date: Date) {
@@ -168,5 +296,10 @@ export class AbsenceRecapComponent implements OnInit {
     //console.log("Start week date : ", this.currentWeekStartDate)
     this.currentWeekEndDate = this.datePipe.transform(endOfWeek(date, { weekStartsOn: 1 }), FORMAT_dd_MM_yyyy);
     //console.log("End week date : ", this.currentWeekEndDate)
+  }
+
+  // Alerts
+  alertWithSuccess(message) {
+    Swal.fire('Ajout/Modification d\'évènement', message, 'success')
   }
 }
