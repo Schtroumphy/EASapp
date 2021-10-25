@@ -15,6 +15,12 @@ export class AbsenceService {
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 
+  getAllAbsencesByYear(year : string): Observable<Absence[]> {
+    return of(
+      this._electronService.ipcRenderer.sendSync('get-all-absences-by-year')
+    ).pipe(catchError((error: any) => throwError(error.json)));
+  }
+
   addAbsence(absence: Absence): Observable<Absence[]> {
     return of(
       this._electronService.ipcRenderer.sendSync('add-absence', absence)

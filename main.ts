@@ -206,6 +206,20 @@ async function createWindow(): Promise<BrowserWindow> {
     }
   });
 
+  ipcMain.on('get-all-absences-by-year', async (event: any, year: string) => {
+    try {
+      event.returnValue = await absenceRepo.find({
+        relations: ['driver'],
+        where: [
+          { startDate: Between('01/01/'+year , '31/12/'+year )},
+          { endDate: Between('01/01/'+year , '31/12/'+year )},
+        ]
+      })
+    } catch (err) {
+      throw err;
+    }
+  });
+
   ipcMain.on('add-absence', async (event: any, _absence: Absence) => {
     try {
       const absence = new Absence( _absence.startDate,  _absence.endDate, _absence.reason);
