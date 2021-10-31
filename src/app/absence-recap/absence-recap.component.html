@@ -1,6 +1,6 @@
 <div class="example-container mat-elevation-z8">
 
-    <table style="margin-top: 5%;">
+    <table style="margin-top: 5%; table-layout: fixed">
         <thead>
             <tr class="col-12">
                 <mat-icon class="col-1 icon-absence" (click)="getPreviousMonth()">chevron_left</mat-icon>
@@ -21,8 +21,7 @@
             <tr *ngFor="let employee of driverList; let i = index;">
                 <td class="employee-cell">{{employee.firstname}}</td>
                 <td [ngClass]="cellIds.includes(employee.id + '|' + day) ? unselectableClass : selectableClass"
-                    *ngFor="let day of dayOfMonth" (contextmenu)="onRightClick($event)"
-                    [attr.id]="employee.id + '|' + day"></td>
+                    *ngFor="let day of dayOfMonth" [attr.id]="employee.id + '|' + day"></td>
 
             </tr>
         </tbody>
@@ -30,7 +29,8 @@
 
     <br><br><br>
 
-    <table mat-table [dataSource]="absenceList" class="lessons-table mat-elevation-z8">
+    <table *ngIf="absenceFilterList.length > 0" mat-table [dataSource]="absenceFilterList"
+        class="lessons-table mat-elevation-z8">
 
         <!-- Id Column -->
         <ng-container matColumnDef="id">
@@ -80,6 +80,8 @@
         <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
 
     </table>
+
+    <p *ngIf="absenceFilterList.length == 0"> Pas d'absences sur ce mois.</p>
 </div>
 
 <!-- Delete Modal -->

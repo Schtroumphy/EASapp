@@ -24,6 +24,7 @@ export class AbsenceStatsComponent implements OnInit {
 
   driverList : Driver[] = []
   absenceList: Absence[] = []
+  currentYear : string
 
   public barChartData: ChartDataSets[] = [];
 
@@ -32,6 +33,7 @@ export class AbsenceStatsComponent implements OnInit {
   ngOnInit(): void {
 
     let currentDate = new Date()
+    this.currentYear = currentDate.getUTCFullYear().toString()
     console.log("Current year : " + currentDate.getUTCFullYear())
 
     // Display months in bar schart
@@ -42,7 +44,7 @@ export class AbsenceStatsComponent implements OnInit {
     this.buildEmptyChartDataSets()
 
     // Retrieve all absences of this year
-    this.absenceService.getAllAbsencesByYear("2021").subscribe((absences) => {
+    this.absenceService.getAllAbsencesByYear(this.currentYear).subscribe((absences) => {
       this.absenceList = absences
       absences.forEach(absence => {
         //console.log("Absence by year "+ JSON.stringify(absence))
@@ -62,7 +64,7 @@ export class AbsenceStatsComponent implements OnInit {
 
       // Get all dates between dates
       this.getDatesBetween(absence.startDate, absence.endDate).forEach(date => {
-        if(date.includes('2021')){
+        if(date.includes(this.currentYear)){
           var oldNumber = test.data[this.getMonthNumber(date)] as number
           console.log("DATE : " + date + " OLD NUMBER : " + oldNumber)
 

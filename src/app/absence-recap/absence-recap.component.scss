@@ -4,6 +4,10 @@ $darker: #666565;
 $primary: #c73612;
 $secondary: #e68365;
 
+mat-icon {
+  cursor: pointer;
+}
+
 th.mat-header-cell {
   text-align: center;
 }

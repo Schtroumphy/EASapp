@@ -2,7 +2,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Absence } from 'app/core/models/absence.schema';
 import { Driver } from 'app/core/models/driver.schema';
 import { AbsenceService } from 'app/core/services/app/absence.service';
-import { endOfWeek, startOfWeek, getDaysInMonth, startOfMonth, endOfMonth, addDays, subMonths, addMonths } from 'date-fns';
+import { endOfWeek, startOfWeek, getDaysInMonth, startOfMonth, endOfMonth, addDays, subMonths, addMonths, getMonth } from 'date-fns';
 import { FORMAT_dd_MM_yyyy, FORMAT_yyyy_MM_dd } from 'app/core/constants';
 import { DriverService } from 'app/core/services/app/driver.service';
 import { DatePipe } from '@angular/common';
@@ -23,6 +23,7 @@ export class AbsenceRecapComponent implements OnInit {
   columnsToDisplay: string[] = this.displayedColumns.slice();
 
   absenceList: Absence[] = [];
+  absenceFilterList: Absence[] = [];
   driverList: Driver[] = [];
 
   // Absence array
@@ -63,30 +64,26 @@ export class AbsenceRecapComponent implements OnInit {
     this.currentDate = new Date()
     console.log("Current date : ", JSON.stringify(this.currentDate))
     this.currentMonthStartDate = startOfMonth(new Date());
-    //this.currentMonthStartDate = this.datePipe.transform(startOfMonth(new Date()), FORMAT_dd_MM_yyyy);
     this.currentMonthEndDate = endOfMonth(new Date());
-    //this.currentMonthEndDate = this.datePipe.transform(endOfMonth(new Date()), FORMAT_dd_MM_yyyy);
     console.log("Current month start date : ", (this.currentMonthStartDate))
     console.log("Current month end date : ", (this.currentMonthEndDate))
 
     this.updateDaysInMonth()
 
-    //this.initForm();
     this.absenceService.getAllAbsences().subscribe((absences) => {
       this.absenceList = absences
+      this.absenceFilterList = absences
+      this.updateAbsenceFilter()
     });
     console.log("All absences : " + JSON.stringify(this.absenceList))
-    //this.updateDatasource();
   }
 
   getDriverList() {
     this.driverService.getDrivers().subscribe((items) => {
       this.driverList = items,
         console.log(items);
-        items.forEach(driver => {
-            this.updateAbsenceCells(driver.id.toString(), driver.absences)
-            console.log("DRIVER : "+ JSON.stringify(driver))
-          })
+        
+          this.updateAbsenceCells()        
     });
   }
 
@@ -122,14 +119,13 @@ export class AbsenceRecapComponent implements OnInit {
         console.log("Absence updated : " + JSON.stringify(absence))
         // Update absences list 
         this.absenceList = absences
+        this.absenceFilterList = absences
+        this.updateAbsenceFilter()
         this.alertWithSuccess("L'absence a été modifié avec succès")
         this.clearEditAbsenceForm()
       })
-  }
-  updateAbsenceInList(absence: Absence) {
-    console.log("Update absence list BEFORE : " + JSON.stringify(this.absenceList))
-    this.absenceList[this.absenceList.findIndex(abs => abs.id == absence.id)] = absence
-    console.log("Update absence list AFTER : " + JSON.stringify(this.absenceList))
+
+      this.updateAbsenceCells()
   }
 
   fillEditAbsenceForm(absence : Absence) {
@@ -169,6 +165,7 @@ export class AbsenceRecapComponent implements OnInit {
           .subscribe(
             (absences) => {
               this.absenceList = absences
+              this.updateAbsenceFilter()
 
               Swal.fire(
                 'Supprimé!',
@@ -216,21 +213,25 @@ export class AbsenceRecapComponent implements OnInit {
     return listDate
   }
 
-  updateAbsenceCells(driverId: String, absences: Absence[]) {
-    if(absences.length > 0){
-       absences.forEach( absence => {
-         if(absence.startDate == absence.endDate){
-          this.cellIds.push(driverId + "|"+ absence.startDate);
-         } else {
-          this.getDatesBetween(absence.startDate, absence.endDate).forEach( date => {
-            this.cellIds.push(driverId + "|"+ date);
-          })
-          console.log("Dates between " + absence.startDate + " et " + absence.endDate + " : " + this.getDatesBetween(absence.startDate, absence.endDate))
-         }
-        
-       }
-      )
-    }
+  updateAbsenceCells() {
+    this.driverList.forEach(driver => {
+      const absences = driver.absences
+      const driverId = driver.id
+      if(absences.length > 0){
+        absences.forEach( absence => {
+          if(absence.startDate == absence.endDate){
+            this.cellIds.push(driverId + "|"+ absence.startDate);
+          } else {
+            this.getDatesBetween(absence.startDate, absence.endDate).forEach( date => {
+              this.cellIds.push(driverId + "|"+ date);
+            })
+            console.log("Dates between " + absence.startDate + " et " + absence.endDate + " : " + this.getDatesBetween(absence.startDate, absence.endDate))
+          }
+          
+        }
+        )
+      }
+    })
     console.log("Cell ids concerned :" + this.cellIds)
   }
 
@@ -252,8 +253,8 @@ export class AbsenceRecapComponent implements OnInit {
   }
 
   updateDaysInMonth() {
-    let currentMonthStartDate = this.datePipe.transform(startOfMonth(this.currentDate), FORMAT_yyyy_MM_dd);
-    let currentMonthEndDate = this.datePipe.transform(endOfMonth(this.currentDate), FORMAT_yyyy_MM_dd);
+    let currentMonthStartDate = this.datePipe.transform(startOfMonth(this.currentDate), FORMAT_yyyy_MM_dd)
+    let currentMonthEndDate = this.datePipe.transform(endOfMonth(this.currentDate), FORMAT_yyyy_MM_dd)
 
     var i = 0
     this.dayOfMonth = []
@@ -266,6 +267,8 @@ export class AbsenceRecapComponent implements OnInit {
         this.datePipe.transform(addDays(new Date(currentMonthStartDate), i), FORMAT_yyyy_MM_dd))
       i++
     }
+
+    this.updateAbsenceFilter()
   }
 
 
@@ -302,4 +305,22 @@ export class AbsenceRecapComponent implements OnInit {
   alertWithSuccess(message) {
     Swal.fire('Ajout/Modification d\'évènement', message, 'success')
   }
+
+  updateAbsenceFilter() {
+    console.log("updateAbsenceFilter current date "+ this.currentDate)
+    const zero = "0"
+    const month = getMonth(this.currentDate) + 1
+    var monthString = "-"
+    if(month < 10){
+      monthString = monthString + zero + month + "-"
+    } else {
+      monthString = monthString + month + "-"
+    }
+    console.log("updateAbsenceFilter month "+ month)
+    console.log("updateAbsenceFilter month  string"+ monthString)
+
+    this.absenceFilterList = this.absenceList.filter(absence => absence.startDate.includes(monthString) || absence.endDate.includes(monthString));
+    console.log("ABSENCE FILTER : "+ JSON.stringify(this.absenceFilterList))
+  }
 }
+

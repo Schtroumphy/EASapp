@@ -8,11 +8,12 @@
             </mat-panel-title>
         </mat-expansion-panel-header>
         <ol>
-            <li>Via l'onglet "Planning" > Choisir la vue "Semeine" puis cliquer sur la plage horaire où le trajet devra apparaître et remplir le formulaire qui apparaîtra.</li>
+            <li>Via l'onglet "Planning" > Choisir la vue "Semaine" puis cliquer sur la plage horaire où le trajet devra
+                apparaître et remplir le formulaire qui apparaîtra.</li>
             <li>Via l'onglet "Avancé" > Cliquer sur "Ajouter un évènement récurrent". Vous pourrez créer des évènements
                 récurrents sur 2 semaines pour un trajet donné préalablement.</li>
-            <li>Via l'onglet "Avancé" > Cliquer sur "Planifier un conducteur". Vous pourrez créer des évènements sur uns
-                plage prédéfinie pour un conducteur prélablement choisi.</li>
+            <li>Via l'onglet "Avancé" > Cliquer sur "Planifier un conducteur". Vous pourrez créer des évènements sur une
+                plage prédéfinie pour un conducteur préalablement choisi.</li>
         </ol>
     </mat-expansion-panel>
 </mat-accordion>
@@ -26,7 +27,8 @@
         </mat-expansion-panel-header>
         <p> Vous devez ajouter un conducteur/patient/lieu avant de créer un évènement. Pour cela, aller sur l'onglet
             "Conducteurs"/"Patients"/"Lieux" et cliquer sur "Ajouter un conducteur/patient/lieu". Seuls les champs "Nom"
-            et "Prénom" sont obligatoires pour les conducteurs et patients. Quant aux lieux, seul le champ label est obligatoire.</p>
+            et "Prénom" sont obligatoires pour les conducteurs et patients. Quant aux lieux, seul le champ label est
+            obligatoire.</p>
     </mat-expansion-panel>
 </mat-accordion>
 
@@ -51,14 +53,15 @@
             </mat-panel-title>
         </mat-expansion-panel-header>
         <p> Pour cela, vous devez sélectionner l'évènement et le glisser à l'horaire souhaité. Un message apparaîtra
-            vous indiquant que des modifications ont été détectées. Une liste des modifications apparaîtra et vous pourrez
-            choisir si vous voulez sauvegarder ces modifications ou non.
-            <br>En cliquant sur "Non", les modifications seront supprimés et les évènements retrouveront leur place
+            vous indiquant que des modifications ont été détectées. Une liste des modifications apparaîtra et vous
+            pourrez choisir si vous voulez sauvegarder ces modifications ou non.
+            <br>En cliquant sur "Non", les modifications seront supprimées et les évènements retrouveront leur place
             initiale sur le planning.
             <br>En cliquant sur "Oui", les modifications seront enregistrées.
         </p>
         <p>
-            Par ailleurs, un évènement peut être <strong>rallongé</strong> en glissant vers le bas au départ de l'évènement. Une flèche vers le bas apparaîtra.
+            Par ailleurs, un évènement peut être <strong>rallongé</strong> en glissant vers le bas au départ de
+            l'évènement. Une flèche vers le bas apparaîtra.
         </p>
     </mat-expansion-panel>
 </mat-accordion>
@@ -72,7 +75,8 @@
         </mat-expansion-panel-header>
         <p> Vous pouvez supprimer un conducteur, un patient ou un lieu en cliquant sur la poubelle qui suit l'objet
             devant être modifié dans l'onglet associé.
-            Lors d'une suppression d'un conducteur ou d'un patient, les évènements qui leurs sont associés sont
+            Lors d'une suppression d'un conducteur ou d'un patient, les évènements (et absences - pour les conducteurs)
+            qui leurs sont associés sont
             également supprimés. <strong>La suppression est irréversible !</strong>
         </p>
     </mat-expansion-panel>
@@ -86,9 +90,11 @@
                 <h3>Dupliquer un planning</h3>
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <p> 
-            Pour dupliquer un planning, aller à l'onglet "Avancé", sélectionner "Dupliquer/supprimer un planning" puis sélectionner la période concernée pr cete duplication. Cliquer sur "Voir les évènements". 
-            <br> Si des évènements sont présents à la période choisie, vous pourrez cliquer sur "Dupliquer" afin de dupliquer ces évènements. <br>
+        <p>
+            Pour dupliquer un planning, aller à l'onglet "Avancé", sélectionner "Dupliquer/supprimer un planning" puis
+            sélectionner la période concernée par cete duplication. Cliquer sur "Voir les évènements".
+            <br> Si des évènements sont présents à la période choisie, vous pourrez cliquer sur "Dupliquer" afin de
+            dupliquer ces évènements. <br>
             Ils peuvent également être triés par conducteur avant la duplication.
         </p>
     </mat-expansion-panel>
@@ -102,11 +108,16 @@
                 <h3>Supprimer plusieurs évènements</h3>
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <p> 
-            Pour supprimer plusieurs évènements, aller à l'onglet "Avancé", sélectionner "Dupliquer/supprimer un planning" puis sélectionner la période concernée par cete duplication (cette période peut concerner uniquement un jour, ex : du 10/05 au 10/05). Cliquer sur "Voir les évènements". 
-            <br> Si des évènements sont présents à la période choisie, vous pourrez cliquer sur "Supprimer" afin de supprimer ces évènements. <br>
+        <p>
+            Pour supprimer plusieurs évènements, aller à l'onglet "Avancé", sélectionner "Dupliquer/supprimer un
+            planning" puis sélectionner la période concernée par cete duplication (cette période peut concerner
+            uniquement un jour, ex : du 10/05 au 10/05). Cliquer sur "Voir les évènements".
+            <br> Si des évènements sont présents à la période choisie, vous pourrez cliquer sur "Supprimer" afin de
+            supprimer ces évènements. <br>
             Ils peuvent également être triés par conducteur avant la suppression.
         </p>
+        <p>Il est vivement recommandé de supprimer les données obsolètes. Par exemple, les planings de l'année N-2
+            n'étant plus consultés.</p>
     </mat-expansion-panel>
 </mat-accordion>
 
@@ -118,9 +129,10 @@
                 <h3>Exporter un planning</h3>
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <p> <strong style="color: orangered;">L'export comprend UNIQUEMENT la page visible au moment du clic.</strong><br>
-            Il est donc conseillé de déterminer le planning à imprimer en y ajoutant un filtre (par conducteur) par exemple puis en le plaçant
-            aux bons horaires.<br>
+        <p> <strong style="color: orangered;">L'export comprend UNIQUEMENT la page visible au moment du
+                clic.</strong><br>
+            Il est donc conseillé de déterminer le planning à imprimer en y ajoutant un filtre (par conducteur) par
+            exemple puis en le plaçant aux bons horaires.<br>
             Cliquer sur exporter.
         </p>
     </mat-expansion-panel>
@@ -132,19 +144,21 @@
 <dl style="padding: 20px;">
     <dt>Evènement</dt>
     <dd>Un évènement est un objet décrivant le trajet d'un conducteur amenant un patient d'un lieu A à un lieu B. Un
-        évènement est composé d'un conducteur, un patient, 2 lieux, deux horaires (départ et arrivée).</dd>
+        évènement est composé d'un conducteur, un patient, 2 lieux, deux dates et heures (départ et arrivée).</dd>
 
     <dt>Planning</dt>
-    <dd>Un planning comporte u ensemble d'évènement. Ce dernier peut-être modifié via des glisser-déposer ou encore
+    <dd>Un planning comporte un ensemble d'évènements. Ce dernier peut-être modifié via des glisser-déposer ou encore
         après un clic sur un évènement puis sur "Modifier".</dd>
 
     <dt>Evènement récurrent</dt>
     <dd>Un évènement récurrent est créé depuis l'onglet "Avancé". Il possède en plus de ses caractéristiques décrites
-        précédemment, une récuurence sur 2 semaines. Ex : Si la récurrence est Lundi, Mardi et Mercredi, il sera alors
+        précédemment, une récurrence sur 2 semaines. Ex : Si la récurrence est Lundi, Mardi et Mercredi, il sera alors
         créé les lundis, mardis et mercredis des deux prochaines semaines.</dd>
 </dl>
 
-<strong>Ce logiciel a été réalisé nativement par Mlle JEAN-LOUIS Thessalène, Ingénieure logiciel diplômée d'une grande école d'ingénieur. Merci de me faire des retours 
-    sur votre expérience utilisateur (design, fonctionnalités, bugs éventuels). Je suis joignable par mail : jean-louis.th@hotmail.fr.
+<strong style="padding: 20px;">Ce logiciel a été réalisé par JEAN-LOUIS Thessalène, ingénieure logiciel diplômée d'une
+    grande école d'ingénieur. Merci de me faire des retours
+    sur votre expérience utilisateur (design, fonctionnalités, bugs éventuels). Je suis joignable par mail :
+    jean-louis.th.prp@hotmail.com.
     <br> J'espère que mon travail saura répondre à vos besoins.
 </strong>
