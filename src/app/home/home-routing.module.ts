@@ -9,7 +9,6 @@ import { PlacesComponent } from '../places/places.component';
 import { UserGuideComponent } from '../user-guide/user-guide.component';
 import { BottomNavComponent } from '../bottom-nav/bottom-nav.component';
 import { DriversComponent } from '../drivers/drivers.component';
-import { ReportComponent } from 'app/report/report.component';
 import { AbsenceComponent } from 'app/absence/absence.component';
 import { DataComponent } from 'app/data/data.component';
 import { AbsenceTabsComponent } from 'app/absence-tabs/absence-tabs.component';
@@ -69,14 +68,6 @@ const routes: Routes = [
       {
         path: 'absence',
         component: AbsenceComponent
-      },
-      {
-        path: 'report',
-        component: ReportComponent
-      },
-      {
-        path: 'report/:p1',
-        component: ReportComponent
       },
       {
         path: 'advanced',

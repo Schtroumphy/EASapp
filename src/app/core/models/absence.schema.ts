@@ -6,10 +6,10 @@ export class Absence{
     id: number;
 
     @Column()
-    startDate: String
+    startDate: string
 
     @Column()
-    endDate: String
+    endDate: string
 
     @Column({nullable: true})
     reason: string;

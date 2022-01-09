@@ -49,7 +49,6 @@ import { PatientService } from '../core/services/app/patient.service';
 import { PlaceService } from '../core/services/app/place.service';
 import { AbsenceService } from 'app/core/services/app/absence.service';
 
-import { ReportComponent } from 'app/report/report.component';
 import { AbsenceComponent } from 'app/absence/absence.component';
 import { DataComponent } from 'app/data/data.component';
 import { AbsenceTabsComponent } from 'app/absence-tabs/absence-tabs.component';
@@ -58,7 +57,7 @@ import { AbsenceStatsComponent } from 'app/absence-stats/absence-stats.component
 import { AbsenceRecapComponent } from 'app/absence-recap/absence-recap.component';
 
 @NgModule({
-  declarations: [HomeComponent, BottomNavComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent, ReportComponent,
+  declarations: [HomeComponent, BottomNavComponent, DriversComponent, PatientsComponent, CalendarComponent, PlacesComponent, EventComponent, AdvancedComponent, UserGuideComponent,
     AbsenceComponent, DataComponent, AbsenceTabsComponent, AbsenceInputComponent, AbsenceStatsComponent, AbsenceRecapComponent],
   imports: [
     CommonModule,
